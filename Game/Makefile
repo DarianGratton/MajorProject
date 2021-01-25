@@ -1,11 +1,9 @@
 CXX			:= g++
-CXX_FLAGS 	:= -g --std=gnu++14 -Wl,--allow-multiple-definition -pthread
+CXX_FLAGS 	:= -g --std=gnu++14 -pthread
 
 BIN			:= bin
 SRC			:= src
-TESTS		:= src/Tests
 INCLUDES	:= -Iincludes
-TEST_SRC	:= $(filter-out $(SRC)/main.cpp, $(wildcard $(SRC)/*.cpp))
 
 LIB				:= libs
 LIBRARIES		:= 
