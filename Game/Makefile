@@ -9,11 +9,14 @@ LIB				:= libs
 LIBRARIES		:= 
 TEST_LIBRARIES 	:= -lgtest 
 
-EXECUTABLE	:= main
+EXECUTABLE	:= Game
 
 build: $(SRC)/*.cpp
 	mkdir -p $(BIN)
-	$(CXX) $(CXX_FLAGS) $(INCLUDES) -L$(LIB) $^ -o $(BIN)/Game $(LIBRARIES)
+	$(CXX) $(CXX_FLAGS) $(INCLUDES) -L$(LIB) $^ -o $(BIN)/$(EXECUTABLE) $(LIBRARIES)
 
 clean:
 	rm -rf $(BIN)
+
+run:
+	$(BIN)/$(EXECUTABLE)
