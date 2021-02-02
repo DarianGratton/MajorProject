@@ -1,9 +1,10 @@
 #include <iostream>
 
-#include "spdlog/spdlog.h"
+#include "Logger.h"
 
-int main() {
-    std::cout << "Hello World!" << std::endl;
+int main(int argc, char** argv) {
+    Logger::init();
+    LOG_INFO("Logger Initialized");
 
     return 0;
 }
