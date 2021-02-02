@@ -6,7 +6,7 @@ SRC			:= src
 INCLUDES	:= -Iincludes
 
 LIB				:= libs
-LIBRARIES		:= 
+LIBRARIES		:= -lentityx
 TEST_LIBRARIES 	:= -lgtest 
 
 EXECUTABLE	:= Game
