@@ -15,4 +15,3 @@ private:
 #define LOG_INFO(...)   Logger::log()->info(__VA_ARGS__)
 #define LOG_WARN(...)   Logger::log()->warn(__VA_ARGS__)
 #define LOG_ERROR(...)  Logger::log()->error(__VA_ARGS__)
-#define LOG_FATAL(...)  Logger::log()->fatal(__VA_ARGS__)

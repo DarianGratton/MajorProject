@@ -6,7 +6,7 @@ SRC			:= src
 INCLUDES	:= -Iincludes
 
 LIB				:= libs
-LIBRARIES		:= -lentityx
+LIBRARIES		:= -lglfw3dll
 TEST_LIBRARIES 	:= -lgtest 
 
 EXECUTABLE	:= Game
