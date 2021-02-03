@@ -11,7 +11,7 @@ TEST_LIBRARIES 	:= -lgtest
 
 EXECUTABLE	:= Game
 
-build: $(SRC)/*.cpp
+build: $(SRC)/*.cpp $(SRC)/*.c
 	mkdir -p $(BIN)
 	cp $(LIB)/*.dll $(BIN)  
 	$(CXX) $(CXX_FLAGS) $(INCLUDES) -L$(LIB) $^ -o $(BIN)/$(EXECUTABLE) $(LIBRARIES)

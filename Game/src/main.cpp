@@ -1,7 +1,7 @@
 #include <iostream>
 
+#include <glad/glad.h>
 #include <glfw/glfw3.h>
-#include <glad/gald.h>
 
 #include "Logger.h"
 
@@ -39,17 +39,48 @@ bool initGLFW() {
 }
 
 bool initOpenGL() {
+    // Initialize glad
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        LOG_ERROR("GLAD could not be initialized");
+        return 0;
+    }
 
+    // Setup layers
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    return 1;
 }
 
 int main(int argc, char** argv) {
+    // Initialization
     Logger::init();
     LOG_INFO("Logger Initialized");
 
     if (!initGLFW()) {
         LOG_ERROR("Error occurred in initializing GLFW");
+        return -1;
     }
     LOG_INFO("GLFW Initialized");
 
+    if (!initOpenGL) {
+        LOG_ERROR("Error occurred in initializing GLAD");
+        return -1;
+    }
+    LOG_INFO("GLAD Initialized");
+
+    // Game Loop
+    while (!glfwWindowShouldClose(window)) {
+        // Poll for and process events
+        glfwPollEvents();
+
+        // Swap front and back buffers
+        glfwSwapBuffers(window);
+    }
+
+    // Deinitialization
+    glfwTerminate();
+
+    LOG_INFO("Program ended");
     return 0;
 }
