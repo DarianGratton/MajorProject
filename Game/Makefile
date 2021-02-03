@@ -13,6 +13,7 @@ EXECUTABLE	:= Game
 
 build: $(SRC)/*.cpp
 	mkdir -p $(BIN)
+	cp $(LIB)/*.dll $(BIN)  
 	$(CXX) $(CXX_FLAGS) $(INCLUDES) -L$(LIB) $^ -o $(BIN)/$(EXECUTABLE) $(LIBRARIES)
 
 clean:
