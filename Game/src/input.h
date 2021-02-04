@@ -18,7 +18,7 @@ public:
     bool isMousePressed(bool isLeft);
 
     void cursorPositionCallback(float xpos, float ypos);
-    int getCursorPosition(bool isX);
+    float getCursorPosition(bool isX);
 
     void clear();
 
@@ -30,6 +30,6 @@ private:
     std::vector<int> pressedKeys;
     bool leftMousePressed = false;
     bool rightMousePressed = true;
-    int mousePosX = 0;
-    int mousePosY = 0;
+    float mousePosX = 0;
+    float mousePosY = 0;
 };
