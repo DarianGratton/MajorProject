@@ -8,12 +8,13 @@
 
 // GLFW Variables
 GLFWwindow* window;
-const char * GAME_NAME = "Game";
+const char* GAME_NAME = "Game";
 
 // TODO: Change to a reponsive value
 // Window Sizes:
+// 1240 x 960 (Large)
 // 1080 x 720 (Medium)
-// 960 x 540 (Small)
+// 960 x 540  (Small)
 const unsigned int WINDOW_WIDTH = 1080;
 const unsigned int WINDOW_HEIGHT = 720;
 
