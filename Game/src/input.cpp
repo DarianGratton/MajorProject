@@ -1,6 +1,29 @@
 #include "input.h"
 
-#include <glfw/glfw3.h>
+#include "logger.h"
+
+void Input::init(GLFWwindow* window) {
+    glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+        {
+            if (action == GLFW_PRESS) {
+                Input::instance().pressKey(key);
+            } else if (action == GLFW_RELEASE) {
+                Input::instance().releaseKey(key);
+            }
+        });
+
+    glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
+            Input::instance().cursorPositionCallback(xpos, ypos);
+        });
+
+    glfwSetCursorEnterCallback(window, [](GLFWwindow* window, int entered) {
+            Input::instance().cursorEnterCallback(entered);
+        });
+
+    glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods) {
+            Input::instance().pressMouseButton(button);
+        });
+}
 
 void Input::pressKey(int key) {
     pressedKeys.push_back(key);
@@ -45,12 +68,18 @@ void Input::cursorPositionCallback(float xpos, float ypos) {
     mousePosY = ypos;
 }
 
+void Input::cursorEnterCallback(int entered) {
+    // Entered the window
+    // LOG_INFO("Window Entered");
+}
+
 float Input::getCursorPosition(bool isX) {
     if (isX) {
         return mousePosX;
     } else if (isX) {
         return mousePosY;
     }
+    return -1;
 }
 
 void Input::clear() {

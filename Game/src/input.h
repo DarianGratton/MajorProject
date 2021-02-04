@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glfw/glfw3.h>
 #include <vector>
 
 class Input {
@@ -10,6 +11,8 @@ public:
         return *instance;
     }
 
+    void init(GLFWwindow* window);
+
     void pressKey(int key);
     void releaseKey(int key);
     void pressMouseButton(int button);
@@ -18,6 +21,8 @@ public:
     bool isMousePressed(bool isLeft);
 
     void cursorPositionCallback(float xpos, float ypos);
+    void cursorEnterCallback(int entered);
+
     float getCursorPosition(bool isX);
 
     void clear();

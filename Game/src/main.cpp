@@ -3,7 +3,8 @@
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 
-#include "Logger.h"
+#include "logger.h"
+#include "input.h"
 
 // GLFW Variables
 GLFWwindow* window;
@@ -37,7 +38,10 @@ bool initGLFW() {
     }
     glfwMakeContextCurrent(window);
 
-    // TODO: Setup input
+    // Setup input
+    glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, 1);
 
     return 1;
 }
@@ -73,8 +77,14 @@ int main(int argc, char** argv) {
     }
     LOG_INFO("GLAD Initialized");
 
+    Input::instance().init(window);
+    LOG_INFO("Input Initialized");
+
     // Game Loop
     while (!glfwWindowShouldClose(window)) {
+        // Clear any input from last frame
+        Input::instance().clear();
+
         // Poll for and process events
         glfwPollEvents();
 
