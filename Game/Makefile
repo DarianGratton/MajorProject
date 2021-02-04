@@ -5,11 +5,18 @@ BIN			:= bin
 SRC			:= src
 INCLUDES	:= -Iincludes
 
-LIB				:= libs
-LIBRARIES		:= -lglfw3dll
-TEST_LIBRARIES 	:= -lgtest 
+LIB			:= libs
+LIBRARIES	:= -lglfw3dll
 
 EXECUTABLE	:= Game
+
+TESTS		:= tests
+TEST_BIN	:= bin_tests
+TEST_SRC	:= $(filter-out $(SRC)/main.cpp, $(wildcard $(SRC)/*.cpp))
+
+TEST_LIBRARIES 	:= -lgtest
+
+TEST_EXECUTABLE := GameTests
 
 build: $(SRC)/*.cpp $(SRC)/*.c
 	mkdir -p $(BIN)
@@ -21,3 +28,14 @@ clean:
 
 run:
 	$(BIN)/$(EXECUTABLE)
+
+buildtests: $(TEST_SRC) $(TESTS)/*.cpp $(SRC)/*.c 
+	mkdir -p $(TEST_BIN)
+	cp $(LIB)/*.dll $(TEST_BIN)  
+	$(CXX) $(CXX_FLAGS) $(INCLUDES) -L$(LIB) $^ -o $(TEST_BIN)/$(TEST_EXECUTABLE) $(LIBRARIES) $(TEST_LIBRARIES) 
+
+cleantests:
+	rm -rf $(TEST_BIN)
+
+runtests:	
+	$(TEST_BIN)/$(TEST_EXECUTABLE) > $(TEST_BIN)/test_results.txt

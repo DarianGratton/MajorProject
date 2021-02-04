@@ -8,9 +8,13 @@
 // GLFW Variables
 GLFWwindow* window;
 const char * GAME_NAME = "Game";
-// TODO: Change to a robust value (not hardcoded)
-const unsigned int WINDOW_WIDTH = 960;
-const unsigned int WINDOW_HEIGHT = 540;
+
+// TODO: Change to a reponsive value
+// Window Sizes:
+// 1080 x 720 (Medium)
+// 960 x 540 (Small)
+const unsigned int WINDOW_WIDTH = 1080;
+const unsigned int WINDOW_HEIGHT = 720;
 
 bool initGLFW() {
     // Initialize GLFW
@@ -74,13 +78,15 @@ int main(int argc, char** argv) {
         // Poll for and process events
         glfwPollEvents();
 
+        // Update Systems
+
         // Swap front and back buffers
         glfwSwapBuffers(window);
     }
 
-    // Deinitialization
+    // Deallocate
     glfwTerminate();
 
-    LOG_INFO("Program ended");
+    LOG_INFO("Program ended successfully");
     return 0;
 }

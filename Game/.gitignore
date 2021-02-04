@@ -1,5 +1,6 @@
 ### Game ###
 /bin/*
+/bin_tests/*
 
 ### VisualStudioCode ###
 .vscode/*
