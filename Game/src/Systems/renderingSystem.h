@@ -6,6 +6,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <../components.h>
+#include <../Renderer/vertexArray.h>
+#include <../Renderer/indexBuffer.h>
+#include <../Renderer/shader.h>
 
 using namespace entityx;
 
@@ -36,8 +39,7 @@ public:
             ShaderComp &shaderComp, TextureComp &textureComp,
             Transform &transformComp) {
 
-            //For large objects just 1 vertex buffer and multiple index buffers for different material types
-            //create vertex buffer
+            // Create vertex buffer
             float positions[] = {
                 // pos x      // pos y      //texture coords
                 position.v0x, position.v0y, position.v0t1, position.v0t2,
@@ -51,23 +53,22 @@ public:
                 position.v3, position.v4, position.v5
             };
 
-            // vertexArray va;
-            // vertexBuffer vb(positions, 4 * 4 * sizeof(float));
+            VertexArray va;
+            VertexBuffer vb(positions, 4 * 4 * sizeof(float));
 
-            // vertexBufferLayout layout;
-            // layout.Push<float>(2);
-            // layout.Push<float>(2);
-            // va.AddBuffer(vb, layout);
+            VertexBufferLayout layout;
+            layout.push<float>(2);
+            layout.push<float>(2);
+            va.addBuffer(vb, layout);
 
-            // //create index buffer
-            // indexBuffer ib(indices, 6);
+            // Create index buffer
+            IndexBuffer ib(indices, 6);
 
-            // //Have to set uniforms to the same bind slot (default 0)
-            // shader shader(shaderComp.filepath);
-            // shader.Bind();
-            // //shader.setUniforms4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f); //sets colours
-            // //shader.setUniformsMat4f("u_MVP", mvp); // sets textures
+            // Setup shader
+            Shader shader(shaderComp.filepath);
+            shader.bind();
 
+            // Setup texture
             // texture Texture(textureComp.filepath); 
             // shader.setUniforms1i("u_Texture", 0);
 
