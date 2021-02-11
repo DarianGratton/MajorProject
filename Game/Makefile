@@ -6,7 +6,7 @@ SRC			:= src
 INCLUDES	:= -Iincludes
 
 LIB			:= libs
-LIBRARIES	:= -lglfw3dll
+LIBRARIES	:= -lglfw3dll -lentityx
 
 EXECUTABLE	:= Game
 
@@ -18,7 +18,7 @@ TEST_LIBRARIES 	:= -lgtest
 
 TEST_EXECUTABLE := GameTests
 
-build: $(SRC)/*.cpp $(SRC)/*.c
+build: $(SRC)/*.cpp $(SRC)/*.c $(SRC)/Renderer/*.cpp
 	mkdir -p $(BIN)
 	cp $(LIB)/*.dll $(BIN)  
 	$(CXX) $(CXX_FLAGS) $(INCLUDES) -L$(LIB) $^ -o $(BIN)/$(EXECUTABLE) $(LIBRARIES)

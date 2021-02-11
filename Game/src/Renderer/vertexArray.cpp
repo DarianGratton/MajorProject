@@ -1,5 +1,4 @@
 #include "vertexArray.h"
-#include "renderer.h"
 #include "vertexBufferLayout.h"
 
 VertexArray::VertexArray() {
@@ -17,14 +16,14 @@ void VertexArray::addBuffer(const VertexBuffer& vb, const VertexBufferLayout& la
     vb.bind();
 
     //Set up layout
-    const auto& elements = layout.GetElements();
+    const auto& elements = layout.getElements();
     unsigned int offset = 0;
     for (unsigned int i = 0; i < elements.size(); i++)
     {
         const auto& element = elements[i];
         glEnableVertexAttribArray(i);
-        glVertexAttribPointer(i, element.count, element.type, element.normalised, layout.GetStride(), reinterpret_cast<const void *>((const intptr_t) offset));
-        offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
+        glVertexAttribPointer(i, element.count, element.type, element.normalised, layout.getStride(), reinterpret_cast<const void *>((const intptr_t) offset));
+        offset += element.count * VertexBufferElement::getSizeOfType(element.type);
     }
 }
 

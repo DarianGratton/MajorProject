@@ -1,8 +1,10 @@
 #include <iostream>
+#include <chrono>
 
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 
+#include "ECS.h"
 #include "logger.h"
 #include "input.h"
 
@@ -17,6 +19,11 @@ const char* GAME_NAME = "Game";
 // 960 x 540  (Small)
 const unsigned int WINDOW_WIDTH = 1080;
 const unsigned int WINDOW_HEIGHT = 720;
+
+// Time
+std::chrono::high_resolution_clock hrclock;
+std::chrono::milliseconds lastTime;
+std::chrono::milliseconds deltaTime;
 
 bool initGLFW() {
     // Initialize GLFW
@@ -61,6 +68,14 @@ bool initOpenGL() {
     return 1;
 }
 
+TimeDelta calculateDT() {
+    deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(hrclock.now().time_since_epoch()) - lastTime;
+    lastTime += deltaTime;
+    TimeDelta dt = deltaTime.count();
+    dt *= 0.001f; //convert to seconds
+    return dt;
+}
+
 int main(int argc, char** argv) {
     // Initialization
     Logger::init();
@@ -81,6 +96,13 @@ int main(int argc, char** argv) {
     Input::instance().init(window);
     LOG_INFO("Input Initialized");
 
+    ECS::instance().init();
+    LOG_INFO("ECS Initialized");
+
+    // To calculate time between frames
+    lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(hrclock.now().time_since_epoch());
+    LOG_INFO("DeltaTime Initialized");
+
     // Game Loop
     while (!glfwWindowShouldClose(window)) {
         // Clear any input from last frame
@@ -90,6 +112,8 @@ int main(int argc, char** argv) {
         glfwPollEvents();
 
         // Update Systems
+        TimeDelta dt = calculateDT();
+        ECS::instance().update(dt);
 
         // Swap front and back buffers
         glfwSwapBuffers(window);

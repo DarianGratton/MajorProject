@@ -5,19 +5,22 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <../components.h>
-#include <../Renderer/vertexArray.h>
-#include <../Renderer/indexBuffer.h>
-#include <../Renderer/shader.h>
-#include <../Renderer/texture.h>
+#include "../components.h"
+#include "../Renderer/vertexArray.h"
+#include "../Renderer/indexBuffer.h"
+#include "../Renderer/shader.h"
+#include "../Renderer/texture.h"
+
+#include "../logger.h"
 
 using namespace entityx;
 
 class RenderingSystem : public System<RenderingSystem> {
 public:
     void update(EntityManager& es, EventManager& events, TimeDelta dt) override {
-        // Clear the screen
-        glClear(GL_COLOR_BUFFER_BIT);
+        // Clear the screen 
+        // TODO: Uncomment once buffer is added
+        // glClear(GL_COLOR_BUFFER_BIT);
 
         // Pre-define variables
         ComponentHandle<Camera> mainCamera;
