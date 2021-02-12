@@ -9,7 +9,7 @@
 #include "input.h"
 
 // GLFW Variables
-GLFWwindow* window;
+static GLFWwindow* window;
 const char* GAME_NAME = "Game";
 
 // TODO: Change to a reponsive value
@@ -24,6 +24,14 @@ const unsigned int WINDOW_HEIGHT = 720;
 std::chrono::high_resolution_clock hrclock;
 std::chrono::milliseconds lastTime;
 std::chrono::milliseconds deltaTime;
+
+// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    // make sure the viewport matches the new window dimensions; note that width and 
+    // height will be significantly larger than specified on retina displays.
+    glViewport(0, 0, width, height);
+} 
 
 bool initGLFW() {
     // Initialize GLFW
@@ -45,6 +53,8 @@ bool initGLFW() {
         return 0;
     }
     glfwMakeContextCurrent(window);
+    glfwSwapInterval(1); //VSYNC
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // Setup input
     glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
@@ -68,6 +78,24 @@ bool initOpenGL() {
     return 1;
 }
 
+void renderingTest() {
+    entityx::Entity e2 = ECS::instance().entities.create();
+    //e2.assign<AudioSource>(new Sound("kick-trimmed.wav", true));
+    e2.assign<SpriteVertices>(
+        -25.0f, -25.0f, 0.0f, 0.0f,
+         25.0f, -25.0f, 1.0f, 0.0f,
+         25.0f,  25.0f, 1.0f, 1.0f,
+        -25.0f,  25.0f, 0.0f, 1.0f,
+
+        0,1,2,
+        2,3,0
+    );
+    e2.assign<ShaderComp>("src/Assets/shaders/Basic.shader");
+    e2.assign<TextureComp>("src/Assets/textures/platformChar_idle.png");
+    e2.assign<Transform>(0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2);
+    e2.assign<Camera>((float)WINDOW_WIDTH / 2 * -1, (float)WINDOW_WIDTH / 2, (float)WINDOW_HEIGHT / 2 * -1, (float)WINDOW_HEIGHT / 2, -1.0f, 1.0f);
+}
+
 TimeDelta calculateDT() {
     deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(hrclock.now().time_since_epoch()) - lastTime;
     lastTime += deltaTime;
@@ -87,10 +115,16 @@ int main(int argc, char** argv) {
     }
     LOG_INFO("GLFW Initialized");
 
-    if (!initOpenGL) {
-        LOG_ERROR("Error occurred in initializing GLAD");
-        return -1;
+    // TODO: Find out how to isolate in different function (currently breaks)
+    // Initialize glad
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        LOG_ERROR("GLAD could not be initialized");
+        return 0;
     }
+
+    // Setup layers
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     LOG_INFO("GLAD Initialized");
 
     Input::instance().init(window);
@@ -102,6 +136,8 @@ int main(int argc, char** argv) {
     // To calculate time between frames
     lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(hrclock.now().time_since_epoch());
     LOG_INFO("DeltaTime Initialized");
+
+    renderingTest();
 
     // Game Loop
     while (!glfwWindowShouldClose(window)) {

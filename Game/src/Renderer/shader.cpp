@@ -65,9 +65,8 @@ unsigned int Shader::compileShader(unsigned int type, const std::string& source)
         glGetShaderInfoLog(id, length, &length, message);
         
         // Log Message
-        std::string err = "Failed to compile shader! " + (type == GL_VERTEX_SHADER) ? "vertex" : "fragment";
+        std::string err = (type == GL_VERTEX_SHADER) ? "Failed to compile shader! vertex" : "Failed to compile shader! fragment";
         LOG_ERROR(err);
-        LOG_ERROR(message);
 
         // Delete failed shader
         glDeleteShader(id);
@@ -123,7 +122,7 @@ int Shader::getUniformLocation(const std::string& name) {
 
     int location = glGetUniformLocation(m_RendererID, name.c_str());
     if (location == -1)
-        std::cout << "Warning: uniform " << name << "doesn't exist!" << std::endl;
+        std::cout << "Warning: uniform " << name << " doesn't exist!" << std::endl;
 
     m_UniformLocationCache[name] = location;
     return location;

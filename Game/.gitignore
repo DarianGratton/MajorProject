@@ -1,6 +1,7 @@
 ### Game ###
 /bin/*
 /bin_tests/*
+Game.exe.stackdump
 
 ### VisualStudioCode ###
 .vscode/*

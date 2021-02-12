@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <glfw/glfw3.h>
 #include <entityx/entityx.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -13,14 +14,15 @@
 
 #include "../logger.h"
 
+// TODO: Add error checking and unit tests to all the rendering functions
+
 using namespace entityx;
 
 class RenderingSystem : public System<RenderingSystem> {
 public:
     void update(EntityManager& es, EventManager& events, TimeDelta dt) override {
-        // Clear the screen 
-        // TODO: Uncomment once buffer is added
-        // glClear(GL_COLOR_BUFFER_BIT);
+        // Clear the screen
+        glClear(GL_COLOR_BUFFER_BIT);
 
         // Pre-define variables
         ComponentHandle<Camera> mainCamera;
