@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "Scene.h"
 
 class SceneManager {
@@ -17,4 +19,7 @@ public:
 
 private:
     SceneManager() {}
+    bool isSceneLoaded = false;
+
+    std::vector<Scene*> scenes;
 };
