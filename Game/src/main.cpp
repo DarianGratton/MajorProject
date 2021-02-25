@@ -7,6 +7,7 @@
 #include "ECS.h"
 #include "logger.h"
 #include "input.h"
+#include "sceneManager.h"
 
 // TODO: Fix bug with program sometimes not ending after window closes
 
@@ -98,6 +99,11 @@ void renderingTest() {
     e2.assign<Camera>((float)WINDOW_WIDTH / 2 * -1, (float)WINDOW_WIDTH / 2, (float)WINDOW_HEIGHT / 2 * -1, (float)WINDOW_HEIGHT / 2, -1.0f, 1.0f);
 }
 
+void sceneTest() {
+    SceneManager::instance().addScene("Test", "src/Assets/scenes/test.xml");
+    SceneManager::instance().loadScene("Test");
+}
+
 TimeDelta calculateDT() {
     deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(hrclock.now().time_since_epoch()) - lastTime;
     lastTime += deltaTime;
@@ -140,6 +146,7 @@ int main(int argc, char** argv) {
     LOG_INFO("DeltaTime Initialized");
 
     renderingTest();
+    sceneTest();
 
     // Game Loop
     while (!glfwWindowShouldClose(window)) {

@@ -15,7 +15,7 @@ public:
     void operator=(SceneManager const&) = delete;
 
     void addScene(std::string scenename, std::string filename);
-    void loadScene(std::string scenename);
+    bool loadScene(std::string scenename);
 
 private:
     SceneManager() {}
