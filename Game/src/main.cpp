@@ -8,6 +8,8 @@
 #include "logger.h"
 #include "input.h"
 
+// TODO: Fix bug with program sometimes not ending after window closes
+
 // GLFW Variables
 static GLFWwindow* window;
 const char* GAME_NAME = "Game";

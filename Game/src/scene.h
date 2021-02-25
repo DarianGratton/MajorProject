@@ -10,9 +10,9 @@ using namespace entityx;
 
 class Scene {
 public:
-    Scene(std::string filename);
+    Scene(std::string name, std::string filename);
 
-    void load(std::string filename);
+    bool load(std::string filename);
     inline std::string getName() { return name; }
 
 private:
