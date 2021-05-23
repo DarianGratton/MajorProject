@@ -44,7 +44,7 @@ bool Scene::load() {
             }
 
             // Setup entity
-            EntityHelper::instance().addComponent(&e, attributes.at("name"), attributes.at("value"));
+            // EntityHelper::instance().addComponent(&e, attributes.at("name"), attributes.at("value"));
 
             component = component->NextSibling();
         }

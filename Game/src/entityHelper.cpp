@@ -1,41 +1,41 @@
-#include "entityHelper.h"
+// #include "entityHelper.h"
 
-#include "logger.h"
+// #include "components.h"
+// #include "logger.h"
 
-void EntityHelper::addComponent(Entity* entity, std::string component, std::string parameters) {
-    LOG_INFO("EntityHelper Called");
-    LOG_INFO(component);
-    LOG_INFO(parameters);
+// void EntityHelper::addComponent(Entity* entity, std::string component, std::string parameters) {
+//     LOG_INFO(component);
+//     LOG_INFO(parameters);
 
-    if (component == "Camera") {
-        addCameraComponent();
-    } else if (component == "Transform") {
-        addTransformComponent();
-    } else if (component == "Script") {
-        addScriptComponent();
-    } else if (component == "Shader") {
-        addShaderComponent();
-    } else if (component == "Texture") {
-        addTextureComponent();
-    } 
-}
+//     if (component == "Camera") {
+//         addCameraComponent(entity, parameters);
+//     } else if (component == "Transform") {
+//         addTransformComponent(entity, parameters);
+//     } else if (component == "Script") {
+//         addScriptComponent(entity, parameters);
+//     } else if (component == "Shader") {
+//         addShaderComponent(entity, parameters);
+//     } else if (component == "Texture") {
+//         addTextureComponent(entity, parameters);
+//     } 
+// }
 
-void EntityHelper::addCameraComponent() {
+// void EntityHelper::addCameraComponent(Entity* entity, std::string parameters) {
+    
+// }
 
-}
+// void EntityHelper::addScriptComponent(Entity* entity, std::string filepath) {
+    
+// }
 
-void EntityHelper::addScriptComponent() {
+// void EntityHelper::addShaderComponent(Entity* entity, std::string filepath) {
+//     entity->assign<ShaderComp>(filepath);
+// }
 
-}
+// void EntityHelper::addTextureComponent(Entity* entity, std::string filepath) {
+//     entity->assign<TextureComp>(filepath);
+// }
 
-void EntityHelper::addShaderComponent() {
+// void EntityHelper::addTransformComponent(Entity* entity, std::string parameters) {
 
-}
-
-void EntityHelper::addTextureComponent() {
-
-}
-
-void EntityHelper::addTransformComponent() {
-
-}
+// }

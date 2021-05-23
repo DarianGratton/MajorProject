@@ -3,7 +3,7 @@
 struct Transform {
    Transform(
         float xpos = 0.0f, float ypos = 0.0f, float zpos = 0.0f,
-        int angle = 0, int xrot = 0, int yrot = 0, int zrot = 0,
+        float angle = 0, float xrot = 0, float yrot = 0, float zrot = 0,
         float xscl = 1.0f, float yscl = 1.0f, float zscl = 1.0f) : 
         xpos(xpos), ypos(ypos), zpos(zpos), 
         angle(angle), xrot(xrot), yrot(yrot), zrot(zrot), 
