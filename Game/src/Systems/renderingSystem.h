@@ -50,11 +50,8 @@ public:
             Transform &transformComp) {
 
             // Create vertex buffer
-            // float positions* = position.vertices;
-            // unsigned int indices* = &position.indices;
-
             VertexArray va;
-            VertexBuffer vb(&position.vertices[0], 4 * 4 * sizeof(float));
+            VertexBuffer vb(&position.vertices[0], position.vertices.size() * sizeof(float));
 
             VertexBufferLayout layout;
             layout.push<float>(2);
@@ -62,7 +59,7 @@ public:
             va.addBuffer(vb, layout);
 
             // Create index buffer
-            IndexBuffer ib(&position.indices[0], 6);
+            IndexBuffer ib(&position.indices[0], position.indices.size());
 
             // Setup shader
             Shader shader(shaderComp.filepath);
