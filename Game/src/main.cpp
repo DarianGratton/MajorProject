@@ -84,15 +84,7 @@ bool initOpenGL() {
 void renderingTest() {
     entityx::Entity e2 = ECS::instance().entities.create();
     //e2.assign<AudioSource>(new Sound("kick-trimmed.wav", true));
-    e2.assign<SpriteVertices>(
-        -25.0f, -25.0f, 0.0f, 0.0f,
-         25.0f, -25.0f, 1.0f, 0.0f,
-         25.0f,  25.0f, 1.0f, 1.0f,
-        -25.0f,  25.0f, 0.0f, 1.0f,
-
-        0,1,2,
-        2,3,0
-    );
+    e2.assign<SpriteVertices>();
     e2.assign<ShaderComp>("src/Assets/shaders/Basic.shader");
     e2.assign<TextureComp>("src/Assets/textures/platformChar_idle.png");
     e2.assign<Transform>(0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2);
@@ -149,6 +141,7 @@ int main(int argc, char** argv) {
     sceneTest();
 
     // Game Loop
+    LOG_INFO("Program started successfully");
     while (!glfwWindowShouldClose(window)) {
         // Clear any input from last frame
         Input::instance().clear();

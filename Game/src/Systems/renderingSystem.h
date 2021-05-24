@@ -50,21 +50,11 @@ public:
             Transform &transformComp) {
 
             // Create vertex buffer
-            float positions[] = {
-                // pos x      // pos y      //texture coords
-                position.v0x, position.v0y, position.v0t1, position.v0t2,
-                position.v1x, position.v1y, position.v1t1, position.v1t2,
-                position.v2x, position.v2y, position.v2t1, position.v2t2,
-                position.v3x, position.v3y, position.v3t1, position.v3t2,
-            };
-
-            unsigned int indices[] = {
-                position.v0, position.v1, position.v2,
-                position.v3, position.v4, position.v5
-            };
+            // float positions* = position.vertices;
+            // unsigned int indices* = &position.indices;
 
             VertexArray va;
-            VertexBuffer vb(positions, 4 * 4 * sizeof(float));
+            VertexBuffer vb(&position.vertices[0], 4 * 4 * sizeof(float));
 
             VertexBufferLayout layout;
             layout.push<float>(2);
@@ -72,7 +62,7 @@ public:
             va.addBuffer(vb, layout);
 
             // Create index buffer
-            IndexBuffer ib(indices, 6);
+            IndexBuffer ib(&position.indices[0], 6);
 
             // Setup shader
             Shader shader(shaderComp.filepath);
