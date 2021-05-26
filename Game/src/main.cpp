@@ -9,6 +9,10 @@
 #include "input.h"
 #include "sceneManager.h"
 
+// FreeType
+#include "ft2build.h"
+#include FT_FREETYPE_H
+
 // TODO: Fix bug with program sometimes not ending after window closes
 
 // GLFW Variables
@@ -82,6 +86,7 @@ bool initOpenGL() {
 }
 
 void renderingTest() {
+    for (int i = 0; i < 100; i++) {
     entityx::Entity e2 = ECS::instance().entities.create();
     //e2.assign<AudioSource>(new Sound("kick-trimmed.wav", true));
     e2.assign<SpriteVertices>();
@@ -89,6 +94,7 @@ void renderingTest() {
     e2.assign<TextureComp>("src/Assets/textures/platformChar_idle.png");
     e2.assign<Transform>(0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2);
     e2.assign<Camera>((float)WINDOW_WIDTH / 2 * -1, (float)WINDOW_WIDTH / 2, (float)WINDOW_HEIGHT / 2 * -1, (float)WINDOW_HEIGHT / 2, -1.0f, 1.0f);
+    }
 }
 
 void sceneTest() {
@@ -119,7 +125,7 @@ int main(int argc, char** argv) {
     // Initialize glad
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         LOG_ERROR("GLAD could not be initialized");
-        return 0;
+        return -1;
     }
 
     // Setup layers
@@ -132,6 +138,14 @@ int main(int argc, char** argv) {
 
     ECS::instance().init();
     LOG_INFO("ECS Initialized");
+
+    // Initialize FreeType
+    FT_Library library;
+    if (FT_Init_FreeType(&library)) {
+        LOG_ERROR("FreeType could not be initialized");
+        return -1;
+    }
+    LOG_INFO("FreeType Initialized");
 
     // To calculate time between frames
     lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(hrclock.now().time_since_epoch());
