@@ -9,10 +9,6 @@
 #include "input.h"
 #include "sceneManager.h"
 
-// FreeType
-#include "ft2build.h"
-#include FT_FREETYPE_H
-
 // TODO: Fix bug with program sometimes not ending after window closes
 
 // GLFW Variables
@@ -138,14 +134,6 @@ int main(int argc, char** argv) {
 
     ECS::instance().init();
     LOG_INFO("ECS Initialized");
-
-    // Initialize FreeType
-    FT_Library library;
-    if (FT_Init_FreeType(&library)) {
-        LOG_ERROR("FreeType could not be initialized");
-        return -1;
-    }
-    LOG_INFO("FreeType Initialized");
 
     // To calculate time between frames
     lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(hrclock.now().time_since_epoch());
