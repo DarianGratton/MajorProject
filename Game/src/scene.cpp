@@ -36,7 +36,6 @@ bool Scene::load() {
             // Setup
             const XMLAttribute* attr = component->ToElement()->FirstAttribute();
             std::unordered_map<std::string, std::string> attributes;
-
             // Get Attributes
             while (attr != NULL) {
                 attributes.insert(std::make_pair(attr->Name(), attr->Value()));

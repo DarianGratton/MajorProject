@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <map>
+
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 #include <entityx/entityx.h>
@@ -11,8 +14,13 @@
 #include "../Renderer/indexBuffer.h"
 #include "../Renderer/shader.h"
 #include "../Renderer/texture.h"
+#include "../Renderer/textRenderer.h"
 
 #include "../logger.h"
+
+// FreeType
+#include "ft2build.h"
+#include FT_FREETYPE_H
 
 // TODO: Add error checking and unit tests to all the rendering functions
 
@@ -20,6 +28,10 @@ using namespace entityx;
 
 class RenderingSystem : public System<RenderingSystem> {
 public:
+    RenderingSystem() {
+        textRenderer = new TextRenderer("src/Assets/fonts/arial.ttf");
+    }
+
     void update(EntityManager& es, EventManager& events, TimeDelta dt) override {
         // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT);
@@ -44,27 +56,25 @@ public:
             break;
         }
 
+        // Render Text
+        es.each<TextSprite, Transform>([this, dt, proj, view](
+            Entity entity, TextSprite &textSprite, Transform &transformComp) {
+            
+            // TODO: Add as class member
+            textRenderer->setFontSize(textSprite.fontpixelwidth, textSprite.fontpixelheight);
+            glm::vec2 textPosition = glm::vec2(transformComp.xpos, transformComp.ypos);
+            textRenderer->renderText(textSprite.text, textPosition, textSprite.color, proj, view);
+        });
+
+        // Render Sprites        
         es.each<SpriteVertices, ShaderComp, TextureComp, Transform>([dt, proj, view](
             Entity entity, SpriteVertices &position, 
             ShaderComp &shaderComp, TextureComp &textureComp,
             Transform &transformComp) {
 
             // Create vertex buffer
-            float positions[] = {
-                // pos x      // pos y      //texture coords
-                position.v0x, position.v0y, position.v0t1, position.v0t2,
-                position.v1x, position.v1y, position.v1t1, position.v1t2,
-                position.v2x, position.v2y, position.v2t1, position.v2t2,
-                position.v3x, position.v3y, position.v3t1, position.v3t2,
-            };
-
-            unsigned int indices[] = {
-                position.v0, position.v1, position.v2,
-                position.v3, position.v4, position.v5
-            };
-
             VertexArray va;
-            VertexBuffer vb(positions, 4 * 4 * sizeof(float));
+            VertexBuffer vb(&position.vertices[0], position.vertices.size() * sizeof(float));
 
             VertexBufferLayout layout;
             layout.push<float>(2);
@@ -72,7 +82,7 @@ public:
             va.addBuffer(vb, layout);
 
             // Create index buffer
-            IndexBuffer ib(indices, 6);
+            IndexBuffer ib(&position.indices[0], position.indices.size());
 
             // Setup shader
             Shader shader(shaderComp.filepath);
@@ -111,4 +121,7 @@ public:
             glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr);
         });
     }
+
+private:
+    TextRenderer* textRenderer;
 };
