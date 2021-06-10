@@ -6,3 +6,4 @@
 #include "Components/shader.h"
 #include "Components/transform.h"
 #include "Components/texture.h"
+#include "Components/textSprite.h"

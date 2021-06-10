@@ -3,6 +3,7 @@
 
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
+#include <glm/glm.hpp>
 
 #include "ECS.h"
 #include "logger.h"
@@ -82,7 +83,6 @@ bool initOpenGL() {
 }
 
 void renderingTest() {
-    for (int i = 0; i < 100; i++) {
     entityx::Entity e2 = ECS::instance().entities.create();
     //e2.assign<AudioSource>(new Sound("kick-trimmed.wav", true));
     e2.assign<SpriteVertices>();
@@ -90,7 +90,10 @@ void renderingTest() {
     e2.assign<TextureComp>("src/Assets/textures/platformChar_idle.png");
     e2.assign<Transform>(0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2);
     e2.assign<Camera>((float)WINDOW_WIDTH / 2 * -1, (float)WINDOW_WIDTH / 2, (float)WINDOW_HEIGHT / 2 * -1, (float)WINDOW_HEIGHT / 2, -1.0f, 1.0f);
-    }
+    
+    entityx::Entity textEntity = ECS::instance().entities.create();
+    textEntity.assign<TextSprite>("Hello world 2");
+    textEntity.assign<Transform>(-25.0f, 1.0f, 0.0f, 0, 0, 0, 1, 2);
 }
 
 void sceneTest() {
