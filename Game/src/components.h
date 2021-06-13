@@ -7,3 +7,4 @@
 #include "Components/transform.h"
 #include "Components/texture.h"
 #include "Components/textSprite.h"
+#include "Components/audio.h"

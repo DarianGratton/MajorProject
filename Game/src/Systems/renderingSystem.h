@@ -56,16 +56,6 @@ public:
             break;
         }
 
-        // Render Text
-        es.each<TextSprite, Transform>([this, dt, proj, view](
-            Entity entity, TextSprite &textSprite, Transform &transformComp) {
-            
-            // TODO: Add as class member
-            textRenderer->setFontSize(textSprite.fontpixelwidth, textSprite.fontpixelheight);
-            glm::vec2 textPosition = glm::vec2(transformComp.xpos, transformComp.ypos);
-            textRenderer->renderText(textSprite.text, textPosition, textSprite.color, proj, view);
-        });
-
         // Render Sprites        
         es.each<SpriteVertices, ShaderComp, TextureComp, Transform>([dt, proj, view](
             Entity entity, SpriteVertices &position, 
@@ -119,6 +109,16 @@ public:
             va.bind();
             ib.bind();
             glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr);
+        });
+
+        // Render Text
+        es.each<TextSprite, Transform>([this, dt, proj, view](
+            Entity entity, TextSprite &textSprite, Transform &transformComp) {
+            
+            // TODO: Add as class member
+            textRenderer->setFontSize(textSprite.fontpixelwidth, textSprite.fontpixelheight);
+            glm::vec2 textPosition = glm::vec2(transformComp.xpos, transformComp.ypos);
+            textRenderer->renderText(textSprite.text, textPosition, textSprite.color, proj, view);
         });
     }
 
