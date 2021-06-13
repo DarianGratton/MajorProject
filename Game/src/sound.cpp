@@ -6,14 +6,11 @@ Sound::Sound(std::string filename, bool ifLoop) : filename(filename), ifLoop(ifL
 
 void Sound::setUpSound() {
     std::string fullpath = storagepath + filename;
-    LOG_INFO("Set up sound entered");
 
     if (!(sound = BASS_StreamCreateFile(false, fullpath.c_str(), 0, 0, BASS_SAMPLE_MONO))) {
         std::string errortext = "Load error: " + BASS_ErrorGetCode();
         LOG_ERROR(errortext);
     }
-
-    LOG_INFO("After stream create file");
 
     if (ifLoop == true) {
         loop(ifLoop);
