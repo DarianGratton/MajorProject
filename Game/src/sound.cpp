@@ -19,6 +19,7 @@ void Sound::setUpSound() {
     BASS_ChannelGetAttribute(sound, BASS_ATTRIB_VOL, &volume);
 }
 
+
 void Sound::play() {
     if (!BASS_ChannelPlay(sound, FALSE)) {
         std::string errortext = "Load error: " + BASS_ErrorGetCode();
