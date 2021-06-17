@@ -149,7 +149,7 @@ int main(int argc, char** argv) {
     lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(hrclock.now().time_since_epoch());
     LOG_INFO("DeltaTime Initialized");
 
-    renderingTest();
+    // renderingTest();
     sceneTest();
 
     // Game Loop
