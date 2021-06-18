@@ -93,6 +93,7 @@ void renderingTest() {
     
     entityx::Entity textEntity = ECS::instance().entities.create();
     textEntity.assign<TextSprite>("Hello world 2");
+    // textEntity.assign<Audio>("src/Assets/audio/RDR2.mp3");
     textEntity.assign<Transform>(-25.0f, 1.0f, 0.0f, 0, 0, 0, 1, 2);
 }
 
@@ -135,6 +136,12 @@ int main(int argc, char** argv) {
     Input::instance().init(window);
     LOG_INFO("Input Initialized");
 
+    if (!BASS_Init(-1, 44100, 0, NULL, NULL)) {
+        LOG_ERROR("Bass could not be initialized");
+        return -1;
+    }
+    LOG_INFO("Bass Initialized");
+
     ECS::instance().init();
     LOG_INFO("ECS Initialized");
 
@@ -142,7 +149,7 @@ int main(int argc, char** argv) {
     lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(hrclock.now().time_since_epoch());
     LOG_INFO("DeltaTime Initialized");
 
-    renderingTest();
+    // renderingTest();
     sceneTest();
 
     // Game Loop

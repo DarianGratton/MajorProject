@@ -1,29 +1,33 @@
-// #pragma once
+#pragma once
 
-// #include <entityx/entityx.h>
-// #include <string>
+#include <entityx/entityx.h>
 
-// using namespace entityx;
+#include <vector>
+#include <string>
 
-// class EntityHelper {
-// public:
-//     static EntityHelper& instance() {
-//         static EntityHelper *instance = new EntityHelper();
-//         return *instance;
-//     }
+using namespace entityx;
 
-//     EntityHelper(EntityHelper const&) = delete;
-//     void operator=(EntityHelper const&) = delete;
+class EntityHelper {
+public:
+    static EntityHelper& instance() {
+        static EntityHelper *instance = new EntityHelper();
+        return *instance;
+    }
 
-//     void addComponent(Entity* entity, std::string component, std::string parameters);
+    EntityHelper(EntityHelper const&) = delete;
+    void operator=(EntityHelper const&) = delete;
 
-// private:
-//     EntityHelper() {}
+    void addComponent(Entity* entity, std::string component, std::string parameters);
 
-//     // Different components
-//     void addCameraComponent(Entity* entity, std::string parameters);
-//     void addScriptComponent(Entity* entity, std::string filepath);
-//     void addShaderComponent(Entity* entity, std::string filepath);
-//     void addTextureComponent(Entity* entity, std::string filepath);
-//     void addTransformComponent(Entity* entity, std::string parameters);
-// };
+private:
+    EntityHelper() {}
+
+    // Different components;
+    void addNameComponent(Entity* entity, const std::string& name);
+    void addCameraComponent(Entity* entity, const std::vector<std::string>& parameters);
+    void addScriptComponent(Entity* entity, const std::string& filepath);
+    void addShaderComponent(Entity* entity, const std::string& filepath);
+    void addTextureComponent(Entity* entity, const std::string& filepath);
+    void addTransformComponent(Entity* entity, const std::vector<std::string>& parameters);
+    void addAudioComponent(Entity* entity, const std::vector<std::string>& paramters);
+};
