@@ -29,5 +29,6 @@ private:
     void addShaderComponent(Entity* entity, const std::string& filepath);
     void addTextureComponent(Entity* entity, const std::string& filepath);
     void addTransformComponent(Entity* entity, const std::vector<std::string>& parameters);
-    void addAudioComponent(Entity* entity, const std::vector<std::string>& paramters);
+    void addAudioComponent(Entity* entity, const std::vector<std::string>& parameters);
+    void addTextComponent(Entity* entity, const std::vector<std::string>& parameters);
 };

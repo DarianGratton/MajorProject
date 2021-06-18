@@ -28,10 +28,6 @@ using namespace entityx;
 
 class RenderingSystem : public System<RenderingSystem> {
 public:
-    RenderingSystem() {
-        textRenderer = new TextRenderer("src/Assets/fonts/arial.ttf");
-    }
-
     void update(EntityManager& es, EventManager& events, TimeDelta dt) override {
         // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT);
@@ -115,13 +111,11 @@ public:
         es.each<TextSprite, Transform>([this, dt, proj, view](
             Entity entity, TextSprite &textSprite, Transform &transformComp) {
             
-            // TODO: Add as class member
-            textRenderer->setFontSize(textSprite.fontpixelwidth, textSprite.fontpixelheight);
+            // TODO: Add as class member, currently the only way to do different font sizes
+            TextRenderer textRenderer("src/Assets/fonts/arial.ttf", textSprite.fontpixelheight);
+            // textRenderer.setFontSize(textSprite.fontpixelwidth, textSprite.fontpixelheight);
             glm::vec2 textPosition = glm::vec2(transformComp.xpos, transformComp.ypos);
-            textRenderer->renderText(textSprite.text, textPosition, textSprite.color, proj, view);
+            textRenderer.renderText(textSprite.text, textPosition, textSprite.color, proj, view);
         });
     }
-
-private:
-    TextRenderer* textRenderer;
 };

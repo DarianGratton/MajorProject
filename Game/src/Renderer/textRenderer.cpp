@@ -10,7 +10,7 @@
 #include "../Renderer/texture.h"
 #include "../logger.h"
 
-TextRenderer::TextRenderer(const char * fontpath) {
+TextRenderer::TextRenderer(const char * fontpath, unsigned int fontsize) {
     // Initialize FreeType
     if (FT_Init_FreeType(&library)) {
         LOG_ERROR("FreeType could not be initialized");
@@ -27,8 +27,8 @@ TextRenderer::TextRenderer(const char * fontpath) {
         return;
     }
 
-    error = FT_Set_Pixel_Sizes(face, 0, 24);  
-    
+    error = FT_Set_Pixel_Sizes(face, 0, fontsize);  
+
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable byte-alignment restriction
 
     for (unsigned char c = 0; c < 128; c++)
