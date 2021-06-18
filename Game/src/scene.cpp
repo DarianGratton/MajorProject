@@ -22,24 +22,22 @@ bool Scene::load() {
     // Read xml elements
     XMLNode* entity = root->FirstChild();
 
-    // Create entity
-    Entity e = ECS::instance().entities.create();
-
-    // Get entity name
-    const XMLAttribute* attr = entity->ToElement()->FirstAttribute();
-    if (attr != NULL) {
-        std::string attrName = attr->Name();
-        if (attrName == "name") {
-            e.assign<Name>(attr->Value());
-        }
-    }
-
-    // Add spritevertices
-    e.assign<SpriteVertices>();
-
     // Get entity components
     while (entity != NULL) {
         XMLNode* component = entity->FirstChild();
+        Entity e = ECS::instance().entities.create();
+
+        // Get entity name
+        const XMLAttribute* attr = entity->ToElement()->FirstAttribute();
+        if (attr != NULL) {
+            std::string attrName = attr->Name();
+            if (attrName == "name") {
+                e.assign<Name>(attr->Value());
+            }
+        }
+
+        // Add spritevertices
+        e.assign<SpriteVertices>();
 
         while (component != NULL) {
             // Error check
@@ -62,10 +60,6 @@ bool Scene::load() {
             EntityHelper::instance().addComponent(&e, attributes.at("name"), attributes.at("value"));
 
             component = component->NextSibling();
-        }
-
-        if(e.has_component<ShaderComp>()) {
-            LOG_INFO("Shader was added");
         }
 
         entity = entity->NextSibling();
