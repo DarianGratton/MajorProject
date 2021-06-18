@@ -10,9 +10,6 @@
 #include <iterator>
 
 void EntityHelper::addComponent(Entity* entity, std::string component, std::string parameters) {
-    LOG_INFO(component);
-    LOG_INFO(parameters);
-
     // Parse parameters
     std::vector<std::string> values;
     size_t i = 0;
