@@ -1,13 +1,10 @@
 <?xml version="1.0"?>
 <root>
-    <Entity name="test">
+    <Entity name="Image" height="200.0f" width="200.0f">
         <Component name="Camera" value="-540.0f, 540.0f, -360.0f, 360.0f, -1.0f, 1.0f"/>
         <Component name="Texture" value="src/Assets/textures/platformChar_idle.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
         <Component name="Transform" value="0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
-    </Entity>
-    <Entity name="Test1">
-        <Component name="Transform" value="0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2"/>
     </Entity>
 </root>

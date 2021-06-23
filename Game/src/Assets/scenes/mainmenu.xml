@@ -16,7 +16,7 @@
         <Component name="TextSprite" value="Quit Game, 1.0f, 1.0f, 1.0f, 0, 36"/>
         <Component name="Transform" value="-85.0f, -100.0f, 0.0f, 0, 0, 0, 1"/>
     </Entity>
-    <Entity name="BackgroundImage">
+    <Entity name="BackgroundImage" height="200.0f" width="200.0f">
         
     </Entity>
 </root>
