@@ -98,7 +98,7 @@ void renderingTest() {
 }
 
 void sceneTest() {
-    SceneManager::instance().addScene("Test", "src/Assets/scenes/loadoutselection.xml");
+    SceneManager::instance().addScene("Test", "src/Assets/scenes/arena.xml");
     SceneManager::instance().loadScene("Test");
 }
 
