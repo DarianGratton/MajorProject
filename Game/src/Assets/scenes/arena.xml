@@ -4,6 +4,9 @@
         <Component name="Camera" value="-540.0f, 540.0f, -360.0f, 360.0f, -1.0f, 1.0f"/>
         <Component name="Transform" value="0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2"/>
     </Entity>
+    <Entity name="BackgroundMusic">
+        <Component name="Audio" value="src/Assets/audio/RDR2.mp3"/>
+    </Entity>
     <Entity name="PlayerHpText">
         <Component name="TextSprite" value="Player HP: , 1.0f, 1.0f, 1.0f, 0, 24"/>
         <Component name="Transform" value="-520.0f, -340.0f, 0.0f, 0, 0, 0, 1"/>
