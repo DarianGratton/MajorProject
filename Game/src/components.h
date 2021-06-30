@@ -7,5 +7,8 @@
 #include "Components/transform.h"
 #include "Components/texture.h"
 #include "Components/textSprite.h"
+
+// Other components
 #include "Components/audio.h"
 #include "Components/name.h"
+#include "Components/script.h"

@@ -4,7 +4,7 @@
 
 class CScript {
 public:
-    CScript(entityx::Entity* entity);
+    CScript(entityx::Entity* entity) : entity(entity) {}
 
     virtual void start() = 0;
     virtual void update() = 0;

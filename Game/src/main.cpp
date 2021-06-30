@@ -84,11 +84,11 @@ bool initOpenGL() {
 
 void renderingTest() {
     entityx::Entity e2 = ECS::instance().entities.create();
-    //e2.assign<AudioSource>(new Sound("kick-trimmed.wav", true));
     e2.assign<SpriteVertices>();
     e2.assign<ShaderComp>("src/Assets/shaders/Basic.shader");
     e2.assign<TextureComp>("src/Assets/textures/platformChar_idle.png");
     e2.assign<Transform>(0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2);
+    e2.assign<Script>("PlayerScript", &e2);
     e2.assign<Camera>((float)WINDOW_WIDTH / 2 * -1, (float)WINDOW_WIDTH / 2, (float)WINDOW_HEIGHT / 2 * -1, (float)WINDOW_HEIGHT / 2, -1.0f, 1.0f);
     
     entityx::Entity textEntity = ECS::instance().entities.create();
@@ -149,8 +149,8 @@ int main(int argc, char** argv) {
     lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(hrclock.now().time_since_epoch());
     LOG_INFO("DeltaTime Initialized");
 
-    // renderingTest();
-    sceneTest();
+    renderingTest();
+    //sceneTest();
 
     // Game Loop
     LOG_INFO("Program started successfully");
