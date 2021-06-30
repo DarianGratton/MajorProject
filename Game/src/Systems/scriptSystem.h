@@ -4,7 +4,7 @@
 #include <glfw/glfw3.h>
 #include <entityx/entityx.h>
 
-#include "../Components/script.h"
+#include "../components.h"
 
 #include "../logger.h"
 
@@ -13,11 +13,11 @@ using namespace entityx;
 class ScriptSystem : public System<ScriptSystem> {
 public:
     void update(EntityManager& es, EventManager& events, TimeDelta dt) override {
-        auto entities = es.entities_with_components<Script>();
 
-        for (Entity e : entities) {
-            ComponentHandle<Script> script = e.component<Script>();
-            script.get()->script->update();
-        }
+        es.each<Script>([dt](Entity entity, Script &script) {
+            if (script.script != nullptr)
+                script.script->update();
+        });
+
     }
 };

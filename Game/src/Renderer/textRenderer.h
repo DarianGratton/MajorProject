@@ -13,7 +13,7 @@ class TextRenderer {
 public:
     // TODO: Currently the font is attached to the constructor as a quick solution. Font should be able to be
     // dynamically changed but I currently (Jun 6th, 2021) can't think of a robust way of doing it. 
-    TextRenderer(const char * fontpath);
+    TextRenderer(const char * fontpath, unsigned int fontsize);
     ~TextRenderer();
 
     void setFontSize(unsigned int pixelwidth, unsigned int pixelheight);

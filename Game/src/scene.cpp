@@ -2,6 +2,7 @@
 
 #include <entityx/entityx.h>
 #include <tinyxml2.h>
+#include <sstream>
 
 #include "ECS.h"
 #include "entityHelper.h"
@@ -22,24 +23,38 @@ bool Scene::load() {
     // Read xml elements
     XMLNode* entity = root->FirstChild();
 
-    // Create entity
-    Entity e = ECS::instance().entities.create();
-
-    // Get entity name
-    const XMLAttribute* attr = entity->ToElement()->FirstAttribute();
-    if (attr != NULL) {
-        std::string attrName = attr->Name();
-        if (attrName == "name") {
-            e.assign<Name>(attr->Value());
-        }
-    }
-
-    // Add spritevertices
-    e.assign<SpriteVertices>();
-
     // Get entity components
     while (entity != NULL) {
         XMLNode* component = entity->FirstChild();
+        Entity e = ECS::instance().entities.create();
+
+        // Get entity attrbutes
+        float width, height;
+        const XMLAttribute* attr = entity->ToElement()->FirstAttribute();
+        while (attr != NULL) {
+            std::string attrName = attr->Name();
+            if (attrName == "name") {   // Name of the sprite
+                e.assign<Name>(attr->Value());
+            }
+            if (attrName == "width") {  // Width of the sprite
+                std::stringstream str(attr->Value());
+                str >> width;
+            }
+            if (attrName == "height") { // Height of the sprite
+                std::stringstream str(attr->Value());
+                str >> height;
+            }
+            attr = attr->Next();
+        }
+
+        // Add spritevertices
+        std::vector<float> spriteVertices =  {
+                -width/2, -height/2, 0.0f, 0.0f,
+                 width/2, -height/2, 1.0f, 0.0f,
+                 width/2,  height/2, 1.0f, 1.0f,
+                -width/2,  height/2, 0.0f, 1.0f,
+            };
+        e.assign<SpriteVertices>(spriteVertices);
 
         while (component != NULL) {
             // Error check
@@ -62,10 +77,6 @@ bool Scene::load() {
             EntityHelper::instance().addComponent(&e, attributes.at("name"), attributes.at("value"));
 
             component = component->NextSibling();
-        }
-
-        if(e.has_component<ShaderComp>()) {
-            LOG_INFO("Shader was added");
         }
 
         entity = entity->NextSibling();
