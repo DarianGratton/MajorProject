@@ -35,6 +35,8 @@ void EntityHelper::addComponent(Entity* entity, std::string component, std::stri
         addTextComponent(entity, values);
     } else if (component == "Audio") {
         addAudioComponent(entity, values);
+    } else if (component == "Script") {
+        addScriptComponent(entity, values[0]);
     }
 }
 
@@ -116,8 +118,8 @@ void EntityHelper::addCameraComponent(Entity* entity, const std::vector<std::str
     entity->assign<Camera>(leftf, rightf, bottomf, topf, znear, zfar);
 }
 
-void EntityHelper::addScriptComponent(Entity* entity, const std::string& filepath) {
-    
+void EntityHelper::addScriptComponent(Entity* entity, const std::string& scriptName) {
+    entity->assign<Script>(scriptName, entity);
 }
 
 void EntityHelper::addShaderComponent(Entity* entity, const std::string& filepath) {

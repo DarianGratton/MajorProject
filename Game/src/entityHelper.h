@@ -25,10 +25,10 @@ private:
     // Different components;
     void addNameComponent(Entity* entity, const std::string& name);
     void addCameraComponent(Entity* entity, const std::vector<std::string>& parameters);
-    void addScriptComponent(Entity* entity, const std::string& filepath);
     void addShaderComponent(Entity* entity, const std::string& filepath);
     void addTextureComponent(Entity* entity, const std::string& filepath);
     void addTransformComponent(Entity* entity, const std::vector<std::string>& parameters);
     void addAudioComponent(Entity* entity, const std::vector<std::string>& parameters);
     void addTextComponent(Entity* entity, const std::vector<std::string>& parameters);
+    void addScriptComponent(Entity* entity, const std::string& scriptName);
 };
