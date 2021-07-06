@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 #include <glm/glm.hpp>
+#include <box2d/box2d.h>
 
 #include "ECS.h"
 #include "logger.h"

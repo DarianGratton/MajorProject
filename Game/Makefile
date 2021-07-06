@@ -6,7 +6,7 @@ SRC			:= src
 INCLUDES	:= -Iincludes
 
 LIB			:= libs
-LIBRARIES	:= -lglfw3dll -lentityx -lfreetype -lbass
+LIBRARIES	:= -lglfw3dll -lentityx -lfreetype -lbass -lbox2d
 
 EXECUTABLE	:= Game
 
