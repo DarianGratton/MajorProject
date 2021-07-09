@@ -3,6 +3,8 @@
 #include <vector>
 
 #include "ECS.h"
+#include "events.h"
+#include "components.h"
 #include "logger.h"
 
 void SceneManager::addScene(std::string scenename, std::string filename) {
@@ -28,6 +30,7 @@ bool SceneManager::loadScene(std::string sceneName) {
 
         // Load scene
         scene->load();
+        ECS::instance().events.emit<SceneLoad>(scene->getName(), ECS::instance().entities.entities_with_components<Script>());
         isSceneLoaded = true;
 
         return 1;
