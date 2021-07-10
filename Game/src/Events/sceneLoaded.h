@@ -6,8 +6,8 @@
 #include "../components.h"
 
 struct SceneLoad {
-    SceneLoad(std::string name, entityx::EntityManager::View<Script> entities) : sceneName(sceneName), entities(entities) {}
+    SceneLoad(std::string sceneName, entityx::EntityManager* entities) : sceneName(sceneName), entities(entities) {}
 
     std::string sceneName;
-    entityx::EntityManager::View<Script> entities;
+    entityx::EntityManager* entities;
 };

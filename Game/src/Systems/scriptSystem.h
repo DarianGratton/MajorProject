@@ -28,8 +28,9 @@ public:
 
     void receive(const SceneLoad& sl) {
         
-        for (Entity e : sl.entities) {
-            ComponentHandle<Script> scriptComp = e.component<Script>();
+        ComponentHandle<Script> scriptComp;
+        for (Entity entity : sl.entities->entities_with_components(scriptComp)) {
+            scriptComp = entity.component<Script>();
             scriptComp.get()->script->start();
         }
 

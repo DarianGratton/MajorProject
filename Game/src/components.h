@@ -8,6 +8,9 @@
 #include "Components/texture.h"
 #include "Components/textSprite.h"
 
+// Physics Components
+#include "Components/rigidbody.h"
+
 // Other components
 #include "Components/audio.h"
 #include "Components/name.h"

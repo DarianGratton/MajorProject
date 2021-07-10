@@ -1,5 +1,6 @@
 #include <iostream>
 #include <chrono>
+#include <string>
 
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
@@ -10,6 +11,7 @@
 #include "logger.h"
 #include "input.h"
 #include "sceneManager.h"
+#include "events.h"
 
 // TODO: Fix bug with program sometimes not ending after window closes
 
@@ -91,11 +93,14 @@ void renderingTest() {
     e2.assign<Transform>(0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2);
     e2.assign<Script>("PlayerScript", &e2);
     e2.assign<Camera>((float)WINDOW_WIDTH / 2 * -1, (float)WINDOW_WIDTH / 2, (float)WINDOW_HEIGHT / 2 * -1, (float)WINDOW_HEIGHT / 2, -1.0f, 1.0f);
-    
+    e2.assign<RigidBody>(0.0f, 0.0f, 1.0f, 1.0f);
+
     entityx::Entity textEntity = ECS::instance().entities.create();
     textEntity.assign<TextSprite>("Hello world 2");
     // textEntity.assign<Audio>("src/Assets/audio/RDR2.mp3");
     textEntity.assign<Transform>(-25.0f, 1.0f, 0.0f, 0, 0, 0, 1, 2);
+
+    ECS::instance().events.emit<SceneLoad>("Test", &ECS::instance().entities);
 }
 
 void sceneTest() {
@@ -109,75 +114,6 @@ TimeDelta calculateDT() {
     TimeDelta dt = deltaTime.count();
     dt *= 0.001f; //convert to seconds
     return dt;
-}
-
-void PhysicsTest() {
-    // Define gravity vector
-    b2Vec2 gravity(-10.0f, 0.0f);
-
-    // Create world object
-    // Note: Creating on the stack so the world must remain in scope
-    b2World world(gravity);
-
-    // Bodies are built using the following steps
-    // 1. Define a body with position, damping, etc.
-    // 2. Use the world object to create the body
-    // 3. Define fixtures with a shape, friction, density, etc. 
-    // 4. Create fixtures on the body
-
-    // Step 1: Create Ground body
-    b2BodyDef groundBodyDef;
-    groundBodyDef.position.Set(-10.0f, 0.0f);
-
-    // Step 2: Body is passed to the world object to create the ground body.
-    // Bodies are static by default and they don't collide with other static bodys
-    b2Body* groundBody = world.CreateBody(&groundBodyDef);
-
-    // Step 3: We create a ground polygon
-    b2PolygonShape groundBox;
-    groundBox.SetAsBox(50.0f, 10.0f);
-
-    // Step 4: Create shape fixture
-    groundBody->CreateFixture(&groundBox, 0.0f);
-
-    // Creating a dynamic body
-    // Create the body using createbody
-    // Must set the body type to b2_dynamicBody if you want the body to move in response forces
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(0.0f, 4.0f);
-    b2Body* body = world.CreateBody(&bodyDef);
-
-    // Create and attach a polygon shape using a fixture definition
-    // Create box shape
-    b2PolygonShape dynamicBox;
-    dynamicBox.SetAsBox(1.0f, 1.0f);
-
-    // Create fixture definition using the box
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &dynamicBox;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.3f;
-
-    // Create fixture
-    body->CreateFixture(&fixtureDef);
-
-    // Simulating the world
-    float timeStep = 1.0f / 60.0f;
-
-    // Iteration count
-    // More equals better accuracy but poorer performance
-    int32 velocityIterations = 6;
-    int32 positionIterations = 2;
-
-    for (int32 i = 0; i < 60; ++i)
-    {
-        world.Step(timeStep, velocityIterations, positionIterations);
-        b2Vec2 position = body->GetPosition();
-        float angle = body->GetAngle();
-        printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
-    }
-
 }
 
 int main(int argc, char** argv) {
@@ -219,8 +155,8 @@ int main(int argc, char** argv) {
     lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(hrclock.now().time_since_epoch());
     LOG_INFO("DeltaTime Initialized");
 
-    // renderingTest();
-    sceneTest();
+    renderingTest();
+    // sceneTest();
 
     // Game Loop
     LOG_INFO("Program started successfully");
