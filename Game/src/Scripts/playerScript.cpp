@@ -1,15 +1,38 @@
 #include "playerScript.h"
 
+#include "../components.h"
 #include "../logger.h"
+#include "../input.h"
 
-PlayerScript::PlayerScript(entityx::Entity* entity) : CScript(entity) {
-
-}
+PlayerScript::PlayerScript(entityx::Entity* entity) : CScript(entity) {}
 
 void PlayerScript::start() {
-    LOG_TRACE("Player script start");
+
 }
 
 void PlayerScript::update() {
-    LOG_TRACE("Player script update");
+
+    // Movement UP
+    if (Input::instance().isKeyPressed(GLFW_KEY_W)) {
+        ComponentHandle<Transform> transform = entity.component<Transform>();
+        transform.get()->ypos += 1.0f;
+    }
+
+    // Movement DOWN
+    if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
+        ComponentHandle<Transform> transform = entity.component<Transform>();
+        transform.get()->ypos -= 1.0f;
+    }
+    
+    // Movement RIGHT
+    if (Input::instance().isKeyPressed(GLFW_KEY_D)) {
+        ComponentHandle<Transform> transform = entity.component<Transform>();
+        transform.get()->xpos += 1.0f;
+    }
+    
+    // Movement LEFT
+    if (Input::instance().isKeyPressed(GLFW_KEY_A)) {
+        ComponentHandle<Transform> transform = entity.component<Transform>();
+        transform.get()->xpos -= 1.0f;
+    }    
 }

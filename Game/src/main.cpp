@@ -87,6 +87,7 @@ bool initOpenGL() {
 
 void renderingTest() {
     entityx::Entity e2 = ECS::instance().entities.create();
+    e2.assign<Name>("Player");
     e2.assign<SpriteVertices>();
     e2.assign<ShaderComp>("src/Assets/shaders/Basic.shader");
     e2.assign<TextureComp>("src/Assets/textures/platformChar_idle.png");
@@ -155,8 +156,8 @@ int main(int argc, char** argv) {
     lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(hrclock.now().time_since_epoch());
     LOG_INFO("DeltaTime Initialized");
 
-    renderingTest();
-    // sceneTest();
+    // renderingTest();
+    sceneTest();
 
     // Game Loop
     LOG_INFO("Program started successfully");
