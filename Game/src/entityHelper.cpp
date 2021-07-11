@@ -37,6 +37,8 @@ void EntityHelper::addComponent(Entity* entity, std::string component, std::stri
         addAudioComponent(entity, values);
     } else if (component == "Script") {
         addScriptComponent(entity, values[0]);
+    } else if (component == "RigidBody") {
+        addRigidBodyComponent(entity, values);
     }
 }
 
@@ -319,4 +321,69 @@ void EntityHelper::addTextComponent(Entity* entity, const std::vector<std::strin
     }
 
     entity->assign<TextSprite>(parameters.at(0), glm::vec3(r, g, b), pixelwidth, pixelheight);
+}
+
+void EntityHelper::addRigidBodyComponent(Entity* entity, const std::vector<std::string>& parameters) {
+    float xpos, ypos, hx, hy;
+    float density, friction;
+    bool isDynamicBody;
+
+    LOG_TRACE("Function entered");
+
+    // 4 parameters
+    std::stringstream str(parameters.at(0));
+    if (!(str >> xpos)) {
+        LOG_ERROR("Scene parsing - addRigidBody Error: float 1 invalid value.");
+        return;
+    }
+    str = std::stringstream(parameters.at(1));
+    if (!(str >> ypos)) {
+        LOG_ERROR("Scene parsing - addRigidBody Error: float 2 invalid value.");
+        return;
+    }
+    str = std::stringstream(parameters.at(2));
+    if (!(str >> hx)) {
+        LOG_ERROR("Scene parsing - addRigidBody Error: float 3 invalid value.");
+        return;
+    }
+    str = std::stringstream(parameters.at(3));
+    if (!(str >> hy)) {
+        LOG_ERROR("Scene parsing - addRigidBody Error: float 4 invalid value.");
+        return;
+    }
+    if (parameters.size() == 4) {
+        entity->assign<RigidBody>(xpos, ypos, hx, hy);
+        return;
+    }
+
+    // 5 parameters
+    str = std::stringstream(parameters.at(4));
+    if (!(str >> density)) {
+        LOG_ERROR("Scene parsing - addRigidBody Error: float 5 invalid value.");
+        return;
+    }
+    if (parameters.size() == 5) {
+        entity->assign<RigidBody>(xpos, ypos, hx, hy, density);
+        return;
+    }
+
+    // 6 parameters
+    str = std::stringstream(parameters.at(5));
+    if (!(str >> friction)) {
+        LOG_ERROR("Scene parsing - addRigidBody Error: float 6 invalid value.");
+        return;
+    }
+    if (parameters.size() == 5) {
+        entity->assign<RigidBody>(xpos, ypos, hx, hy, density, friction);
+        return;
+    }
+
+    // 7 parameters
+    str = std::stringstream(parameters.at(6));
+    if (!(str >> isDynamicBody)) {
+        LOG_ERROR("Scene parsing - addRigidBody Error: bool 1 invalid value.");
+        return;
+    }
+
+    entity->assign<RigidBody>(xpos, ypos, hx, hy, density, friction, isDynamicBody);
 }

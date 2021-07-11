@@ -31,4 +31,5 @@ private:
     void addAudioComponent(Entity* entity, const std::vector<std::string>& parameters);
     void addTextComponent(Entity* entity, const std::vector<std::string>& parameters);
     void addScriptComponent(Entity* entity, const std::string& scriptName);
+    void addRigidBodyComponent(Entity* entity, const std::vector<std::string>& parameters);
 };
