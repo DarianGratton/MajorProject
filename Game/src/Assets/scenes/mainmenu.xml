@@ -1,8 +1,5 @@
 <?xml version="1.0"?>
 <root>
-    <Entity name="MainMenuScript">
-        <Component name="Script" value="MainMenuScript"/>
-    </Entity>
     <Entity name="MainCamera">
         <Component name="Camera" value="-540.0f, 540.0f, -360.0f, 360.0f, -1.0f, 1.0f"/>
         <Component name="Transform" value="0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2"/>
@@ -24,5 +21,12 @@
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
         <Component name="Transform" value="0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
+    </Entity>
+    <Entity name="OptionArrow" height="25.0f" width="50.0f">
+        <Component name="Texture" value="src/Assets/textures/OptionArrow.png"/>
+        <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
+        <Component name="Transform" value="-150.0f, -37.5f, 0.0f, 0, 0, 0, 1, 2"/>
+        <Component name="SpriteVertices" value=""/>
+        <Component name="Script" value="MainMenuScript"/>
     </Entity>
 </root>

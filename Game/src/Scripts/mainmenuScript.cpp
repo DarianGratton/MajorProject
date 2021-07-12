@@ -30,17 +30,25 @@ void MainMenuScript::update() {
 
     // Browse options
     if (Input::instance().isKeyPressed(GLFW_KEY_W)) {
-        if (option == 0) 
+        ComponentHandle<Transform> transform = entity.component<Transform>();
+        if (option == 0) {
             option = numOfOptions - 1;
-        else
+            transform.get()->ypos -= (50.0f * (numOfOptions - 1));
+        } else {
             option--;
+            transform.get()->ypos += 50.0f;
+        }
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
-        if (option == (numOfOptions - 1)) 
+        ComponentHandle<Transform> transform = entity.component<Transform>();
+        if (option == (numOfOptions - 1)) {
             option = 0;
-        else
+            transform.get()->ypos += (50.0f * (numOfOptions - 1));
+        } else {
             option++;
+            transform.get()->ypos -= 50.0f;
+        }
     }
 
     // Selection made
