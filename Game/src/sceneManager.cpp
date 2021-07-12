@@ -25,7 +25,8 @@ bool SceneManager::loadScene(std::string sceneName) {
     if (sceneFound) {
         // Events for unloading scene
         if (isSceneLoaded) {
-            
+            // Reset all entities
+            ECS::instance().entities.reset();
         }
 
         // Load scene
