@@ -162,7 +162,7 @@ int main(int argc, char** argv) {
 
     // Game Loop
     LOG_INFO("Program started successfully");
-    while (!glfwWindowShouldClose(window)) {
+    while (!glfwWindowShouldClose(window) && !ECS::instance().gameEnded) {
         // Clear any input from last frame
         Input::instance().clear();
 

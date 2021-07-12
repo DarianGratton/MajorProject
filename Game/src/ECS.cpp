@@ -16,3 +16,7 @@ void ECS::update(TimeDelta dt) {
     systems.update<PhysicsSystem>(dt);
     systems.update<RenderingSystem>(dt);
 }
+
+void ECS::endGame() {
+    gameEnded = true;
+}

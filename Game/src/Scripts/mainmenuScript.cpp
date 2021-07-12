@@ -32,22 +32,22 @@ void MainMenuScript::update() {
     if (Input::instance().isKeyPressed(GLFW_KEY_W)) {
         ComponentHandle<Transform> transform = entity.component<Transform>();
         if (option == 0) {
-            option = numOfOptions - 1;
             transform.get()->ypos -= (50.0f * (numOfOptions - 1));
+            option = numOfOptions - 1;
         } else {
-            option--;
             transform.get()->ypos += 50.0f;
+            option--;
         }
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
         ComponentHandle<Transform> transform = entity.component<Transform>();
         if (option == (numOfOptions - 1)) {
-            option = 0;
             transform.get()->ypos += (50.0f * (numOfOptions - 1));
+            option = 0;
         } else {
-            option++;
             transform.get()->ypos -= 50.0f;
+            option++;
         }
     }
 
@@ -58,13 +58,13 @@ void MainMenuScript::update() {
         }
 
         if (option == 1) {
-            exit(0);
+            ECS::instance().endGame();
         }
     }
 
     // Exit program
     if (Input::instance().isKeyPressed(GLFW_KEY_ESCAPE)) {
-        exit(0);
+        ECS::instance().endGame();
     }
 
 }
