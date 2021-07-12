@@ -1,5 +1,7 @@
 #include "ECS.h"
 
+#include "systems.h"
+
 void ECS::init() {
     systems.add<AudioSystem>();
     systems.add<ScriptSystem>();

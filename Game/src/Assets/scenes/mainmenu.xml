@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <root>
+    <Entity name="MainMenuScript">
+        <Component name="Script" value="MainMenuScript"/>
+    </Entity>
     <Entity name="MainCamera">
         <Component name="Camera" value="-540.0f, 540.0f, -360.0f, 360.0f, -1.0f, 1.0f"/>
         <Component name="Transform" value="0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2"/>
@@ -17,7 +20,7 @@
         <Component name="Transform" value="-85.0f, -100.0f, 0.0f, 0, 0, 0, 1"/>
     </Entity>
     <Entity name="BackgroundImage" height="720.0f" width="1080.0f">
-        <Component name="Texture" value="src/Assets/textures/Floor.png"/>
+        <Component name="Texture" value="src/Assets/textures/Floor5x5.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
         <Component name="Transform" value="0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>

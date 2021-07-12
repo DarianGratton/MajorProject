@@ -1,7 +1,6 @@
 #pragma once
 
 #include <entityx/entityx.h>
-#include "systems.h"
 
 using namespace entityx;
 

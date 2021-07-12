@@ -105,8 +105,9 @@ void renderingTest() {
 }
 
 void sceneTest() {
-    SceneManager::instance().addScene("Test", "src/Assets/scenes/arena.xml");
-    SceneManager::instance().loadScene("Test");
+    SceneManager::instance().addScene("MainMenu", "src/Assets/scenes/mainmenu.xml");
+    SceneManager::instance().addScene("LoadoutSelection", "src/Assets/scenes/loadoutselection.xml");
+    SceneManager::instance().loadScene("MainMenu");
 }
 
 TimeDelta calculateDT() {
