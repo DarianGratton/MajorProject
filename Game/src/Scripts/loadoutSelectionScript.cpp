@@ -57,6 +57,12 @@ void LoadoutSelectionScript::update() {
             currOption = 4;
         }
 
+        else if (currOption == 7) {
+            transform.get()->xpos = weaponOption6.component<Transform>().get()->xpos - 100.0f;
+            transform.get()->ypos = weaponOption6.component<Transform>().get()->ypos;
+            currOption = 6;
+        }
+
         // Option 4 -> Option 1
         else if (currOption == 4) {
             transform.get()->ypos = weaponOption1.component<Transform>().get()->ypos;
@@ -86,7 +92,7 @@ void LoadoutSelectionScript::update() {
         }
 
         // Option 4 -> Back Text
-        else if (currOption = 4) {
+        else if (currOption == 4) {
             transform.get()->xpos = backOption.component<Transform>().get()->xpos - 35.0f;
             transform.get()->ypos = backOption.component<Transform>().get()->ypos + 12.5f;
             currOption = 0;
@@ -102,6 +108,13 @@ void LoadoutSelectionScript::update() {
         else if (currOption == 3) {
             transform.get()->ypos = weaponOption6.component<Transform>().get()->ypos;
             currOption = 6;
+        }
+
+        // Option 6 -> Fight Text
+        else if (currOption == 6) {
+            transform.get()->xpos = fightOption.component<Transform>().get()->xpos - 35.0f;
+            transform.get()->ypos = fightOption.component<Transform>().get()->ypos + 12.5f;
+            currOption = 7;
         }
     }
 
@@ -147,16 +160,29 @@ void LoadoutSelectionScript::update() {
             transform.get()->xpos = weaponOption1.component<Transform>().get()->xpos - 100.0f;
             currOption = 1;
         }
+
+        // Option 6 -> Option 5
+        else if (currOption == 6) {
+            transform.get()->xpos = weaponOption5.component<Transform>().get()->xpos - 100.0f;
+            currOption = 5;
+        }
+
+        // Option 5 -> Option 4
+        else if (currOption == 5) {
+            transform.get()->xpos = weaponOption4.component<Transform>().get()->xpos - 100.0f;
+            currOption = 6;
+        }
     }
 
     // Selection made
     if (Input::instance().isKeyPressed(GLFW_KEY_ENTER)) {
-        
-    }
+        if (currOption == 0) {
+            SceneManager::instance().loadScene("MainMenu");
+        }
 
-    // Exit program
-    if (Input::instance().isKeyPressed(GLFW_KEY_ESCAPE)) {
-        
+        if (currOption == 7) {
+            SceneManager::instance().loadScene("Arena");
+        }
     }
 
 }
