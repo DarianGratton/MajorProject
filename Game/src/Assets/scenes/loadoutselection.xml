@@ -17,7 +17,7 @@
         <Component name="Transform" value="390.0f, -300.0f, 0.0f, 0, 0, 0, 1"/>
     </Entity>
     <Entity name="BackgroundImage" height="720.0f" width="1080.0f">
-        <Component name="Texture" value="src/Assets/textures/Floor.png"/>
+        <Component name="Texture" value="src/Assets/textures/Floor5x5.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
         <Component name="Transform" value="0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
@@ -28,38 +28,45 @@
         <Component name="Transform" value="-250.0f, 50.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
+    <Entity name="OptionArrow" height="25.0f" width="50.0f">
+        <Component name="Texture" value="src/Assets/textures/OptionArrow.png"/>
+        <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
+        <Component name="Transform" value="-50.0f, 100.0f, 0.0f, 0, 0, 0, 1, 2"/>
+        <Component name="SpriteVertices" value=""/>
+        <Component name="Script" value="LoadoutSelectionScript"/>
+    </Entity>
     <Entity name="WeaponBorder1" height="100.0f" width="100.0f">
-        <Component name="Texture" value="src/Assets/textures/tempweaponborder.png"/>
+        <Component name="Texture" value="src/Assets/textures/Player.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
         <Component name="Transform" value="50.0f, 100.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
     <Entity name="WeaponBorder2" height="100.0f" width="100.0f">
-        <Component name="Texture" value="src/Assets/textures/tempweaponborder.png"/>
+        <Component name="Texture" value="src/Assets/textures/Player.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
         <Component name="Transform" value="200.0f, 100.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
     <Entity name="WeaponBorder3" height="100.0f" width="100.0f">
-        <Component name="Texture" value="src/Assets/textures/tempweaponborder.png"/>
+        <Component name="Texture" value="src/Assets/textures/Player.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
         <Component name="Transform" value="350.0f, 100.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
     <Entity name="WeaponBorder4" height="100.0f" width="100.0f">
-        <Component name="Texture" value="src/Assets/textures/tempweaponborder.png"/>
+        <Component name="Texture" value="src/Assets/textures/Player.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
         <Component name="Transform" value="50.0f, -100.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
     <Entity name="WeaponBorder5" height="100.0f" width="100.0f">
-        <Component name="Texture" value="src/Assets/textures/tempweaponborder.png"/>
+        <Component name="Texture" value="src/Assets/textures/Player.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
         <Component name="Transform" value="200.0f, -100.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
     <Entity name="WeaponBorder6" height="100.0f" width="100.0f">
-        <Component name="Texture" value="src/Assets/textures/tempweaponborder.png"/>
+        <Component name="Texture" value="src/Assets/textures/Player.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
         <Component name="Transform" value="350.0f, -100.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>

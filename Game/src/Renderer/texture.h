@@ -8,6 +8,7 @@ public:
     ~Texture();
 
     // Windows has 32 texture slots, default use 0
+    void setup();
     void bind(unsigned int slot = 0) const;
     void unbind() const;
 

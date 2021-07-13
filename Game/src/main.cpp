@@ -107,6 +107,7 @@ void renderingTest() {
 void sceneTest() {
     SceneManager::instance().addScene("MainMenu", "src/Assets/scenes/mainmenu.xml");
     SceneManager::instance().addScene("LoadoutSelection", "src/Assets/scenes/loadoutselection.xml");
+    SceneManager::instance().addScene("Arena", "src/Assets/scenes/loadoutselection.xml");
     SceneManager::instance().loadScene("MainMenu");
 }
 
@@ -175,6 +176,7 @@ int main(int argc, char** argv) {
 
         // Swap front and back buffers
         glfwSwapBuffers(window);
+        LOG_INFO(dt);
     }
 
     // Deallocate

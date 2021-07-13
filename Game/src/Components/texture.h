@@ -3,29 +3,14 @@
 #include "../Renderer/texture.h"
 
 struct TextureComp {
-    TextureComp(const char* filepath): filepath(filepath) {
+    TextureComp(const char* filepath) {
+        texture = new Texture(filepath);
     }
 
     ~TextureComp() {
-        deInit();
+        delete texture;
     }
 
-    void init() {
-        // texture = new Texture(filepath);
-        ready = true;
-    }
-
-    void deInit() {
-        // if (texture != nullptr) {
-        //     delete texture;
-        //     texture = nullptr;
-        // }
-        ready = false;
-    }
-
-    const char* getFilepath() { return filepath; }
-
-    const char* filepath;
-    // Texture* texture;
+    Texture* texture;
     bool ready = false;
 };

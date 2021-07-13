@@ -1,7 +1,15 @@
 #pragma once
 
-struct ShaderComp {
-    ShaderComp(const char* filepath): filepath(filepath){}
+#include "../Renderer/shader.h"
 
-    const char* filepath;
+struct ShaderComp {
+    ShaderComp(const char* filepath) {
+        shader = new Shader(filepath);
+    }
+
+    ~ShaderComp() {
+        delete shader;
+    }
+
+    Shader* shader;
 };

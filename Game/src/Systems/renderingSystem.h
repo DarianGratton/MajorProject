@@ -71,12 +71,11 @@ public:
             IndexBuffer ib(&position.indices[0], position.indices.size());
 
             // Setup shader
-            Shader shader(shaderComp.filepath);
-            shader.bind();
+            shaderComp.shader->bind();
 
             // Setup texture
-            Texture texture(textureComp.filepath); 
-            shader.setUniforms1i("u_Texture", 0);
+            textureComp.texture->setup();
+            shaderComp.shader->setUniforms1i("u_Texture", 0);
 
             // Shader binds program for the gpu to use and tells it what to do with data
             // VA = The Data itself.
@@ -87,21 +86,21 @@ public:
             vb.unbind();
             ib.unbind();
 
-            shader.unbind();
+            shaderComp.shader->unbind();
             glm::vec3 translation((int)round(transformComp.xpos), (int)round(transformComp.ypos), (int)round(transformComp.zpos));
-            shader.bind();
+            shaderComp.shader->bind();
 
-            texture.bind();
+            textureComp.texture->bind();
             glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(translation));
             model = glm::rotate(model, 3.141592f / 180 * transformComp.angle, glm::vec3(transformComp.xrot, transformComp.yrot, transformComp.zrot)); // where x, y, z is axis of rotation (e.g. 0 1 0)
             glm::mat4 mvp;
             mvp = proj * view * model; 
 
             // Set Shaders uniforms
-            shader.setUniformsMat4f("u_MVP", mvp);
+            shaderComp.shader->setUniformsMat4f("u_MVP", mvp);
 
             // Draw objects 
-            shader.bind();
+            shaderComp.shader->bind();
             va.bind();
             ib.bind();
             glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr);

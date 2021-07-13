@@ -10,6 +10,10 @@ CScript* ScriptFactory::getScript(std::string scriptName, entityx::Entity* entit
         return new MainMenuScript(entity);
     }
 
+    if (scriptName == "LoadoutSelectionScript") {
+        return new LoadoutSelectionScript(entity);
+    }
+
     // If scriptName is not found
     return nullptr;
 

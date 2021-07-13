@@ -14,6 +14,6 @@ public:
 private:
     Entity startText;
     Entity quitText;
-    unsigned int option;
+    unsigned int currOption;
     unsigned int numOfOptions;
 };

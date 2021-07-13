@@ -22,7 +22,7 @@ void MainMenuScript::start() {
             quitText = entity;
     }
 
-    option = 0;
+    currOption = 0;
     numOfOptions = 2;
 }
 
@@ -31,33 +31,33 @@ void MainMenuScript::update() {
     // Browse options
     if (Input::instance().isKeyPressed(GLFW_KEY_W)) {
         ComponentHandle<Transform> transform = entity.component<Transform>();
-        if (option == 0) {
+        if (currOption == 0) {
             transform.get()->ypos -= (50.0f * (numOfOptions - 1));
-            option = numOfOptions - 1;
+            currOption = numOfOptions - 1;
         } else {
             transform.get()->ypos += 50.0f;
-            option--;
+            currOption--;
         }
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
         ComponentHandle<Transform> transform = entity.component<Transform>();
-        if (option == (numOfOptions - 1)) {
+        if (currOption == (numOfOptions - 1)) {
             transform.get()->ypos += (50.0f * (numOfOptions - 1));
-            option = 0;
+            currOption = 0;
         } else {
             transform.get()->ypos -= 50.0f;
-            option++;
+            currOption++;
         }
     }
 
     // Selection made
     if (Input::instance().isKeyPressed(GLFW_KEY_ENTER)) {
-        if (option == 0) {
+        if (currOption == 0) {
             SceneManager::instance().loadScene("LoadoutSelection");
         }
 
-        if (option == 1) {
+        if (currOption == 1) {
             ECS::instance().endGame();
         }
     }
