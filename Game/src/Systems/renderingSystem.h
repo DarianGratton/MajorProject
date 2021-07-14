@@ -52,7 +52,7 @@ public:
             break;
         }
 
-        // Render Sprites        
+        // // Render Sprites        
         es.each<SpriteVertices, ShaderComp, TextureComp, Transform>([dt, proj, view](
             Entity entity, SpriteVertices &position, 
             ShaderComp &shaderComp, TextureComp &textureComp,
@@ -74,7 +74,6 @@ public:
             shaderComp.shader->bind();
 
             // Setup texture
-            textureComp.texture->setup();
             shaderComp.shader->setUniforms1i("u_Texture", 0);
 
             // Shader binds program for the gpu to use and tells it what to do with data

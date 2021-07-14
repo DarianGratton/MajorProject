@@ -14,16 +14,6 @@ Texture::Texture(const std::string& path)
 
     // Setup texture
     // s & t == x and y (for colours)
-    // glGenTextures(1, &m_RendererID);
-}
-
-Texture::~Texture()
-{
-    glDeleteTextures(1, &m_RendererID);
-    stbi_image_free(m_LocalBuffer);
-}
-
-void Texture::setup() {
     glGenTextures(1, &m_RendererID);
     glBindTexture(GL_TEXTURE_2D, m_RendererID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -33,6 +23,12 @@ void Texture::setup() {
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer);
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+Texture::~Texture()
+{
+    glDeleteTextures(1, &m_RendererID);
+    stbi_image_free(m_LocalBuffer);
 }
 
 void Texture::bind(unsigned int slot) const {

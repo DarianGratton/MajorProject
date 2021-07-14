@@ -74,6 +74,10 @@ TextRenderer::TextRenderer(const char * fontpath, unsigned int fontsize) {
 }
 
 TextRenderer::~TextRenderer() {
+    for (auto c : characters) {
+        glDeleteTextures(1, &c.second.textureID);
+    }
+
     FT_Done_Face(face);
     FT_Done_FreeType(library);
 }
