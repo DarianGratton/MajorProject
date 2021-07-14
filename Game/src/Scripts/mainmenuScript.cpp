@@ -24,9 +24,15 @@ void MainMenuScript::start() {
 
     currOption = 0;
     numOfOptions = 2;
+    cooldownBetweenKeys = 0;
 }
 
 void MainMenuScript::update() {
+
+    if (cooldownBetweenKeys != 0) {
+        cooldownBetweenKeys--;
+        return;
+    }
 
     // Browse options
     if (Input::instance().isKeyPressed(GLFW_KEY_W)) {
@@ -38,6 +44,7 @@ void MainMenuScript::update() {
             transform.get()->ypos += 50.0f;
             currOption--;
         }
+        cooldownBetweenKeys = 3;
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
@@ -49,6 +56,7 @@ void MainMenuScript::update() {
             transform.get()->ypos -= 50.0f;
             currOption++;
         }
+        cooldownBetweenKeys = 3;
     }
 
     // Selection made

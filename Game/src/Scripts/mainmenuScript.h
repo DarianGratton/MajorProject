@@ -16,4 +16,5 @@ private:
     Entity quitText;
     unsigned int currOption;
     unsigned int numOfOptions;
+    unsigned int cooldownBetweenKeys;
 };
