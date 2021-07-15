@@ -42,9 +42,26 @@ void LoadoutSelectionScript::start() {
 
     currOption = 1;
     numOfOptions = 8;
+    cooldownBetweenKeys = 0;
 }
 
 void LoadoutSelectionScript::update() {
+
+    // Selection made
+    if (Input::instance().isKeyPressed(GLFW_KEY_ENTER)) {
+        if (currOption == 0) {
+            SceneManager::instance().loadScene("MainMenu");
+        }
+
+        if (currOption == 7) {
+            SceneManager::instance().loadScene("Arena");
+        }
+    }
+
+    if (cooldownBetweenKeys != 0) {
+        cooldownBetweenKeys--;
+        return;
+    }
 
     // Browse options
     if (Input::instance().isKeyPressed(GLFW_KEY_W)) {
@@ -80,6 +97,8 @@ void LoadoutSelectionScript::update() {
             transform.get()->ypos = weaponOption3.component<Transform>().get()->ypos;
             currOption = 3;
         }
+
+        cooldownBetweenKeys = 3;
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
@@ -116,6 +135,8 @@ void LoadoutSelectionScript::update() {
             transform.get()->ypos = fightOption.component<Transform>().get()->ypos + 12.5f;
             currOption = 7;
         }
+
+        cooldownBetweenKeys = 3;
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_D)) {
@@ -144,6 +165,8 @@ void LoadoutSelectionScript::update() {
             transform.get()->xpos = weaponOption6.component<Transform>().get()->xpos - 100.0f;
             currOption = 6;
         }
+
+        cooldownBetweenKeys = 3;
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_A)) {
@@ -172,17 +195,8 @@ void LoadoutSelectionScript::update() {
             transform.get()->xpos = weaponOption4.component<Transform>().get()->xpos - 100.0f;
             currOption = 6;
         }
-    }
 
-    // Selection made
-    if (Input::instance().isKeyPressed(GLFW_KEY_ENTER)) {
-        if (currOption == 0) {
-            SceneManager::instance().loadScene("MainMenu");
-        }
-
-        if (currOption == 7) {
-            SceneManager::instance().loadScene("Arena");
-        }
+        cooldownBetweenKeys = 3;
     }
 
 }

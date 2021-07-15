@@ -29,6 +29,22 @@ void MainMenuScript::start() {
 
 void MainMenuScript::update() {
 
+    // Selection made
+    if (Input::instance().isKeyPressed(GLFW_KEY_ENTER)) {
+        if (currOption == 0) {
+            SceneManager::instance().loadScene("LoadoutSelection");
+        }
+
+        if (currOption == 1) {
+            ECS::instance().endGame();
+        }
+    }
+
+    // Exit program
+    if (Input::instance().isKeyPressed(GLFW_KEY_ESCAPE)) {
+        ECS::instance().endGame();
+    }
+
     if (cooldownBetweenKeys != 0) {
         cooldownBetweenKeys--;
         return;
@@ -57,22 +73,6 @@ void MainMenuScript::update() {
             currOption++;
         }
         cooldownBetweenKeys = 3;
-    }
-
-    // Selection made
-    if (Input::instance().isKeyPressed(GLFW_KEY_ENTER)) {
-        if (currOption == 0) {
-            SceneManager::instance().loadScene("LoadoutSelection");
-        }
-
-        if (currOption == 1) {
-            ECS::instance().endGame();
-        }
-    }
-
-    // Exit program
-    if (Input::instance().isKeyPressed(GLFW_KEY_ESCAPE)) {
-        ECS::instance().endGame();
     }
 
 }

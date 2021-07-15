@@ -24,4 +24,5 @@ private:
     Entity fightOption;
     unsigned int currOption;
     unsigned int numOfOptions;
+    unsigned int cooldownBetweenKeys;
 };
