@@ -26,7 +26,6 @@ struct RigidBody {
         }
 
         if (isDynamicBody) {
-            b2FixtureDef fixtureDef;
             fixtureDef.shape = &collisionBox;
             fixtureDef.density = density;
             fixtureDef.friction = friction; 
@@ -41,5 +40,6 @@ struct RigidBody {
     bool isDynamicBody;
     b2BodyDef bodyDef;
     b2PolygonShape collisionBox;
+    b2FixtureDef fixtureDef;
     b2Body* body;
 };

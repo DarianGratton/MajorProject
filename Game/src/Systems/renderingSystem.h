@@ -10,6 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "../components.h"
+#include "../physicsManager.h"
 #include "../Renderer/vertexArray.h"
 #include "../Renderer/indexBuffer.h"
 #include "../Renderer/shader.h"
@@ -52,7 +53,7 @@ public:
             break;
         }
 
-        // // Render Sprites        
+        // Render Sprites        
         es.each<SpriteVertices, ShaderComp, TextureComp, Transform>([dt, proj, view](
             Entity entity, SpriteVertices &position, 
             ShaderComp &shaderComp, TextureComp &textureComp,
@@ -115,5 +116,11 @@ public:
             glm::vec2 textPosition = glm::vec2(transformComp.xpos, transformComp.ypos);
             textRenderer.renderText(textSprite.text, textPosition, textSprite.color, proj, view);
         });
+
+        // Draw physics
+        bool debugPhysics = true;
+        if (debugPhysics)
+            PhysicsManager::instance().draw(proj, view);
+
     }
 };

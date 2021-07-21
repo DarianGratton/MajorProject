@@ -20,8 +20,15 @@ void PlayerScript::update() {
 
     // Movement DOWN
     if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
-        ComponentHandle<Transform> transform = entity.component<Transform>();
-        transform.get()->ypos -= 1.0f;
+        // ComponentHandle<Transform> transform = entity.component<Transform>();
+        // transform.get()->ypos -= 1.0f;
+
+        ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
+        b2Vec2 playerVelocity = rigidBody.get()->body->GetLinearVelocity();
+        float desiredVel = -5;
+        float velChange = desiredVel - playerVelocity.x;
+        float impluse = rigidBody.get()->body->GetMass() * velChange;
+        rigidBody.get()->body->ApplyLinearImpulse(b2Vec2(0, impluse), rigidBody.get()->body->GetWorldCenter(), true);
     }
     
     // Movement RIGHT
