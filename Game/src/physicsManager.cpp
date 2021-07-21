@@ -7,7 +7,7 @@ void PhysicsManager::update() {
         return;
     }
 
-    float timeStep = 1.0f / 60.0f;
+    float timeStep = 1.0f / 120.0f;
     int32 velocityIterations = 8;
     int32 positionIterations = 3;
     world->Step(timeStep, velocityIterations, positionIterations);  

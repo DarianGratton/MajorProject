@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <root>
     <Entity name="MainCamera">
-        <Component name="Camera" value="-540.0f, 540.0f, -360.0f, 360.0f, -1.0f, 1.0f"/>
+        <Component name="Camera" value="-67.5f, 67.5f, -45.0f, 45.0f, -1.0f, 1.0f"/>
         <Component name="Transform" value="0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2"/>
     </Entity>
     <Entity name="PlayerHpText">
@@ -12,36 +12,42 @@
         <Component name="TextSprite" value="Enemy HP: , 1.0f, 1.0f, 1.0f, 0, 24"/>
         <Component name="Transform" value="-520.0f, 320.0f, 0.0f, 0, 0, 0, 1"/>
     </Entity>
-    <Entity name="BackgroundImage" height="720.0f" width="1080.0f">
+    <Entity name="BackgroundImage" height="90.0f" width="135.0f">
         <Component name="Texture" value="src/Assets/textures/Floor5x5.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
         <Component name="Transform" value="0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
-    <Entity name="Player" height="100.0f" width="100.0f">
+    <Entity name="ArenaWalls" height="90.0f" width="135.0f">
+        <Component name="Texture" value="src/Assets/textures/ArenaWalls.png"/>
+        <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
+        <Component name="Transform" value="0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2"/>
+        <Component name="SpriteVertices" value=""/>
+    </Entity>
+    <Entity name="Player" height="5.0f" width="5.0f">
         <Component name="Texture" value="src/Assets/textures/Player.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
-        <Component name="Transform" value="0.0f, -150.0f, 0.0f, 0, 0, 0, 1, 2"/>
+        <Component name="Transform" value="0.0f, -20.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
         <Component name="Script" value="PlayerScript"/>
-        <Component name="RigidBody" value="0.0f, 0.0f, 25.0f, 25.0f, 1.0f, 1.0f, 1"/>
+        <Component name="RigidBody" value="0.0f, -20.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1"/>
     </Entity>
-    <Entity name="Enemy" height="100.0f" width="100.0f">
+    <Entity name="Enemy" height="5.0f" width="5.0f">
         <Component name="Texture" value="src/Assets/textures/Enemy.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
-        <Component name="Transform" value="0.0f, 150.0f, 0.0f, 0, 0, 0, 1, 2"/>
+        <Component name="Transform" value="0.0f, 20.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
-    <Entity name="Obstacle1" height="100.0f" width="100.0f">
+    <Entity name="Obstacle1" height="5.0f" width="5.0f">
         <Component name="Texture" value="src/Assets/textures/BlackTile.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
-        <Component name="Transform" value="-270.0f, 125.0f, 0.0f, 0, 0, 0, 1, 2"/>
+        <Component name="Transform" value="-27.0f, 15.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
-    <Entity name="Obstacle1" height="100.0f" width="100.0f">
+    <Entity name="Obstacle1" height="5.0f" width="5.0f">
         <Component name="Texture" value="src/Assets/textures/BlackTile.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
-        <Component name="Transform" value="270.0f, -125.0f, 0.0f, 0, 0, 0, 1, 2"/>
+        <Component name="Transform" value="27.0f, -15.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
 </root>
