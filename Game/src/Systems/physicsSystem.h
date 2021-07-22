@@ -19,7 +19,7 @@ public:
 
     void update(EntityManager& es, EventManager& events, TimeDelta dt) override {
         
-        // Update and run the physics
+        // Update and run the physics 
         PhysicsManager::instance().update();
 
         es.each<RigidBody>([dt](Entity entity, RigidBody &rigidBody) {
