@@ -6,6 +6,11 @@ CScript* ScriptFactory::getScript(std::string scriptName, entityx::Entity* entit
         return new PlayerScript(entity);
     }
 
+    if (scriptName == "EnemyScript") {
+        return new EnemyScript(entity);
+    }
+
+
     if (scriptName == "MainMenuScript") {
         return new MainMenuScript(entity);
     }

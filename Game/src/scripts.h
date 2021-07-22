@@ -8,3 +8,4 @@
 
 // Scene 3 scripts (arena.xml)
 #include "Scripts/playerScript.h"
+#include "Scripts/enemyScript.h"
