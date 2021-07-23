@@ -9,11 +9,11 @@ void ShieldScript::start() {
 }
 
 void ShieldScript::update() {
-    LOG_TRACE("ShieldScript: update()");
+    
 }
 
 void ShieldScript::useWeapon() {
-
+    LOG_TRACE("ShieldScript: Use weapon");
 }
 
 // Collision detection

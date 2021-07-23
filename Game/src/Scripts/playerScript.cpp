@@ -26,6 +26,25 @@ void PlayerScript::start() {
 
 void PlayerScript::update() {
 
+    // Attack
+    // Use weapon 1
+    if (Input::instance().isKeyPressed(GLFW_KEY_K)) {
+        ComponentHandle<Script> scriptComp = weapon1.component<Script>();
+        WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
+        if (weaponScript)
+            weaponScript->useWeapon();
+    }
+
+    // Use weapon 2
+    if (Input::instance().isKeyPressed(GLFW_KEY_L)) {
+        ComponentHandle<Script> scriptComp = weapon2.component<Script>();
+        WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
+        if (weaponScript)
+            weaponScript->useWeapon();
+    }
+
+
+    // Movement
     float desiredVelX = 0;
     float desiredVelY = 0;
 
