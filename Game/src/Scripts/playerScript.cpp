@@ -20,21 +20,33 @@ void PlayerScript::update() {
     // Movement UP
     if (Input::instance().isKeyPressed(GLFW_KEY_W)) {
         desiredVelY = 250;
+
+        ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
+        textureComp.get()->setTexture("src/Assets/textures/PlayerUp.png");
     }
 
     // Movement DOWN
     if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
         desiredVelY = -250;
+
+        ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
+        textureComp.get()->setTexture("src/Assets/textures/PlayerDown.png");
     }
     
     // Movement RIGHT
     if (Input::instance().isKeyPressed(GLFW_KEY_D)) {
         desiredVelX = 250;
+
+        ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
+        textureComp.get()->setTexture("src/Assets/textures/PlayerRight.png");
     }
     
     // Movement LEFT
     if (Input::instance().isKeyPressed(GLFW_KEY_A)) {
         desiredVelX = -250;
+
+        ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
+        textureComp.get()->setTexture("src/Assets/textures/PlayerLeft.png");
     }    
 
     // Apply forces
