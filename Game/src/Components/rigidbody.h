@@ -12,6 +12,7 @@ struct RigidBody {
         if (isDynamicBody)
             bodyDef.type = b2_dynamicBody;
 
+        bodyDef.fixedRotation = true;
         bodyDef.position.Set(xpos, ypos);
 
         // Attach a polygon shape

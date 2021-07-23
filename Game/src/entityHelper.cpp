@@ -328,8 +328,6 @@ void EntityHelper::addRigidBodyComponent(Entity* entity, const std::vector<std::
     float density, friction;
     bool isDynamicBody;
 
-    LOG_TRACE("Function entered");
-
     // 4 parameters
     std::stringstream str(parameters.at(0));
     if (!(str >> xpos)) {
