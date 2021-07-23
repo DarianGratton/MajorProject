@@ -3,6 +3,7 @@
 #include "../components.h"
 #include "../logger.h"
 #include "../input.h"
+#include "../ECS.h"
 
 PlayerScript::PlayerScript(entityx::Entity* entity) : CScript(entity) {}
 
@@ -10,6 +11,17 @@ void PlayerScript::start() {
     // Set up collisions
     ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
     rigidBody.get()->body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+
+    ComponentHandle<Name> entityName;
+    for (Entity entity : ECS::instance().entities.entities_with_components(entityName)) {
+        entityName = entity.component<Name>();
+        
+        if (entityName.get()->name == "PlayerWeapon1")
+            weapon1 = entity;
+
+        if (entityName.get()->name == "PlayerWeapon2")
+            weapon2 = entity;
+    }
 }
 
 void PlayerScript::update() {

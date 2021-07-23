@@ -2,6 +2,7 @@
 
 CScript* ScriptFactory::getScript(std::string scriptName, entityx::Entity* entity) {
 
+    // Characters
     if (scriptName == "PlayerScript") {
         return new PlayerScript(entity);
     }
@@ -10,7 +11,12 @@ CScript* ScriptFactory::getScript(std::string scriptName, entityx::Entity* entit
         return new EnemyScript(entity);
     }
 
+    // Weapons
+    if (scriptName == "ShieldScript") {
+        return reinterpret_cast<CScript*>(new ShieldScript(entity));
+    }
 
+    // Menu Navigation
     if (scriptName == "MainMenuScript") {
         return new MainMenuScript(entity);
     }

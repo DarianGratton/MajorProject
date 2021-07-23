@@ -2,18 +2,17 @@
 
 #include <entityx/entityx.h>
 
-#include "../cScript.h"
+#include "weaponScript.h"
 
-class PlayerScript : public CScript {
+class ShieldScript : public WeaponScript {
 public:
-    PlayerScript(entityx::Entity* entity);
+    ShieldScript(entityx::Entity* entity);
 
     void start() override;
     void update() override;
+    void useWeapon() override;
+
+    // Collision detection
     void beginContact() override;
     void endContact() override;
-
-private:
-    Entity weapon1;
-    Entity weapon2; 
 };
