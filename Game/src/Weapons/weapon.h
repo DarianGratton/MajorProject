@@ -15,6 +15,10 @@ public:
     inline std::string getName() { return name; }
     inline void setIsActive(bool active) { isActive = active; }
 
+     // Collision detection
+    virtual void beginContact() { LOG_WARN("Weapon: Abstract class' start contact called."); }
+    virtual void endContact() { LOG_WARN("Weapon: Abstract class' end contact called."); }
+
 private:
     std::string name;
     bool isActive;

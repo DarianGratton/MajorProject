@@ -10,7 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "../components.h"
-#include "../physicsManager.h"
+#include "../Physics/physicsManager.h"
 #include "../Renderer/vertexArray.h"
 #include "../Renderer/indexBuffer.h"
 #include "../Renderer/shader.h"
@@ -112,7 +112,6 @@ public:
             
             // TODO: Add as class member, currently the only way to do different font sizes
             TextRenderer textRenderer("src/Assets/fonts/arial.ttf", textSprite.fontpixelheight);
-            // textRenderer.setFontSize(textSprite.fontpixelwidth, textSprite.fontpixelheight);
             glm::vec2 textPosition = glm::vec2(transformComp.xpos, transformComp.ypos);
             textRenderer.renderText(textSprite.text, textPosition, textSprite.color, proj, view);
         });

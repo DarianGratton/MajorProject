@@ -10,4 +10,6 @@ public:
 
     void start() override;
     void update() override;
+    void beginContact() override;
+    void endContact() override;
 };

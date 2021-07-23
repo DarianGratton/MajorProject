@@ -2,8 +2,9 @@
 
 #include <box2d/box2d.h>
 
-#include "Renderer/b2Renderer.h"
-#include "logger.h"
+#include "../Renderer/b2Renderer.h"
+#include "contactListener.h"
+#include "../logger.h"
 
 class PhysicsManager {
 public:
@@ -25,4 +26,5 @@ private:
     PhysicsManager() {}
 
     b2World* world;
+    ContactListener* contactListener;
 };

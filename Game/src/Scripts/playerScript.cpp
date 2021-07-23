@@ -7,7 +7,9 @@
 PlayerScript::PlayerScript(entityx::Entity* entity) : CScript(entity) {}
 
 void PlayerScript::start() {
-
+    // Set up collisions
+    ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
+    rigidBody.get()->body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
 
 void PlayerScript::update() {
@@ -17,8 +19,6 @@ void PlayerScript::update() {
 
     // Movement UP
     if (Input::instance().isKeyPressed(GLFW_KEY_W)) {
-        // ComponentHandle<Transform> transform = entity.component<Transform>();
-        // transform.get()->ypos += 1.0f;
         desiredVelY = 250;
     }
 
@@ -51,4 +51,12 @@ void PlayerScript::update() {
     ComponentHandle<Transform> transform = entity.component<Transform>();
     transform.get()->xpos = rigidBody.get()->body->GetPosition().x;
     transform.get()->ypos = rigidBody.get()->body->GetPosition().y;
+}
+
+void PlayerScript::beginContact() {
+    LOG_INFO("Player script made contact");
+}
+
+void PlayerScript::endContact() {
+
 }

@@ -31,6 +31,9 @@ void PhysicsManager::draw(glm::mat4 proj, glm::mat4 view) {
 void PhysicsManager::createWorld(float gravX, float gravY) {
     b2Vec2 gravity(gravX, gravY);
     world = new b2World(gravity);
+
+    contactListener = new ContactListener();
+    world->SetContactListener(contactListener);
 }
 
 b2World* PhysicsManager::getWorld() {

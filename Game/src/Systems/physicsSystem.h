@@ -2,7 +2,7 @@
 
 #include <entityx/entityx.h>
 
-#include "../physicsManager.h"
+#include "../Physics/physicsManager.h"
 #include "../components.h"
 #include "../events.h"
 #include "../Renderer/b2Renderer.h"
@@ -22,11 +22,11 @@ public:
         // Update and run the physics 
         PhysicsManager::instance().update();
 
-        es.each<RigidBody>([dt](Entity entity, RigidBody &rigidBody) {
-            b2Vec2 position = rigidBody.body->GetPosition();
-            float angle = rigidBody.body->GetAngle();
-            printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
-        });
+        // es.each<RigidBody>([dt](Entity entity, RigidBody &rigidBody) {
+        //     b2Vec2 position = rigidBody.body->GetPosition();
+        //     float angle = rigidBody.body->GetAngle();
+        //     printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
+        // });
     }
 
     void receive(const SceneLoad& sl) {
