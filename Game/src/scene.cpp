@@ -56,6 +56,9 @@ bool Scene::load() {
             };
         e.assign<SpriteVertices>(spriteVertices);
 
+        // Add active
+        e.assign<Active>(true);
+
         while (component != NULL) {
             // Error check
             std::string name = component->Value();

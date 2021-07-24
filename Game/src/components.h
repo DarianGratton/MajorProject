@@ -15,3 +15,4 @@
 #include "Components/audio.h"
 #include "Components/name.h"
 #include "Components/script.h"
+#include "Components/active.h"
