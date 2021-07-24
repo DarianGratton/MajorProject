@@ -20,6 +20,7 @@ public:
     void draw(glm::mat4 proj, glm::mat4 view);
 
     void createWorld(float gravX, float gravY);
+
     b2World* getWorld();
 
 private:

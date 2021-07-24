@@ -44,9 +44,10 @@
         <Component name="Script" value="PlayerScript"/>
         <Component name="RigidBody" value="0.0f, -20.0f, 5.0f, 5.0f, 1.0f, 1.0f, 1"/>
     </Entity>
-    <Entity name="PlayerWeapon1" height="1.0f" width="1.0f">
-        <!-- Components to be determined at runtime -->
+    <Entity name="PlayerWeapon1" height="10.0f" width="10.0f">
+        <!-- Most components to be determined at runtime -->
         <Component name="Script" value="ShieldScript"/>
+        <Component name="SpriteVertices" value=""/>
     </Entity>
     <Entity name="PlayerWeapon2" height="1.0f" width="1.0f">
         <!-- Components to be determined at runtime --> 

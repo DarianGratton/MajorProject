@@ -15,4 +15,8 @@ public:
     // Collision detection
     void beginContact() override;
     void endContact() override;
+
+private:
+    Entity player;
+    unsigned int cooldown;
 };

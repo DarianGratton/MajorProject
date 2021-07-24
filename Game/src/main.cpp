@@ -176,7 +176,8 @@ int main(int argc, char** argv) {
 
         // Swap front and back buffers
         glfwSwapBuffers(window);
-        // LOG_INFO(dt);
+        // float framerate = 1 / dt;
+        // LOG_INFO(framerate);
     }
 
     // Deallocate
