@@ -12,3 +12,4 @@
 #include "WeaponScripts/weaponScript.h"
 #include "WeaponScripts/shieldScript.h"
 #include "WeaponScripts/swordScript.h"
+#include "WeaponScripts/bowScript.h"

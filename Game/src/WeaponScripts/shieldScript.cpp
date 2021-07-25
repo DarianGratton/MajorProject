@@ -44,7 +44,7 @@ void ShieldScript::start() {
     physicsComp.get()->body->SetEnabled(false);
 }
 
-void ShieldScript::update() {
+void ShieldScript::update(TimeDelta dt) {
     ComponentHandle<RigidBody> entityBody = getEntity()->component<RigidBody>();
 
     if (!isActive && entityBody.get()->body->IsEnabled()) {

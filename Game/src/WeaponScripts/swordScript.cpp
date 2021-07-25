@@ -45,7 +45,7 @@ void SwordScript::start() {
     physicsComp.get()->body->SetEnabled(false);
 }
 
-void SwordScript::update() {
+void SwordScript::update(TimeDelta dt) {
     ComponentHandle<RigidBody> entityBody = getEntity()->component<RigidBody>();
 
     if (entityBody.get()->body->IsEnabled()) {

@@ -9,7 +9,7 @@ public:
     ShieldScript(entityx::Entity* entity);
 
     void start() override;
-    void update() override;
+    void update(TimeDelta dt) override;
     void useWeapon() override;
 
     // Collision detection

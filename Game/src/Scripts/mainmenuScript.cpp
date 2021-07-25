@@ -27,7 +27,7 @@ void MainMenuScript::start() {
     cooldownBetweenKeys = 0;
 }
 
-void MainMenuScript::update() {
+void MainMenuScript::update(TimeDelta dt) {
 
     // Selection made
     if (Input::instance().isKeyPressed(GLFW_KEY_ENTER)) {

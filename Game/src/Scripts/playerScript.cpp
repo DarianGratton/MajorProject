@@ -26,7 +26,7 @@ void PlayerScript::start() {
     }
 }
 
-void PlayerScript::update() {
+void PlayerScript::update(TimeDelta dt) {
 
     // Movement
     if (canPlayerMove) {

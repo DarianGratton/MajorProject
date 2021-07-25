@@ -45,7 +45,7 @@ void LoadoutSelectionScript::start() {
     cooldownBetweenKeys = 0;
 }
 
-void LoadoutSelectionScript::update() {
+void LoadoutSelectionScript::update(TimeDelta dt) {
 
     // Selection made
     if (Input::instance().isKeyPressed(GLFW_KEY_ENTER)) {

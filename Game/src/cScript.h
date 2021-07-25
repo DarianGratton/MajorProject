@@ -9,7 +9,7 @@ public:
     CScript(Entity* entity);
 
     virtual void start() = 0;
-    virtual void update() = 0;
+    virtual void update(TimeDelta dt) = 0;
 
     // Collision detection
     virtual void beginContact();

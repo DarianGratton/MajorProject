@@ -21,7 +21,7 @@ public:
 
         es.each<Script>([dt](Entity entity, Script &script) {
             if (script.script != nullptr)
-                script.script->update();
+                script.script->update(dt);
         });
 
     }

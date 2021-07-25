@@ -9,5 +9,5 @@ public:
     EnemyScript(entityx::Entity* entity);
 
     void start() override;
-    void update() override;
+    void update(TimeDelta dt) override;
 };

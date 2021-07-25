@@ -9,7 +9,7 @@ public:
     SwordScript(Entity* entity, float spriteHeight, float spriteWidth);
 
     void start() override;
-    void update() override;
+    void update(TimeDelta dt) override;
     void useWeapon() override;
 
     // Collision detection

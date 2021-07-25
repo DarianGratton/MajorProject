@@ -10,6 +10,6 @@ void EnemyScript::start() {
 
 }
 
-void EnemyScript::update() {
+void EnemyScript::update(TimeDelta dt) {
 
 }

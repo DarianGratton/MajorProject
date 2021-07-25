@@ -20,6 +20,10 @@ CScript* ScriptFactory::getScript(std::string scriptName, entityx::Entity* entit
         return reinterpret_cast<CScript*>(new SwordScript(entity, 10.0f, 10.0f));
     }
 
+    if (scriptName == "BowScript") {
+        return reinterpret_cast<CScript*>(new BowScript(entity, 8.0f, 8.0f));
+    }
+
     // Menu Navigation
     if (scriptName == "MainMenuScript") {
         return new MainMenuScript(entity);
