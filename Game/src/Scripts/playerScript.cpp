@@ -5,7 +5,9 @@
 #include "../input.h"
 #include "../ECS.h"
 
-PlayerScript::PlayerScript(entityx::Entity* entity) : CScript(entity) {}
+PlayerScript::PlayerScript(entityx::Entity* entity) : CScript(entity) {
+    canPlayerMove = true;
+}
 
 void PlayerScript::start() {
     // Set up collisions
@@ -26,6 +28,59 @@ void PlayerScript::start() {
 
 void PlayerScript::update() {
 
+    // Movement
+    if (canPlayerMove) {
+        float desiredVelX = 0;
+        float desiredVelY = 0;
+
+        // Movement UP
+        if (Input::instance().isKeyPressed(GLFW_KEY_W)) {
+            desiredVelY = 250;
+
+            ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
+            textureComp.get()->setTexture("src/Assets/textures/PlayerUp.png");
+        }
+
+        // Movement DOWN
+        if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
+            desiredVelY = -250;
+
+            ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
+            textureComp.get()->setTexture("src/Assets/textures/PlayerDown.png");
+        }
+        
+        // Movement RIGHT
+        if (Input::instance().isKeyPressed(GLFW_KEY_D)) {
+            desiredVelX = 250;
+
+            ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
+            textureComp.get()->setTexture("src/Assets/textures/PlayerRight.png");
+        }
+        
+        // Movement LEFT
+        if (Input::instance().isKeyPressed(GLFW_KEY_A)) {
+            desiredVelX = -250;
+
+            ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
+            textureComp.get()->setTexture("src/Assets/textures/PlayerLeft.png");
+        }    
+
+        // Apply forces
+        ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
+        b2Vec2 playerVelocity = rigidBody.get()->body->GetLinearVelocity();
+        
+        float velChangeX = desiredVelX - playerVelocity.x;
+        float velChangeY = desiredVelY - playerVelocity.y;
+        float impulseX = rigidBody.get()->body->GetMass() * velChangeX;
+        float impulseY = rigidBody.get()->body->GetMass() * velChangeY;
+        rigidBody.get()->body->ApplyLinearImpulse(b2Vec2(impulseX, impulseY), rigidBody.get()->body->GetWorldCenter(), true);
+
+        // Update player position
+        ComponentHandle<Transform> transform = entity.component<Transform>();
+        transform.get()->xpos = rigidBody.get()->body->GetPosition().x;
+        transform.get()->ypos = rigidBody.get()->body->GetPosition().y;
+    }
+    
     // Attack
     // Use weapon 1
     if (Input::instance().isKeyPressed(GLFW_KEY_K)) {
@@ -33,6 +88,11 @@ void PlayerScript::update() {
         WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
         if (weaponScript)
             weaponScript->useWeapon();
+    } else {
+        ComponentHandle<Script> scriptComp = weapon1.component<Script>();
+        WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
+        if (weaponScript) 
+            weaponScript->setIsActive(false);
     }
 
     // Use weapon 2
@@ -43,57 +103,6 @@ void PlayerScript::update() {
             weaponScript->useWeapon();
     }
 
-
-    // Movement
-    float desiredVelX = 0;
-    float desiredVelY = 0;
-
-    // Movement UP
-    if (Input::instance().isKeyPressed(GLFW_KEY_W)) {
-        desiredVelY = 250;
-
-        ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
-        textureComp.get()->setTexture("src/Assets/textures/PlayerUp.png");
-    }
-
-    // Movement DOWN
-    if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
-        desiredVelY = -250;
-
-        ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
-        textureComp.get()->setTexture("src/Assets/textures/PlayerDown.png");
-    }
-    
-    // Movement RIGHT
-    if (Input::instance().isKeyPressed(GLFW_KEY_D)) {
-        desiredVelX = 250;
-
-        ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
-        textureComp.get()->setTexture("src/Assets/textures/PlayerRight.png");
-    }
-    
-    // Movement LEFT
-    if (Input::instance().isKeyPressed(GLFW_KEY_A)) {
-        desiredVelX = -250;
-
-        ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
-        textureComp.get()->setTexture("src/Assets/textures/PlayerLeft.png");
-    }    
-
-    // Apply forces
-    ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
-    b2Vec2 playerVelocity = rigidBody.get()->body->GetLinearVelocity();
-    
-    float velChangeX = desiredVelX - playerVelocity.x;
-    float velChangeY = desiredVelY - playerVelocity.y;
-    float impulseX = rigidBody.get()->body->GetMass() * velChangeX;
-    float impulseY = rigidBody.get()->body->GetMass() * velChangeY;
-    rigidBody.get()->body->ApplyLinearImpulse(b2Vec2(impulseX, impulseY), rigidBody.get()->body->GetWorldCenter(), true);
-
-    // Update player position
-    ComponentHandle<Transform> transform = entity.component<Transform>();
-    transform.get()->xpos = rigidBody.get()->body->GetPosition().x;
-    transform.get()->ypos = rigidBody.get()->body->GetPosition().y;
 }
 
 void PlayerScript::beginContact() {

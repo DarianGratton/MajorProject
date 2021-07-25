@@ -13,7 +13,10 @@ public:
     void beginContact() override;
     void endContact() override;
 
+    inline void setCanPlayerMove(bool canMove) { canPlayerMove = canMove; }
+
 private:
     Entity weapon1;
     Entity weapon2; 
+    bool canPlayerMove;
 };
