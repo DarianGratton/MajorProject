@@ -136,10 +136,20 @@ void EntityHelper::addShaderComponent(Entity* entity, const std::string& filepat
 void EntityHelper::addTextureComponent(Entity* entity, const std::string& filepath) {
     std::string temp = filepath;
     int n = temp.length();
-    char *chararray = new char [n+1];
-    strcpy(chararray,temp.c_str());
+    char* chararray = new char [n+1];
+    char* chararray_copy = new char [n+1];
+    strcpy(chararray, temp.c_str());
+    strcpy(chararray_copy, temp.c_str());
 
-    entity->assign<TextureComp>(chararray);
+    // Get filename
+    std::string filename;
+    char* token = strtok(chararray_copy, "/");
+    while (token != NULL) {
+        filename = token;
+        token = strtok(NULL, "/");
+    } 
+
+    entity->assign<TextureComp>(chararray, filename);
 }
 
 // TODO: Scale should be used

@@ -49,8 +49,10 @@
         <Component name="Script" value="ShieldScript"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
-    <Entity name="PlayerWeapon2" height="1.0f" width="1.0f">
+    <Entity name="PlayerWeapon2" height="10.0f" width="10.0f">
         <!-- Components to be determined at runtime --> 
+        <Component name="Script" value="SwordScript"/>
+        <Component name="SpriteVertices" value=""/>
     </Entity>
     <Entity name="Enemy" height="10.0f" width="10.0f">
         <Component name="Texture" value="src/Assets/textures/EnemyKnight.png"/>

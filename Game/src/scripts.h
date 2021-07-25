@@ -11,3 +11,4 @@
 #include "Scripts/enemyScript.h"
 #include "WeaponScripts/weaponScript.h"
 #include "WeaponScripts/shieldScript.h"
+#include "WeaponScripts/swordScript.h"

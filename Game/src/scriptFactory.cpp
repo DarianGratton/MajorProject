@@ -16,6 +16,10 @@ CScript* ScriptFactory::getScript(std::string scriptName, entityx::Entity* entit
         return reinterpret_cast<CScript*>(new ShieldScript(entity));
     }
 
+    if (scriptName == "SwordScript") {
+        return reinterpret_cast<CScript*>(new SwordScript(entity, 10.0f, 10.0f));
+    }
+
     // Menu Navigation
     if (scriptName == "MainMenuScript") {
         return new MainMenuScript(entity);

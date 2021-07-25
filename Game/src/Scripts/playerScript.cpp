@@ -101,6 +101,11 @@ void PlayerScript::update() {
         WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
         if (weaponScript)
             weaponScript->useWeapon();
+    } else {
+        ComponentHandle<Script> scriptComp = weapon2.component<Script>();
+        WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
+        if (weaponScript) 
+            weaponScript->setIsActive(false);
     }
 
 }
