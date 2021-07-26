@@ -12,8 +12,8 @@ public:
     virtual void update(TimeDelta dt) = 0;
 
     // Collision detection
-    virtual void beginContact();
-    virtual void endContact();
+    virtual void beginContact(Entity* entityA, Entity* entityB);
+    virtual void endContact(Entity* entityA, Entity* entityB);
 
 protected:
     Entity entity;

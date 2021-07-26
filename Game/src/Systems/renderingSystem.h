@@ -125,7 +125,7 @@ public:
         });
 
         // Draw physics
-        bool debugPhysics = false;
+        bool debugPhysics = true;
         if (debugPhysics)
             PhysicsManager::instance().draw(proj, view);
 

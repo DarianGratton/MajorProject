@@ -1,5 +1,7 @@
 #include "playerScript.h"
 
+#include <string>
+
 #include "../components.h"
 #include "../logger.h"
 #include "../input.h"
@@ -12,17 +14,18 @@ PlayerScript::PlayerScript(entityx::Entity* entity) : CScript(entity) {
 void PlayerScript::start() {
     // Set up collisions
     ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
-    rigidBody.get()->body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+    rigidBody.get()->body->GetUserData().pointer = reinterpret_cast<uintptr_t>(&entity);
 
     ComponentHandle<Name> entityName;
-    for (Entity entity : ECS::instance().entities.entities_with_components(entityName)) {
-        entityName = entity.component<Name>();
+    for (Entity e : ECS::instance().entities.entities_with_components(entityName)) {
         
+        entityName = e.component<Name>();
         if (entityName.get()->name == "PlayerWeapon1")
-            weapon1 = entity;
+            weapon1 = e;
 
         if (entityName.get()->name == "PlayerWeapon2")
-            weapon2 = entity;
+            weapon2 = e;
+    
     }
 }
 
@@ -110,10 +113,12 @@ void PlayerScript::update(TimeDelta dt) {
 
 }
 
-void PlayerScript::beginContact() {
-    LOG_INFO("Player script made contact");
+void PlayerScript::beginContact(Entity* entityA, Entity* entityB) {
+    ComponentHandle<Name> entityName = entityB->component<Name>();
+    if (entityName.get()->name.find("Enemy") != std::string::npos)
+        LOG_INFO("Player script made contact with something");
 }
 
-void PlayerScript::endContact() {
+void PlayerScript::endContact(Entity* entityA, Entity* entityB) {
 
 }

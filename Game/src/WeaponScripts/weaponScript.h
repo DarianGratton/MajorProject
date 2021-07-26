@@ -16,8 +16,8 @@ public:
     inline Entity* getEntity() { return &entity; }
 
      // Collision detection
-    virtual void beginContact() { LOG_WARN("WeaponScript: Abstract class' start contact called."); }
-    virtual void endContact() { LOG_WARN("WeaponScript: Abstract class' end contact called."); }
+    virtual void beginContact(Entity* entityA, Entity* entityB) { LOG_WARN("WeaponScript: Abstract class' start contact called."); }
+    virtual void endContact(Entity* entityA, Entity* entityB) { LOG_WARN("WeaponScript: Abstract class' end contact called."); }
 
 protected:
     bool isActive;

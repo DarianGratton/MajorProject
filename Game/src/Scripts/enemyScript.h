@@ -10,4 +10,7 @@ public:
 
     void start() override;
     void update(TimeDelta dt) override;
+    void beginContact(Entity* entityA, Entity* entityB) override;
+    void endContact(Entity* entityA, Entity* entityB) override;
+
 };

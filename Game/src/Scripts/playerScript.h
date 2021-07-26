@@ -10,8 +10,8 @@ public:
 
     void start() override;
     void update(TimeDelta dt) override;
-    void beginContact() override;
-    void endContact() override;
+    void beginContact(Entity* entityA, Entity* entityB) override;
+    void endContact(Entity* entityA, Entity* entityB) override;
 
     inline void setCanPlayerMove(bool canMove) { canPlayerMove = canMove; }
 

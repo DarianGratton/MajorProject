@@ -109,10 +109,10 @@ void ShieldScript::useWeapon() {
 }
 
 // Collision detection
-void ShieldScript::beginContact() {
+void ShieldScript::beginContact(Entity* entityA, Entity* entityB) {
 
 }
 
-void ShieldScript::endContact() {
+void ShieldScript::endContact(Entity* entityA, Entity* entityB) {
 
 }

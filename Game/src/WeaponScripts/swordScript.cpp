@@ -139,10 +139,10 @@ int SwordScript::getPlayerDirection() {
 }
 
 // Collision detection
-void SwordScript::beginContact() {
+void SwordScript::beginContact(Entity* entityA, Entity* entityB) {
 
 }
 
-void SwordScript::endContact() {
+void SwordScript::endContact(Entity* entityA, Entity* entityB) {
 
 }
