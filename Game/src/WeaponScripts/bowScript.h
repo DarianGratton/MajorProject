@@ -24,7 +24,7 @@ private:
     float spriteWidth;
     float projectileSpeed;
     float projectileLifespan;
-    float cooldownBetweenShots;
+    float fireRate;
 
     // Entity and it's direction
     std::vector<std::pair<Entity, int>> projectiles;

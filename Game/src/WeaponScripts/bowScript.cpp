@@ -13,7 +13,7 @@ BowScript::BowScript(Entity* entity, float spriteHeight, float spriteWidth) : We
     spriteOffset = 10.0f;
     projectileSpeed = 2.0f;
     projectileLifespan = 2.0f;
-    cooldownBetweenShots = 0.0f;
+    fireRate = 0.0f;
     isActive = false;
 }
 
@@ -30,11 +30,11 @@ void BowScript::start() {
 void BowScript::update(TimeDelta dt) {
 
     // Update cooldown
-    float cooldown = cooldownBetweenShots - dt;
+    float cooldown = fireRate - dt;
     if (cooldown <= 0) {
-        cooldownBetweenShots = 0;
+        fireRate = 0;
     } else {
-        cooldownBetweenShots = cooldown;
+        fireRate = cooldown;
     }
 
     // Update position of arrows
@@ -90,10 +90,10 @@ void BowScript::update(TimeDelta dt) {
 }
 
 void BowScript::useWeapon() {
-    if (cooldownBetweenShots > 0 || projectiles.size() > 3)
+    if (fireRate > 0 || projectiles.size() > 3)
         return;
 
-    cooldownBetweenShots = 0.6f;
+    fireRate = 0.6f;
     spawnArrow();
 }
 
