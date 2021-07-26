@@ -13,8 +13,8 @@ PlayerScript::PlayerScript(entityx::Entity* entity) : CScript(entity) {
 
 void PlayerScript::start() {
     // Set up collisions
-    ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
-    rigidBody.get()->body->GetUserData().pointer = reinterpret_cast<uintptr_t>(&entity);
+    // ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
+    // rigidBody.get()->body->GetUserData().pointer = reinterpret_cast<uintptr_t>(&entity);
 
     ComponentHandle<Name> entityName;
     for (Entity e : ECS::instance().entities.entities_with_components(entityName)) {
@@ -68,7 +68,7 @@ void PlayerScript::update(TimeDelta dt) {
             textureComp.get()->setTexture("src/Assets/textures/PlayerLeft.png");
         }    
     }
-    
+
     // Apply forces
     ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
     b2Vec2 playerVelocity = rigidBody.get()->body->GetLinearVelocity();

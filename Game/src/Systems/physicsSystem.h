@@ -40,6 +40,7 @@ public:
             physicsComp = e.component<RigidBody>();
             physicsComp.get()->body = PhysicsManager::instance().getWorld()->CreateBody(&physicsComp.get()->bodyDef);
             physicsComp.get()->createFixture();
+            physicsComp.get()->setUserData(&e);
         }
     }
 };

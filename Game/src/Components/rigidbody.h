@@ -1,8 +1,12 @@
 #pragma once
 
+#include <entityx/entityx.h>
 #include <box2d/box2d.h>
 
 #include "../logger.h"
+#include "../ECS.h"
+
+using namespace entityx;
 
 struct RigidBody {
     RigidBody(float xpos, float ypos, float hx, float hy, float density = 0.0f, float friction = 1.0f, bool isDynamicBody = false) 
@@ -36,6 +40,16 @@ struct RigidBody {
         }
     }
 
+    void setUserData(Entity* e) {
+        if (body == nullptr) {
+            LOG_ERROR("RigidBody userData: Body has not yet been created in the physics world");
+            return;
+        }
+
+        entity = ECS::instance().entities.get(e->id());    
+        body->GetUserData().pointer = reinterpret_cast<uintptr_t>(&entity);
+    }
+
     float density;
     float friction;
     bool isDynamicBody;
@@ -43,4 +57,7 @@ struct RigidBody {
     b2PolygonShape collisionBox;
     b2FixtureDef fixtureDef;
     b2Body* body;
+
+private:
+    Entity entity;
 };

@@ -10,8 +10,8 @@ EnemyScript::EnemyScript(entityx::Entity* entity) : CScript(entity) {
 
 void EnemyScript::start() {
      // Set up collisions
-    ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
-    rigidBody.get()->body->GetUserData().pointer = reinterpret_cast<uintptr_t>(&entity);
+    // ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
+    // rigidBody.get()->body->GetUserData().pointer = reinterpret_cast<uintptr_t>(&entity);
 
 }
 
