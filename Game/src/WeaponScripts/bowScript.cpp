@@ -4,6 +4,7 @@
 #include "../components.h"
 #include "../scripts.h"
 #include "../ECS.h"
+#include "../cScript.h"
 
 // Blocks attack
 // Cooldown between blocks
@@ -15,19 +16,42 @@ BowScript::BowScript(Entity* entity, float spriteHeight, float spriteWidth) : We
     projectileLifespan = 2.0f;
     fireRate = 0.0f;
     isActive = false;
+    arrowNumber = 0;
 }
 
 void BowScript::start() {
     ComponentHandle<Name> entityName;
-    for (Entity entity : ECS::instance().entities.entities_with_components(entityName)) {
-        entityName = entity.component<Name>();
+    for (Entity e : ECS::instance().entities.entities_with_components(entityName)) {
+        entityName = e.component<Name>();
         
         if (entityName.get()->name == "Player")
-            player = entity;
+            player = e;
     }
 }
 
 void BowScript::update(TimeDelta dt) {
+
+    // Delete any projectiles flagged for deletion
+    for (std::string entityName : projectilesFlaggedForDeletion) {
+        for (int i = 0; i < projectilesTimeElapsed.size(); i++) {
+            
+            ComponentHandle<Name> nameComp = projectiles.at(i).first.component<Name>();
+            if (nameComp.get()->name == entityName) {
+                Entity e = projectiles.at(i).first;
+                projectiles.erase(projectiles.begin() + i);
+                projectilesTimeElapsed.erase(projectilesTimeElapsed.begin() + i);
+
+                ComponentHandle<RigidBody> physicsComp = e.component<RigidBody>();
+                PhysicsManager::instance().getWorld()->DestroyBody(physicsComp.get()->body);
+
+                e.destroy();
+                break;
+            }
+        
+        }
+    }
+    projectilesFlaggedForDeletion.clear();
+
 
     // Update cooldown
     float cooldown = fireRate - dt;
@@ -122,21 +146,21 @@ int BowScript::getPlayerDirection() {
 
 void BowScript::spawnArrow() {
     // Set up entity components
-    Entity entity = ECS::instance().entities.create();
+    Entity e = ECS::instance().entities.create();
 
     int playerDirection = getPlayerDirection();
     if (playerDirection <= 1) {
-        entity.assign<TextureComp>("src/Assets/textures/ArrowUp.png", "ArrowUp.png");
+        e.assign<TextureComp>("src/Assets/textures/ArrowUp.png", "ArrowUp.png");
     } else if (playerDirection == 2) {
-        entity.assign<TextureComp>("src/Assets/textures/ArrowDown.png", "ArrowDown.png");
+        e.assign<TextureComp>("src/Assets/textures/ArrowDown.png", "ArrowDown.png");
     } else if (playerDirection == 3) {
-        entity.assign<TextureComp>("src/Assets/textures/ArrowRight.png", "ArrowRight.png");
+        e.assign<TextureComp>("src/Assets/textures/ArrowRight.png", "ArrowRight.png");
     } else if (playerDirection == 4) {
-        entity.assign<TextureComp>("src/Assets/textures/ArrowLeft.png", "ArrowLeft.png");
+        e.assign<TextureComp>("src/Assets/textures/ArrowLeft.png", "ArrowLeft.png");
     }
 
-    entity.assign<ShaderComp>("src/Assets/shaders/Basic.shader");
-    entity.assign<Active>(true);
+    e.assign<ShaderComp>("src/Assets/shaders/Basic.shader");
+    e.assign<Active>(true);
 
     std::vector<float> spriteVertices =  {
             -spriteWidth/2, -spriteHeight/2, 0.0f, 0.0f,
@@ -144,47 +168,59 @@ void BowScript::spawnArrow() {
              spriteWidth/2,  spriteHeight/2, 1.0f, 1.0f,
             -spriteWidth/2,  spriteHeight/2, 0.0f, 1.0f,
         };
-    entity.assign<SpriteVertices>(spriteVertices);
+    e.assign<SpriteVertices>(spriteVertices);
 
-    std::string name = "Arrow" + projectiles.size();
-    entity.assign<Name>(name);
+    std::string name = "Arrow" + std::to_string(arrowNumber);
+    e.assign<Name>(name);
     
     // Transform
     ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
     // Up or no direction found
     if (playerDirection <= 1) {
-        entity.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2);
-        entity.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 5.0f, 5.0f, 1.0, 0.5f, 1); 
+        e.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2);
+        e.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 5.0f, 5.0f, 1.0, 0.5f, 1); 
     
     // Down
     } else if (playerDirection == 2) {
-        entity.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 0.0f, 0, 0, 0, 1, 2);
-        entity.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 5.0f, 5.0f, 1.0, 0.5f, 1); 
+        e.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 0.0f, 0, 0, 0, 1, 2);
+        e.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 5.0f, 5.0f, 1.0, 0.5f, 1); 
     
     // Right
     } else if (playerDirection == 3) {
-        entity.assign<Transform>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2); 
-        entity.assign<RigidBody>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 5.0f, 5.0f, 1.0, 0.5f, 1);
+        e.assign<Transform>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2); 
+        e.assign<RigidBody>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 5.0f, 5.0f, 1.0, 0.5f, 1);
     
     // Left
     } else if (playerDirection == 4) {
-        entity.assign<Transform>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0.0f, 1, 2);
-        entity.assign<RigidBody>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 5.0f, 5.0f, 1.0, 0.5f, 1); 
+        e.assign<Transform>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0.0f, 1, 2);
+        e.assign<RigidBody>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 5.0f, 5.0f, 1.0, 0.5f, 1); 
     }
 
-    ComponentHandle<RigidBody> physicsComp = entity.component<RigidBody>();
+    e.assign<Script>(cscript);
+
+    ComponentHandle<RigidBody> physicsComp = e.component<RigidBody>();
     physicsComp.get()->body = PhysicsManager::instance().getWorld()->CreateBody(&physicsComp.get()->bodyDef);
     physicsComp.get()->createFixture();
+    physicsComp.get()->setUserData(&e);
 
     // Add entity to list
-    projectiles.push_back(std::make_pair(ECS::instance().entities.get(entity.id()), playerDirection));
-    // physicsComp.get()->body->GetUserData().pointer = reinterpret_cast<uintptr_t>(&projectiles.at(projectiles.size() - 1).first);
+    projectiles.push_back(std::make_pair(ECS::instance().entities.get(e.id()), playerDirection));
     projectilesTimeElapsed.push_back(0.0f);
+    arrowNumber++;
+    if (arrowNumber > 2) {
+        arrowNumber = 0;
+    }
 }
 
 // Collision detection
 void BowScript::beginContact(Entity* entityA, Entity* entityB) {
-    
+    LOG_TRACE("Collision called");
+    ComponentHandle<Name> nameComp = entityA->component<Name>();
+    LOG_TRACE(nameComp.get()->name);
+    if (nameComp.get()->name.find("Arrow") != std::string::npos) {
+        LOG_TRACE("Flagged");
+        projectilesFlaggedForDeletion.push_back(nameComp.get()->name);
+    }
 }
 
 void BowScript::endContact(Entity* entityA, Entity* entityB) {

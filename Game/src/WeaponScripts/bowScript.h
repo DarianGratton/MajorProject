@@ -25,10 +25,12 @@ private:
     float projectileSpeed;
     float projectileLifespan;
     float fireRate;
+    int arrowNumber;
 
-    // Entity and it's direction
+    // Projectile data structures
     std::vector<std::pair<Entity, int>> projectiles;
     std::vector<float> projectilesTimeElapsed;
+    std::vector<std::string> projectilesFlaggedForDeletion; 
 
     int getPlayerDirection();
     void spawnArrow();

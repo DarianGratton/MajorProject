@@ -12,10 +12,6 @@ PlayerScript::PlayerScript(entityx::Entity* entity) : CScript(entity) {
 }
 
 void PlayerScript::start() {
-    // Set up collisions
-    // ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
-    // rigidBody.get()->body->GetUserData().pointer = reinterpret_cast<uintptr_t>(&entity);
-
     ComponentHandle<Name> entityName;
     for (Entity e : ECS::instance().entities.entities_with_components(entityName)) {
         
@@ -84,32 +80,39 @@ void PlayerScript::update(TimeDelta dt) {
     transform.get()->xpos = rigidBody.get()->body->GetPosition().x;
     transform.get()->ypos = rigidBody.get()->body->GetPosition().y;
     
-    
     // Attack
     // Use weapon 1
-    if (Input::instance().isKeyPressed(GLFW_KEY_K)) {
+    if (weapon1.valid()) {
+        
+        if (Input::instance().isKeyPressed(GLFW_KEY_K)) {
         ComponentHandle<Script> scriptComp = weapon1.component<Script>();
         WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
         if (weaponScript)
             weaponScript->useWeapon();
-    } else {
-        ComponentHandle<Script> scriptComp = weapon1.component<Script>();
-        WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
-        if (weaponScript) 
-            weaponScript->setIsActive(false);
+        } else {
+            ComponentHandle<Script> scriptComp = weapon1.component<Script>();
+            WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
+            if (weaponScript) 
+                weaponScript->setIsActive(false);
+        }
+   
     }
 
     // Use weapon 2
-    if (Input::instance().isKeyPressed(GLFW_KEY_L)) {
-        ComponentHandle<Script> scriptComp = weapon2.component<Script>();
-        WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
-        if (weaponScript)
-            weaponScript->useWeapon();
-    } else {
-        ComponentHandle<Script> scriptComp = weapon2.component<Script>();
-        WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
-        if (weaponScript) 
-            weaponScript->setIsActive(false);
+    if (weapon2.valid()) {
+       
+        if (Input::instance().isKeyPressed(GLFW_KEY_L)) {
+            ComponentHandle<Script> scriptComp = weapon2.component<Script>();
+            WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
+            if (weaponScript)
+                weaponScript->useWeapon();
+        } else {
+            ComponentHandle<Script> scriptComp = weapon2.component<Script>();
+            WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
+            if (weaponScript) 
+                weaponScript->setIsActive(false);
+        }
+    
     }
 
 }

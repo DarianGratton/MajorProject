@@ -16,11 +16,11 @@ ShieldScript::ShieldScript(entityx::Entity* entity) : WeaponScript(entity) {
 
 void ShieldScript::start() {
     ComponentHandle<Name> entityName;
-    for (Entity entity : ECS::instance().entities.entities_with_components(entityName)) {
-        entityName = entity.component<Name>();
+    for (Entity e : ECS::instance().entities.entities_with_components(entityName)) {
+        entityName = e.component<Name>();
         
         if (entityName.get()->name == "Player")
-            player = entity;
+            player = e;
     }
 
     // Set up entity components
@@ -78,34 +78,34 @@ void ShieldScript::update(TimeDelta dt) {
 }
 
 void ShieldScript::useWeapon() {
-    if (isActive)
-        return;
+    // if (isActive)
+    //     return;
 
-    isActive = true; 
-    cooldown = 100;
+    // isActive = true; 
+    // cooldown = 100;
 
-    // Update shield's transform
-    ComponentHandle<Transform> entityTransform = getEntity()->component<Transform>();
-    ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
-    entityTransform.get()->xpos = playerTransform.get()->xpos;
-    entityTransform.get()->ypos = playerTransform.get()->ypos;
+    // // Update shield's transform
+    // ComponentHandle<Transform> entityTransform = getEntity()->component<Transform>();
+    // ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
+    // entityTransform.get()->xpos = playerTransform.get()->xpos;
+    // entityTransform.get()->ypos = playerTransform.get()->ypos;
 
-    // Update body transform
-    ComponentHandle<RigidBody> entityBody = getEntity()->component<RigidBody>();
-    entityBody.get()->body->SetTransform(b2Vec2(entityTransform.get()->xpos, entityTransform.get()->ypos), 0.0f);
+    // // Update body transform
+    // ComponentHandle<RigidBody> entityBody = getEntity()->component<RigidBody>();
+    // entityBody.get()->body->SetTransform(b2Vec2(entityTransform.get()->xpos, entityTransform.get()->ypos), 0.0f);
 
-    // Disable player movement
-    ComponentHandle<Script> playerScript = player.component<Script>(); 
-    reinterpret_cast<PlayerScript*>(playerScript.get()->script)->setCanPlayerMove(false);
+    // // Disable player movement
+    // ComponentHandle<Script> playerScript = player.component<Script>(); 
+    // reinterpret_cast<PlayerScript*>(playerScript.get()->script)->setCanPlayerMove(false);
 
-    // Disable player body
-    ComponentHandle<RigidBody> playerBody = player.component<RigidBody>(); 
-    playerBody.get()->body->SetEnabled(false);
+    // // Disable player body
+    // ComponentHandle<RigidBody> playerBody = player.component<RigidBody>(); 
+    // playerBody.get()->body->SetEnabled(false);
 
-    // Activate entity
-    ComponentHandle<Active> activeComp = getEntity()->component<Active>();
-    activeComp.get()->isActive = true;
-    entityBody.get()->body->SetEnabled(true);
+    // // Activate entity
+    // ComponentHandle<Active> activeComp = getEntity()->component<Active>();
+    // activeComp.get()->isActive = true;
+    // entityBody.get()->body->SetEnabled(true);
 }
 
 // Collision detection

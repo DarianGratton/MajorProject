@@ -46,12 +46,12 @@
     </Entity>
     <Entity name="PlayerWeapon1" height="15.0f" width="15.0f">
         <!-- Most components to be determined at runtime -->
-        <Component name="Script" value="BowScript"/>
+        <Component name="Script" value="ShieldScript"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
     <Entity name="PlayerWeapon2" height="10.0f" width="10.0f">
         <!-- Components to be determined at runtime --> 
-        <Component name="Script" value="SwordScript"/>
+        <Component name="Script" value="BowScript"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
     <Entity name="Enemy" height="10.0f" width="10.0f">

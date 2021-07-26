@@ -17,11 +17,10 @@ SwordScript::SwordScript(Entity* entity, float spriteHeight, float spriteWidth) 
 
 void SwordScript::start() {
     ComponentHandle<Name> entityName;
-    for (Entity entity : ECS::instance().entities.entities_with_components(entityName)) {
-        entityName = entity.component<Name>();
-        
+    for (Entity e : ECS::instance().entities.entities_with_components(entityName)) {
+        entityName = e.component<Name>();
         if (entityName.get()->name == "Player")
-            player = entity;
+            player = e;
     }
 
     // Set up entity components

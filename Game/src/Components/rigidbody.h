@@ -3,8 +3,8 @@
 #include <entityx/entityx.h>
 #include <box2d/box2d.h>
 
-#include "../logger.h"
 #include "../ECS.h"
+#include "../logger.h"
 
 using namespace entityx;
 
@@ -42,11 +42,11 @@ struct RigidBody {
 
     void setUserData(Entity* e) {
         if (body == nullptr) {
-            LOG_ERROR("RigidBody userData: Body has not yet been created in the physics world");
+            LOG_ERROR("RigidBody createFixture: Body has not yet been created in the physics world");
             return;
         }
 
-        entity = ECS::instance().entities.get(e->id());    
+        entity = ECS::instance().entities.get(e->id());
         body->GetUserData().pointer = reinterpret_cast<uintptr_t>(&entity);
     }
 

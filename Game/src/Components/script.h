@@ -15,5 +15,7 @@ struct Script {
     
     }
 
+    Script(CScript* script) : script(script) {}
+
     CScript* script;
 };

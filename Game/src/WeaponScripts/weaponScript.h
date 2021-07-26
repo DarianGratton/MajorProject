@@ -7,7 +7,9 @@
 
 class WeaponScript : CScript {
 public:
-    WeaponScript(entityx::Entity* entity) : CScript(entity) {}
+    WeaponScript(Entity* entity) : CScript(entity) {
+        cscript = reinterpret_cast<CScript*>(this);
+    }
 
     virtual void useWeapon() = 0;
     
@@ -15,11 +17,12 @@ public:
     inline float getDamage() { return damage; }
     inline Entity* getEntity() { return &entity; }
 
-     // Collision detection
+    // Collision detection
     virtual void beginContact(Entity* entityA, Entity* entityB) { LOG_WARN("WeaponScript: Abstract class' start contact called."); }
     virtual void endContact(Entity* entityA, Entity* entityB) { LOG_WARN("WeaponScript: Abstract class' end contact called."); }
 
 protected:
     bool isActive;
     float damage;
+    CScript* cscript;
 };
