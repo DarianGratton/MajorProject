@@ -19,7 +19,7 @@ public:
 private:
     Entity player;
     float spriteOffset;
-    unsigned int cooldown;
+    float attackRate;
 
     int getPlayerDirection();
 };

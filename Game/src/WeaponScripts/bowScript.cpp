@@ -175,14 +175,18 @@ void BowScript::spawnArrow() {
     ComponentHandle<RigidBody> physicsComp = entity.component<RigidBody>();
     physicsComp.get()->body = PhysicsManager::instance().getWorld()->CreateBody(&physicsComp.get()->bodyDef);
     physicsComp.get()->createFixture();
-    physicsComp.get()->body->GetUserData().pointer = entity;
 
     // Add entity to list
     projectiles.push_back(std::make_pair(ECS::instance().entities.get(entity.id()), playerDirection));
+    // physicsComp.get()->body->GetUserData().pointer = reinterpret_cast<uintptr_t>(&projectiles.at(projectiles.size() - 1).first);
     projectilesTimeElapsed.push_back(0.0f);
 }
 
 // Collision detection
-void BowScript::beginContact(Entity* entityA, Entity* entityB) {}
+void BowScript::beginContact(Entity* entityA, Entity* entityB) {
+    
+}
 
-void BowScript::endContact(Entity* entityA, Entity* entityB) {}
+void BowScript::endContact(Entity* entityA, Entity* entityB) {
+
+}

@@ -17,6 +17,7 @@ class ContactListener : public b2ContactListener {
         b2BodyUserData bodyUserDataB = contact->GetFixtureB()->GetBody()->GetUserData();
 
         if (!bodyUserDataA.pointer || !bodyUserDataB.pointer) {
+            LOG_TRACE("No data");
             return;
         }
 
@@ -48,6 +49,7 @@ class ContactListener : public b2ContactListener {
         b2BodyUserData bodyUserDataB = contact->GetFixtureB()->GetBody()->GetUserData();
 
         if (!bodyUserDataA.pointer || !bodyUserDataB.pointer) {
+            LOG_TRACE("No data");
             return;
         }
 

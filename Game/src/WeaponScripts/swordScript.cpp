@@ -10,8 +10,8 @@
 // Small knockback after block
 
 SwordScript::SwordScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity) {
-    spriteOffset = 10.0f;
-    cooldown = 0;
+    spriteOffset = 10.5f;
+    attackRate = 0;
     isActive = false;
 }
 
@@ -33,7 +33,7 @@ void SwordScript::start() {
     getEntity()->assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2); 
 
     // RigidBody
-    getEntity()->assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 5.0f, 5.0f, 1.0, 0.5f, 0);
+    getEntity()->assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 5.0f, 5.0f, 1.0, 0.5f, 1);
 
     ComponentHandle<RigidBody> physicsComp = getEntity()->component<RigidBody>();
     physicsComp.get()->body = PhysicsManager::instance().getWorld()->CreateBody(&physicsComp.get()->bodyDef);
@@ -50,8 +50,8 @@ void SwordScript::update(TimeDelta dt) {
 
     if (entityBody.get()->body->IsEnabled()) {
 
-        if (cooldown > 0) {
-            cooldown--;
+        attackRate -= dt;
+        if (attackRate > 0) {
             return;
         }
 
@@ -73,7 +73,7 @@ void SwordScript::useWeapon() {
         return;
 
     isActive = true;
-    cooldown = 3;
+    attackRate = 0.3f;
 
     // Update sword's transform
     ComponentHandle<Transform> entityTransform = getEntity()->component<Transform>();
