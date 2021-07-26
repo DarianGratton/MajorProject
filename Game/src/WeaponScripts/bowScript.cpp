@@ -14,7 +14,6 @@ BowScript::BowScript(Entity* entity, float spriteHeight, float spriteWidth) : We
     projectileSpeed = 2.0f;
     projectileLifespan = 2.0f;
     cooldownBetweenShots = 0.0f;
-    framesElapsed = 0;
     isActive = false;
 }
 
@@ -62,9 +61,6 @@ void BowScript::update(TimeDelta dt) {
 
         ComponentHandle<RigidBody> entityBody = projectile.first.component<RigidBody>();
         entityBody.get()->body->SetTransform(b2Vec2(entityTransform.get()->xpos, entityTransform.get()->ypos), 0);
-        
-        if (framesElapsed > 0)
-            framesElapsed--;
     }
 
     // Update time elapsed for each projectile and delete if they exceed the lifespan
@@ -94,11 +90,10 @@ void BowScript::update(TimeDelta dt) {
 }
 
 void BowScript::useWeapon() {
-    if (framesElapsed != 0 || cooldownBetweenShots > 0 || projectiles.size() > 3)
+    if (cooldownBetweenShots > 0 || projectiles.size() > 3)
         return;
 
-    framesElapsed = 10;
-    cooldownBetweenShots = 2.0f;
+    cooldownBetweenShots = 0.6f;
     spawnArrow();
 }
 
