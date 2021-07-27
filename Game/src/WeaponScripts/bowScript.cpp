@@ -117,7 +117,7 @@ void BowScript::useWeapon() {
     if (fireRate > 0 || projectiles.size() > 3)
         return;
 
-    fireRate = 0.6f;
+    fireRate = 0.8f;
     spawnArrow();
 }
 
@@ -178,22 +178,22 @@ void BowScript::spawnArrow() {
     // Up or no direction found
     if (playerDirection <= 1) {
         e.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2);
-        e.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 5.0f, 5.0f, 1.0, 0.5f, 1); 
+        e.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 2.0f, 4.0f, 1.0, 0.5f, 1); 
     
     // Down
     } else if (playerDirection == 2) {
         e.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 0.0f, 0, 0, 0, 1, 2);
-        e.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 5.0f, 5.0f, 1.0, 0.5f, 1); 
+        e.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 2.0f, 4.0f, 1.0, 0.5f, 1); 
     
     // Right
     } else if (playerDirection == 3) {
         e.assign<Transform>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2); 
-        e.assign<RigidBody>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 5.0f, 5.0f, 1.0, 0.5f, 1);
+        e.assign<RigidBody>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 4.0f, 2.0f, 1.0, 0.5f, 1);
     
     // Left
     } else if (playerDirection == 4) {
         e.assign<Transform>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0.0f, 1, 2);
-        e.assign<RigidBody>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 5.0f, 5.0f, 1.0, 0.5f, 1); 
+        e.assign<RigidBody>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 4.0f, 2.0f, 1.0, 0.5f, 1); 
     }
 
     e.assign<Script>(cscript);
