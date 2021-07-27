@@ -7,7 +7,7 @@
 
 class ShieldScript : public WeaponScript {
 public:
-    ShieldScript(entityx::Entity* entity);
+    ShieldScript(entityx::Entity* entity, float spriteHeight, float spriteWidth);
 
     void start() override;
     void update(TimeDelta dt) override;
@@ -21,4 +21,6 @@ private:
     Entity player;
     b2Vec2 hitVelocity;
     float shieldCooldown;
+    float spriteHeight;
+    float spriteWidth;
 };

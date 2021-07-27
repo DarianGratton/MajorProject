@@ -9,7 +9,7 @@
 // Cooldown between blocks
 // Small knockback after block
 
-SwordScript::SwordScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity) {
+SwordScript::SwordScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity), spriteHeight(spriteHeight), spriteWidth(spriteWidth) {
     spriteOffset = 10.5f;
     attackRate = 0;
     isActive = false;
@@ -30,6 +30,15 @@ void SwordScript::start() {
     // Transform
     ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
     getEntity()->assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2); 
+
+    getEntity()->remove<SpriteVertices>();
+    std::vector<float> spriteVertices =  {
+            -spriteWidth/2, -spriteHeight/2, 0.0f, 0.0f,
+             spriteWidth/2, -spriteHeight/2, 1.0f, 0.0f,
+             spriteWidth/2,  spriteHeight/2, 1.0f, 1.0f,
+            -spriteWidth/2,  spriteHeight/2, 0.0f, 1.0f,
+        };
+    getEntity()->assign<SpriteVertices>(spriteVertices);
 
     // RigidBody
     // TODO: Factor for enemy using weapon

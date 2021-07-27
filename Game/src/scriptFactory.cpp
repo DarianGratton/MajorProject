@@ -13,11 +13,11 @@ CScript* ScriptFactory::getScript(std::string scriptName, entityx::Entity* entit
 
     // Weapons
     if (scriptName == "ShieldScript") {
-        return reinterpret_cast<CScript*>(new ShieldScript(entity));
+        return reinterpret_cast<CScript*>(new ShieldScript(entity, 5.0f, 5.0f));
     }
 
     if (scriptName == "SwordScript") {
-        return reinterpret_cast<CScript*>(new SwordScript(entity, 10.0f, 10.0f));
+        return reinterpret_cast<CScript*>(new SwordScript(entity, 5.0f, 5.0f));
     }
 
     if (scriptName == "BowScript") {
