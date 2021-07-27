@@ -42,7 +42,7 @@
         <Component name="Transform" value="0.0f, -20.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
         <Component name="Script" value="PlayerScript"/>
-        <Component name="RigidBody" value="0.0f, -20.0f, 5.0f, 5.0f, 1.0f, 1.0f, 1"/>
+        <Component name="RigidBody" value="0.0f, -20.0f, 5.0f, 5.0f, 1.0f, 1.0f, 1, 2, 1, 3, 5"/>
     </Entity>
     <Entity name="PlayerWeapon1" height="15.0f" width="15.0f">
         <!-- Most components to be determined at runtime -->
@@ -60,6 +60,6 @@
         <Component name="Transform" value="0.0f, 20.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
         <Component name="Script" value="EnemyScript"/>
-        <Component name="RigidBody" value="0.0f, 20.0f, 5.0f, 5.0f, 1.0f, 1.0f, 1"/>
+        <Component name="RigidBody" value="0.0f, 20.0f, 5.0f, 5.0f, 1.0f, 1.0f, 1, 3, 1, 2, 4"/>
     </Entity>
 </root>

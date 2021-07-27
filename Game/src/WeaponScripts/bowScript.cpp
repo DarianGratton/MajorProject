@@ -173,27 +173,32 @@ void BowScript::spawnArrow() {
     std::string name = "Arrow" + std::to_string(arrowNumber);
     e.assign<Name>(name);
     
+    // TODO: Factor for enemy using weapon
+    // Rigidbody bits
+    uint16 categoryBit = PhysicsManager::instance().PLAYERWEAPON;
+    uint16 maskBit = PhysicsManager::instance().BOUNDARY | PhysicsManager::instance().ENEMY | PhysicsManager::instance().ENEMYWEAPON;
+
     // Transform
     ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
     // Up or no direction found
     if (playerDirection <= 1) {
         e.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2);
-        e.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 2.0f, 4.0f, 1.0, 0.5f, 1); 
+        e.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 2.0f, 4.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
     
     // Down
     } else if (playerDirection == 2) {
         e.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 0.0f, 0, 0, 0, 1, 2);
-        e.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 2.0f, 4.0f, 1.0, 0.5f, 1); 
+        e.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 2.0f, 4.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
     
     // Right
     } else if (playerDirection == 3) {
         e.assign<Transform>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2); 
-        e.assign<RigidBody>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 4.0f, 2.0f, 1.0, 0.5f, 1);
+        e.assign<RigidBody>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 4.0f, 2.0f, 1.0, 0.5f, 1, categoryBit, maskBit);
     
     // Left
     } else if (playerDirection == 4) {
         e.assign<Transform>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0.0f, 1, 2);
-        e.assign<RigidBody>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 4.0f, 2.0f, 1.0, 0.5f, 1); 
+        e.assign<RigidBody>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 4.0f, 2.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
     }
 
     e.assign<Script>(cscript);
@@ -214,11 +219,8 @@ void BowScript::spawnArrow() {
 
 // Collision detection
 void BowScript::beginContact(Entity* entityA, Entity* entityB) {
-    LOG_TRACE("Collision called");
     ComponentHandle<Name> nameComp = entityA->component<Name>();
-    LOG_TRACE(nameComp.get()->name);
     if (nameComp.get()->name.find("Arrow") != std::string::npos) {
-        LOG_TRACE("Flagged");
         projectilesFlaggedForDeletion.push_back(nameComp.get()->name);
     }
 }

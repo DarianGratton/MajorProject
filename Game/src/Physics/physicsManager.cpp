@@ -36,6 +36,27 @@ void PhysicsManager::createWorld(float gravX, float gravY) {
     world->SetContactListener(contactListener);
 }
 
+PhysicsManager::bodyCategory PhysicsManager::intToCategory(int i) {
+    // TODO: Test if previous method worked
+    // return static_cast<PhysicsManager::bodyCategory>(i);
+
+    switch(i) {
+        case 1:
+            return BOUNDARY;
+        case 2:
+            return PLAYER;
+        case 3:
+            return ENEMY;
+        case 4: 
+            return PLAYERWEAPON;
+        case 5:
+            return ENEMYWEAPON;
+        default:
+            return BOUNDARY;
+    }
+}
+
 b2World* PhysicsManager::getWorld() {
     return world;
 }
+

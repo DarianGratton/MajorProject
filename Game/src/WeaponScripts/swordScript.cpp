@@ -32,7 +32,10 @@ void SwordScript::start() {
     getEntity()->assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2); 
 
     // RigidBody
-    getEntity()->assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 5.0f, 5.0f, 1.0, 0.5f, 1);
+    // TODO: Factor for enemy using weapon
+    uint16 categoryBit = PhysicsManager::instance().PLAYERWEAPON;
+    uint16 maskBit = PhysicsManager::instance().BOUNDARY | PhysicsManager::instance().ENEMY;
+    getEntity()->assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 5.0f, 5.0f, 1.0, 0.5f, 1, categoryBit, maskBit);
 
     ComponentHandle<RigidBody> physicsComp = getEntity()->component<RigidBody>();
     physicsComp.get()->body = PhysicsManager::instance().getWorld()->CreateBody(&physicsComp.get()->bodyDef);

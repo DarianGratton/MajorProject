@@ -32,7 +32,10 @@ void ShieldScript::start() {
     getEntity()->assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2); 
 
     // RigidBody
-    getEntity()->assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos, 5.0f, 5.0f, 1.0, 0.5f, 1);
+    // TODO: Factor for enemy using weapon
+    uint16 categoryBit = PhysicsManager::instance().PLAYERWEAPON;
+    uint16 maskBit = PhysicsManager::instance().BOUNDARY | PhysicsManager::instance().ENEMY | PhysicsManager::instance().ENEMYWEAPON;
+    getEntity()->assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos, 5.0f, 5.0f, 1.0, 0.5f, 1, categoryBit, maskBit);
 
     ComponentHandle<RigidBody> physicsComp = getEntity()->component<RigidBody>();
     physicsComp.get()->body = PhysicsManager::instance().getWorld()->CreateBody(&physicsComp.get()->bodyDef);
@@ -78,34 +81,34 @@ void ShieldScript::update(TimeDelta dt) {
 }
 
 void ShieldScript::useWeapon() {
-    // if (isActive)
-    //     return;
+    if (isActive)
+        return;
 
-    // isActive = true; 
-    // cooldown = 100;
+    isActive = true; 
+    cooldown = 100;
 
-    // // Update shield's transform
-    // ComponentHandle<Transform> entityTransform = getEntity()->component<Transform>();
-    // ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
-    // entityTransform.get()->xpos = playerTransform.get()->xpos;
-    // entityTransform.get()->ypos = playerTransform.get()->ypos;
+    // Update shield's transform
+    ComponentHandle<Transform> entityTransform = getEntity()->component<Transform>();
+    ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
+    entityTransform.get()->xpos = playerTransform.get()->xpos;
+    entityTransform.get()->ypos = playerTransform.get()->ypos;
 
-    // // Update body transform
-    // ComponentHandle<RigidBody> entityBody = getEntity()->component<RigidBody>();
-    // entityBody.get()->body->SetTransform(b2Vec2(entityTransform.get()->xpos, entityTransform.get()->ypos), 0.0f);
+    // Update body transform
+    ComponentHandle<RigidBody> entityBody = getEntity()->component<RigidBody>();
+    entityBody.get()->body->SetTransform(b2Vec2(entityTransform.get()->xpos, entityTransform.get()->ypos), 0.0f);
 
-    // // Disable player movement
-    // ComponentHandle<Script> playerScript = player.component<Script>(); 
-    // reinterpret_cast<PlayerScript*>(playerScript.get()->script)->setCanPlayerMove(false);
+    // Disable player movement
+    ComponentHandle<Script> playerScript = player.component<Script>(); 
+    reinterpret_cast<PlayerScript*>(playerScript.get()->script)->setCanPlayerMove(false);
 
-    // // Disable player body
-    // ComponentHandle<RigidBody> playerBody = player.component<RigidBody>(); 
-    // playerBody.get()->body->SetEnabled(false);
+    // Disable player body
+    ComponentHandle<RigidBody> playerBody = player.component<RigidBody>(); 
+    playerBody.get()->body->SetEnabled(false);
 
-    // // Activate entity
-    // ComponentHandle<Active> activeComp = getEntity()->component<Active>();
-    // activeComp.get()->isActive = true;
-    // entityBody.get()->body->SetEnabled(true);
+    // Activate entity
+    ComponentHandle<Active> activeComp = getEntity()->component<Active>();
+    activeComp.get()->isActive = true;
+    entityBody.get()->body->SetEnabled(true);
 }
 
 // Collision detection

@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 
+#include "Physics/physicsManager.h"
 #include "components.h"
 #include "logger.h"
 
@@ -337,6 +338,7 @@ void EntityHelper::addRigidBodyComponent(Entity* entity, const std::vector<std::
     float xpos, ypos, hx, hy;
     float density, friction;
     bool isDynamicBody;
+    int categoryBit, maskBit;
 
     // 4 parameters
     std::stringstream str(parameters.at(0));
@@ -381,7 +383,7 @@ void EntityHelper::addRigidBodyComponent(Entity* entity, const std::vector<std::
         LOG_ERROR("Scene parsing - addRigidBody Error: float 6 invalid value.");
         return;
     }
-    if (parameters.size() == 5) {
+    if (parameters.size() == 6) {
         entity->assign<RigidBody>(xpos, ypos, hx, hy, density, friction);
         return;
     }
@@ -392,6 +394,50 @@ void EntityHelper::addRigidBodyComponent(Entity* entity, const std::vector<std::
         LOG_ERROR("Scene parsing - addRigidBody Error: bool 1 invalid value.");
         return;
     }
+    if (parameters.size() == 7) {
+        entity->assign<RigidBody>(xpos, ypos, hx, hy, density, friction, isDynamicBody);
+        return;
+    }
 
-    entity->assign<RigidBody>(xpos, ypos, hx, hy, density, friction, isDynamicBody);
+    str = std::stringstream(parameters.at(7));
+    if (!(str >> categoryBit)) {
+        LOG_ERROR("Scene parsing - addRigidBody Error: int 1 invalid value.");
+        return;
+    }
+    PhysicsManager::bodyCategory category = PhysicsManager::instance().intToCategory(categoryBit);
+    if (parameters.size() == 8) {
+        entity->assign<RigidBody>(xpos, ypos, hx, hy, density, friction, isDynamicBody, category);
+        return;
+    }
+
+    str = std::stringstream(parameters.at(8));
+    if (!(str >> maskBit)) {
+        LOG_ERROR("Scene parsing - addRigidBody Error: int 2 invalid value.");
+        return;
+    }
+    PhysicsManager::bodyCategory mask1 = PhysicsManager::instance().intToCategory(maskBit);
+    if (parameters.size() == 9) {
+        entity->assign<RigidBody>(xpos, ypos, hx, hy, density, friction, isDynamicBody, category, mask1);
+        return;
+    }
+
+    str = std::stringstream(parameters.at(9));
+    if (!(str >> maskBit)) {
+        LOG_ERROR("Scene parsing - addRigidBody Error: int 3 invalid value.");
+        return;
+    }
+    PhysicsManager::bodyCategory mask2 = PhysicsManager::instance().intToCategory(maskBit);
+    if (parameters.size() == 10) {
+        entity->assign<RigidBody>(xpos, ypos, hx, hy, density, friction, isDynamicBody, category, mask1 | mask2);
+        return;
+    }
+
+    str = std::stringstream(parameters.at(10));
+    if (!(str >> maskBit)) {
+        LOG_ERROR("Scene parsing - addRigidBody Error: int 4 invalid value.");
+        return;
+    }
+
+    PhysicsManager::bodyCategory mask3 = PhysicsManager::instance().intToCategory(maskBit);
+    entity->assign<RigidBody>(xpos, ypos, hx, hy, density, friction, isDynamicBody, category, mask1 | mask2 | mask3);
 }

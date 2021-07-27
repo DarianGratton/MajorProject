@@ -28,6 +28,7 @@ public:
     void draw(glm::mat4 proj, glm::mat4 view);
 
     void createWorld(float gravX, float gravY);
+    bodyCategory intToCategory(int i);
 
     b2World* getWorld();
 

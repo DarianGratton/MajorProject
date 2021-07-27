@@ -9,8 +9,10 @@
 using namespace entityx;
 
 struct RigidBody {
-    RigidBody(float xpos, float ypos, float hx, float hy, float density = 0.0f, float friction = 1.0f, bool isDynamicBody = false) 
-        : density(density), friction(friction), isDynamicBody(isDynamicBody) {
+    RigidBody(float xpos, float ypos, float hx, float hy, 
+        float density = 0.0f, float friction = 1.0f, bool isDynamicBody = false, 
+        uint16 categoryBits = 0, uint16 maskBits = 0)
+        : density(density), friction(friction), isDynamicBody(isDynamicBody), categoryBits(categoryBits), maskBits(maskBits) {
                 
         // Create rigid body
         if (isDynamicBody)
@@ -29,6 +31,12 @@ struct RigidBody {
             LOG_ERROR("RigidBody createFixture: Body has not yet been created in the physics world");
             return;
         }
+
+        if (categoryBits != 0) 
+            fixtureDef.filter.categoryBits = categoryBits;
+
+        if (maskBits != 0)
+            fixtureDef.filter.maskBits = maskBits;
 
         if (isDynamicBody) {
             fixtureDef.shape = &collisionBox;
@@ -53,6 +61,8 @@ struct RigidBody {
     float density;
     float friction;
     bool isDynamicBody;
+    uint16 categoryBits;
+    uint16 maskBits;
     b2BodyDef bodyDef;
     b2PolygonShape collisionBox;
     b2FixtureDef fixtureDef;
