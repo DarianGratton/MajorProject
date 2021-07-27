@@ -10,8 +10,10 @@
 // Small knockback after block
 
 ShieldScript::ShieldScript(entityx::Entity* entity) : WeaponScript(entity) {
-    cooldown = 0;
+    shieldCooldown = 0;
     isActive = false;
+    //hitVelocity = b2Vec2_zero;
+    hitVelocity = b2Vec2(0.0f, -5.0f);
 }
 
 void ShieldScript::start() {
@@ -48,8 +50,17 @@ void ShieldScript::start() {
 }
 
 void ShieldScript::update(TimeDelta dt) {
-    ComponentHandle<RigidBody> entityBody = getEntity()->component<RigidBody>();
 
+    // Update cooldown
+    float cooldown = shieldCooldown - dt;
+    if (cooldown <= 0) {
+        shieldCooldown = 0;
+    } else {
+        shieldCooldown = cooldown;
+        return;
+    }
+
+    ComponentHandle<RigidBody> entityBody = getEntity()->component<RigidBody>();
     if (!isActive && entityBody.get()->body->IsEnabled()) {
         // Disable collision
         entityBody.get()->body->SetEnabled(false);
@@ -65,18 +76,8 @@ void ShieldScript::update(TimeDelta dt) {
         // Enable player body
         ComponentHandle<RigidBody> playerBody = player.component<RigidBody>(); 
         playerBody.get()->body->SetEnabled(true);
-    }
-
-    if (isActive) {
-        // TODO: Might need to replace with a knockback function or something
-        // Note: Hard to test but this should make it so if player is hit while shield is out the player follows the knockback of the shield
-        // Update shield's transform
-        ComponentHandle<Transform> entityTransform = getEntity()->component<Transform>();
-        ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
-        entityTransform.get()->xpos = entityBody.get()->body->GetPosition().x;
-        entityTransform.get()->ypos = entityBody.get()->body->GetPosition().y;
-        playerTransform.get()->xpos = entityBody.get()->body->GetPosition().x;
-        playerTransform.get()->ypos = entityBody.get()->body->GetPosition().y;
+        playerBody.get()->body->SetLinearVelocity(hitVelocity);
+        hitVelocity = b2Vec2_zero;
     }
 }
 
@@ -85,7 +86,6 @@ void ShieldScript::useWeapon() {
         return;
 
     isActive = true; 
-    cooldown = 100;
 
     // Update shield's transform
     ComponentHandle<Transform> entityTransform = getEntity()->component<Transform>();
@@ -113,7 +113,15 @@ void ShieldScript::useWeapon() {
 
 // Collision detection
 void ShieldScript::beginContact(Entity* entityA, Entity* entityB) {
+    ComponentHandle<Name> nameComp = entityB->component<Name>();
+    if (!(nameComp.get()->name.find("Enemy") != std::string::npos)) {
+        isActive = false;
 
+        ComponentHandle<RigidBody> shieldBody = entityA->component<RigidBody>();
+        hitVelocity = shieldBody.get()->body->GetLinearVelocity();
+
+        shieldCooldown = 3.0f;
+    }
 }
 
 void ShieldScript::endContact(Entity* entityA, Entity* entityB) {

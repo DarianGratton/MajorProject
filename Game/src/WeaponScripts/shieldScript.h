@@ -1,6 +1,7 @@
 #pragma once
 
 #include <entityx/entityx.h>
+#include <box2d/box2d.h>
 
 #include "weaponScript.h"
 
@@ -18,5 +19,6 @@ public:
 
 private:
     Entity player;
-    unsigned int cooldown;
+    b2Vec2 hitVelocity;
+    float shieldCooldown;
 };
