@@ -13,7 +13,8 @@
 GrenadeScript::GrenadeScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity), spriteHeight(spriteHeight), spriteWidth(spriteWidth) {
     spriteOffset = 10.0f;
     projectileSpeed = 1.0f;
-    projectileLifespan = 2.5f;
+    projectileLifespan = 1.5f;
+    explosionLifespan = 3.0f;
     cooldownTimer = 0.0f;
     isActive = false;
     timeElapsed = 0.0f;
@@ -38,9 +39,9 @@ void GrenadeScript::update(TimeDelta dt) {
     } else {
         cooldownTimer = cooldown;
     }
-
     timeElapsed += dt;
-    // Check if grenade is ready to explode
+
+    // Explode grenade
     if (grenadeEntity.valid() && timeElapsed >= projectileLifespan) {
         spawnExplosion();
 
@@ -49,14 +50,21 @@ void GrenadeScript::update(TimeDelta dt) {
 
         grenadeEntity.destroy();
         directionThrown = 0;
+        timeElapsed = 0.0f;
+    }
+
+    // Destroy explosion
+    if (explosionEntity.valid() && timeElapsed >= explosionLifespan) {
+        ComponentHandle<RigidBody> physicsComp = explosionEntity.component<RigidBody>();
+        PhysicsManager::instance().getWorld()->DestroyBody(physicsComp.get()->body);
+
+        explosionEntity.destroy();
+        directionThrown = 0;
     }
 
     // Update position of arrows
     if (grenadeEntity.valid()) { 
         ComponentHandle<Transform> entityTransform = grenadeEntity.component<Transform>();
-
-        LOG_TRACE(projectileSpeed);
-        LOG_TRACE(entityTransform.get()->ypos);
 
         // Up or no direction found
         if (directionThrown <= 1) {
@@ -84,7 +92,7 @@ void GrenadeScript::useWeapon() {
     if (cooldownTimer > 0 || isActive)
         return;
         
-    cooldownTimer = 6.0f;
+    cooldownTimer = projectileLifespan + explosionLifespan + 3.0f;
     timeElapsed = 0.0f;
     spawnGrenade();
 }
@@ -156,8 +164,6 @@ void GrenadeScript::spawnGrenade() {
     }
     grenadeEntity.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
 
-    grenadeEntity.assign<Script>(cscript);
-
     ComponentHandle<RigidBody> physicsComp = grenadeEntity.component<RigidBody>();
     physicsComp.get()->body = PhysicsManager::instance().getWorld()->CreateBody(&physicsComp.get()->bodyDef);
     physicsComp.get()->createFixture();
@@ -168,6 +174,43 @@ void GrenadeScript::spawnGrenade() {
 }
 
 void GrenadeScript::spawnExplosion() {
+
+    // Set up entity components
+    explosionEntity = ECS::instance().entities.create();
+
+    explosionEntity.assign<TextureComp>("src/Assets/textures/Explosion.png", "Explosion.png");
+    explosionEntity.assign<ShaderComp>("src/Assets/shaders/Basic.shader");
+    explosionEntity.assign<Active>(true);
+
+    float explosionSpriteHeight = spriteHeight * 2;
+    float explosionSpriteWidth = spriteWidth * 2;
+    std::vector<float> spriteVertices =  {
+            -explosionSpriteWidth/2, -explosionSpriteHeight/2, 0.0f, 0.0f,
+             explosionSpriteWidth/2, -explosionSpriteHeight/2, 1.0f, 0.0f,
+             explosionSpriteWidth/2,  explosionSpriteHeight/2, 1.0f, 1.0f,
+            -explosionSpriteWidth/2,  explosionSpriteHeight/2, 0.0f, 1.0f,
+        };
+    explosionEntity.assign<SpriteVertices>(spriteVertices);
+
+    explosionEntity.assign<Name>("Explosion");
+    
+    // TODO: Factor for enemy using weapon
+    // Rigidbody bits
+    uint16 categoryBit = PhysicsManager::instance().PLAYERWEAPON;
+    uint16 maskBit = PhysicsManager::instance().BOUNDARY | PhysicsManager::instance().ENEMY | PhysicsManager::instance().PLAYER;
+
+    // Transform
+    int playerDirection = getPlayerDirection();
+    ComponentHandle<Transform> grenadeTransform = grenadeEntity.component<Transform>(); 
+    explosionEntity.assign<Transform>(grenadeTransform.get()->xpos, grenadeTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2);
+    explosionEntity.assign<RigidBody>(grenadeTransform.get()->xpos, grenadeTransform.get()->ypos, 10.0f, 10.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+
+    explosionEntity.assign<Script>(cscript);
+
+    ComponentHandle<RigidBody> physicsComp = explosionEntity.component<RigidBody>();
+    physicsComp.get()->body = PhysicsManager::instance().getWorld()->CreateBody(&physicsComp.get()->bodyDef);
+    physicsComp.get()->createFixture();
+    physicsComp.get()->setUserData(&explosionEntity);
 
 }
 

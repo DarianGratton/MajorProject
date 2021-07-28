@@ -20,12 +20,14 @@ public:
 private:
     Entity player;
     Entity grenadeEntity;
+    Entity explosionEntity;
     int directionThrown;
     float spriteOffset;
     float spriteHeight;
     float spriteWidth;
     float projectileSpeed;
     float projectileLifespan;
+    float explosionLifespan;
     float cooldownTimer;
     float timeElapsed;
 
