@@ -12,7 +12,7 @@
 
 GrenadeScript::GrenadeScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity), spriteHeight(spriteHeight), spriteWidth(spriteWidth) {
     spriteOffset = 10.0f;
-    projectileSpeed = 1.0f;
+    projectileSpeed = 0.7f;
     projectileLifespan = 1.5f;
     explosionLifespan = 3.0f;
     cooldownTimer = 0.0f;
