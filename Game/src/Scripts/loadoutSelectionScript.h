@@ -19,9 +19,10 @@ private:
     Entity weaponOption3;
     Entity weaponOption4;
     Entity weaponOption5;
-    Entity weaponOption6;
     Entity backOption;
     Entity fightOption;
+    Entity weaponPreview;
+    float arrowPosOffset;
     unsigned int currOption;
     unsigned int numOfOptions;
     unsigned int cooldownBetweenKeys;
