@@ -24,7 +24,7 @@ void GauntletScript::start() {
     }
 
     // Set up entity components
-    getEntity()->assign<TextureComp>("src/Assets/textures/SwordSlash.png", "SwordSlash.png");
+    getEntity()->assign<TextureComp>("src/Assets/textures/GauntletAttack.png", "GauntletAttack.png");
     getEntity()->assign<ShaderComp>("src/Assets/shaders/Basic.shader");
     
     // Transform

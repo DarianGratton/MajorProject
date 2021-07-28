@@ -29,7 +29,7 @@ CScript* ScriptFactory::getScript(std::string scriptName, entityx::Entity* entit
     }
 
     if (scriptName == "GauntletScript") {
-        return reinterpret_cast<CScript*>(new GauntletScript(entity, 5.0f, 5.0f));
+        return reinterpret_cast<CScript*>(new GauntletScript(entity, 7.0f, 7.0f));
     }
 
     // Menu Navigation
