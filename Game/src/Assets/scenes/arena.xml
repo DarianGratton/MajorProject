@@ -50,7 +50,7 @@
     </Entity>
     <Entity name="PlayerWeapon2" height="10.0f" width="10.0f">
         <!-- Components to be determined at runtime --> 
-        <Component name="Script" value="GrenadeScript"/>
+        <Component name="Script" value="GauntletScript"/>
     </Entity>
     <Entity name="Enemy" height="10.0f" width="10.0f">
         <Component name="Texture" value="src/Assets/textures/EnemyKnight.png"/>
