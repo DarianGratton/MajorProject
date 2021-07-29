@@ -22,6 +22,7 @@ private:
     Entity backOption;
     Entity fightOption;
     Entity weaponPreview;
+    std::vector<Entity> selectionIndicators;
     float arrowPosOffset;
     unsigned int currOption;
     unsigned int numOfOptions;

@@ -65,4 +65,34 @@
         <Component name="Transform" value="275.0f, -100.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
+    <Entity name="Weapon1Check" height="60.0" width="60.0f">
+        <Component name="Texture" value="src/Assets/textures/GreenCheckmark.png"/>
+        <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
+        <Component name="Transform" value="50.0f, 100.0f, 0.0f, 0, 0, 0, 1, 2"/>
+        <Component name="SpriteVertices" value=""/>
+    </Entity>
+    <Entity name="Weapon2Check" height="60.0f" width="60.0f">
+        <Component name="Texture" value="src/Assets/textures/GreenCheckmark.png"/>
+        <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
+        <Component name="Transform" value="200.0f, 100.0f, 0.0f, 0, 0, 0, 1, 2"/>
+        <Component name="SpriteVertices" value=""/>
+    </Entity>
+    <Entity name="Weapon3Check" height="60.0f" width="60.0f">
+        <Component name="Texture" value="src/Assets/textures/GreenCheckmark.png"/>
+        <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
+        <Component name="Transform" value="350.0f, 100.0f, 0.0f, 0, 0, 0, 1, 2"/>
+        <Component name="SpriteVertices" value=""/>
+    </Entity>
+    <Entity name="Weapon4Check" height="60.0f" width="60.0f">
+        <Component name="Texture" value="src/Assets/textures/GreenCheckmark.png"/>
+        <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
+        <Component name="Transform" value="125.0f, -100.0f, 0.0f, 0, 0, 0, 1, 2"/>
+        <Component name="SpriteVertices" value=""/>
+    </Entity>
+    <Entity name="Weapon5Check" height="60.0f" width="60.0f">
+        <Component name="Texture" value="src/Assets/textures/GreenCheckmark.png"/>
+        <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
+        <Component name="Transform" value="275.0f, -100.0f, 0.0f, 0, 0, 0, 1, 2"/>
+        <Component name="SpriteVertices" value=""/>
+    </Entity>
 </root>

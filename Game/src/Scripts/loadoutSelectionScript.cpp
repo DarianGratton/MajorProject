@@ -48,10 +48,21 @@ void LoadoutSelectionScript::start() {
 
         if (entityName.get()->name == "WeaponPreview")
             weaponPreview = e;
+
+        if (entityName.get()->name.find("Check") != std::string::npos)
+            selectionIndicators.push_back(ECS::instance().entities.get(e.id()));
     }
 
     currOption = 1;
     numOfOptions = 7;
+
+    // Update selection indicator's active
+    int i = 0;
+    for (Entity e : selectionIndicators) {
+        ComponentHandle<Active> activeComp = e.component<Active>();
+        activeComp.get()->isActive = weaponsSelected[i];
+        i++; 
+    }
 }
 
 void LoadoutSelectionScript::update(TimeDelta dt) {
@@ -111,8 +122,7 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             }
         }
 
-        cooldownTimer = 0.2f;
-        LOG_TRACE(numberSelected);
+        cooldownTimer = 0.1f;
     }
 
     // Browse options
@@ -147,7 +157,7 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             currOption = 5;
         }
 
-        cooldownTimer = 0.2f;
+        cooldownTimer = 0.1f;
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
@@ -188,7 +198,7 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             currOption = 6;
         }
 
-        cooldownTimer = 0.2f;
+        cooldownTimer = 0.1f;
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_D)) {
@@ -212,7 +222,7 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             currOption = 5;
         }
 
-        cooldownTimer = 0.2f;
+        cooldownTimer = 0.1f;
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_A)) {
@@ -236,7 +246,7 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             currOption = 4;
         }
 
-        cooldownTimer = 0.2f;
+        cooldownTimer = 0.1f;
     }
 
     // Update weapon preview
@@ -259,6 +269,14 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             break;
         default:
             break;
+    }
+
+    // Update selection indicator's active
+    int i = 0;
+    for (Entity e : selectionIndicators) {
+        ComponentHandle<Active> activeComp = e.component<Active>();
+        activeComp.get()->isActive = weaponsSelected[i];
+        i++; 
     }
 
 }

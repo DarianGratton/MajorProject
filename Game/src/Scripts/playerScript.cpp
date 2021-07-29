@@ -26,6 +26,7 @@ void PlayerScript::start() {
     
     }
 
+    // Note: should be calling start but for some reason it does it for me, something weird with how entityx does for loops.
     if (weapon1.valid() && !weapon1.has_component<Script>()) {
         std::string scriptName = getScriptName(PlayerPrefs::instance().getWeapon1());
         weapon1.assign<Script>(scriptName, &weapon1);
