@@ -13,7 +13,7 @@ CScript* ScriptFactory::getScript(std::string scriptName, entityx::Entity* entit
 
     // Weapons
     if (scriptName == "ShieldScript") {
-        return reinterpret_cast<CScript*>(new ShieldScript(entity, 5.0f, 5.0f));
+        return reinterpret_cast<CScript*>(new ShieldScript(entity, 15.0f, 15.0f));
     }
 
     if (scriptName == "SwordScript") {
@@ -21,7 +21,7 @@ CScript* ScriptFactory::getScript(std::string scriptName, entityx::Entity* entit
     }
 
     if (scriptName == "BowScript") {
-        return reinterpret_cast<CScript*>(new BowScript(entity, 8.0f, 8.0f));
+        return reinterpret_cast<CScript*>(new BowScript(entity, 9.0f, 9.0f));
     }
 
     if (scriptName == "GrenadeScript") {
@@ -29,7 +29,7 @@ CScript* ScriptFactory::getScript(std::string scriptName, entityx::Entity* entit
     }
 
     if (scriptName == "GauntletScript") {
-        return reinterpret_cast<CScript*>(new GauntletScript(entity, 7.0f, 7.0f));
+        return reinterpret_cast<CScript*>(new GauntletScript(entity, 8.0f, 8.0f));
     }
 
     // Menu Navigation

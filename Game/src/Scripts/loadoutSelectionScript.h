@@ -25,5 +25,8 @@ private:
     float arrowPosOffset;
     unsigned int currOption;
     unsigned int numOfOptions;
-    unsigned int cooldownBetweenKeys;
+    float cooldownTimer;
+
+    unsigned int numberSelected;
+    bool weaponsSelected[5];
 };

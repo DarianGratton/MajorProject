@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "../playerPrefs.h"
+#include "../scriptFactory.h"
 #include "../components.h"
 #include "../logger.h"
 #include "../input.h"
@@ -22,6 +24,16 @@ void PlayerScript::start() {
         if (entityName.get()->name == "PlayerWeapon2")
             weapon2 = e;
     
+    }
+
+    if (weapon1.valid() && !weapon1.has_component<Script>()) {
+        std::string scriptName = getScriptName(PlayerPrefs::instance().getWeapon1());
+        weapon1.assign<Script>(scriptName, &weapon1);
+    }
+
+    if (weapon2.valid() && !weapon2.has_component<Script>()) {
+        std::string scriptName = getScriptName(PlayerPrefs::instance().getWeapon2());
+        weapon2.assign<Script>(scriptName, &weapon2);
     }
 }
 
@@ -115,6 +127,23 @@ void PlayerScript::update(TimeDelta dt) {
     
     }
 
+}
+
+std::string PlayerScript::getScriptName(int i) {
+    switch(i) {
+        case 1:
+            return "SwordScript";
+        case 2:
+            return "ShieldScript";
+        case 3:
+            return "BowScript";
+        case 4:
+            return "GrenadeScript";
+        case 5:
+            return "GauntletScript";
+        default:
+            return "SwordScript";
+    }
 }
 
 void PlayerScript::beginContact(Entity* entityA, Entity* entityB) {

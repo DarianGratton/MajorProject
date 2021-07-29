@@ -1,13 +1,21 @@
 #include "loadoutSelectionScript.h"
 
+#include "../playerPrefs.h"
 #include "../sceneManager.h"
 #include "../components.h"
+#include "../scripts.h"
 #include "../logger.h"
 #include "../input.h"
 #include "../ECS.h"
 
 LoadoutSelectionScript::LoadoutSelectionScript(entityx::Entity* entity) : CScript(entity) {
     arrowPosOffset = 70.0f;
+    numberSelected = 0;
+    cooldownTimer = 0.0f;
+
+    for (int i = 0; i < 5; i++) { 
+        weaponsSelected[i] = false;
+    }
 }
 
 void LoadoutSelectionScript::start() {
@@ -44,10 +52,18 @@ void LoadoutSelectionScript::start() {
 
     currOption = 1;
     numOfOptions = 7;
-    cooldownBetweenKeys = 0;
 }
 
 void LoadoutSelectionScript::update(TimeDelta dt) {
+
+     // Update cooldown
+    float cooldown = cooldownTimer - dt;
+    if (cooldown <= 0) {
+        cooldownTimer = 0;
+    } else {
+        cooldownTimer = cooldown;
+        return;
+    }
 
     // Selection made
     if (Input::instance().isKeyPressed(GLFW_KEY_ENTER)) {
@@ -55,14 +71,48 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             SceneManager::instance().loadScene("MainMenu");
         }
 
-        if (currOption == 6) {
-            SceneManager::instance().loadScene("Arena");
-        }
-    }
+        else if (currOption == 6) {
 
-    if (cooldownBetweenKeys != 0) {
-        cooldownBetweenKeys--;
-        return;
+            if (numberSelected == 2) {
+                for (int i = 0; i < 5; i++) {
+                    if (weaponsSelected[i]) {
+                        // Set weapon one
+                        if (PlayerPrefs::instance().getWeapon1() == 0) {
+                            PlayerPrefs::instance().setWeapon1(i + 1);
+
+                        // Set weapon two
+                        } else if (PlayerPrefs::instance().getWeapon2() == 0) {
+                            PlayerPrefs::instance().setWeapon2(i + 1);
+                        }
+                    }
+                }
+
+                SceneManager::instance().loadScene("Arena");
+            }
+        }
+
+        // Weapon selection
+        else {
+            bool invalidSelection = false;
+            int i = currOption - 1;
+            // Check if valid selection
+            if (numberSelected >= 2 && !weaponsSelected[i]) {
+                invalidSelection = true;
+            }
+
+            // Update booleans
+            if (!invalidSelection) {
+                weaponsSelected[i] = !weaponsSelected[i];
+                if (weaponsSelected[i]) {
+                    numberSelected++;
+                } else {
+                    numberSelected--;
+                }
+            }
+        }
+
+        cooldownTimer = 0.2f;
+        LOG_TRACE(numberSelected);
     }
 
     // Browse options
@@ -97,7 +147,7 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             currOption = 5;
         }
 
-        cooldownBetweenKeys = 3;
+        cooldownTimer = 0.2f;
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
@@ -138,7 +188,7 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             currOption = 6;
         }
 
-        cooldownBetweenKeys = 3;
+        cooldownTimer = 0.2f;
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_D)) {
@@ -162,7 +212,7 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             currOption = 5;
         }
 
-        cooldownBetweenKeys = 3;
+        cooldownTimer = 0.2f;
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_A)) {
@@ -186,7 +236,7 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             currOption = 4;
         }
 
-        cooldownBetweenKeys = 3;
+        cooldownTimer = 0.2f;
     }
 
     // Update weapon preview
