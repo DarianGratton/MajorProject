@@ -120,6 +120,14 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
                     numberSelected--;
                 }
             }
+
+            // Update selection indicator's active
+            i = 0;
+            for (Entity e : selectionIndicators) {
+                ComponentHandle<Active> activeComp = e.component<Active>();
+                activeComp.get()->isActive = weaponsSelected[i];
+                i++; 
+            }   
         }
 
         cooldownTimer = 0.1f;
@@ -269,14 +277,6 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             break;
         default:
             break;
-    }
-
-    // Update selection indicator's active
-    int i = 0;
-    for (Entity e : selectionIndicators) {
-        ComponentHandle<Active> activeComp = e.component<Active>();
-        activeComp.get()->isActive = weaponsSelected[i];
-        i++; 
     }
 
 }

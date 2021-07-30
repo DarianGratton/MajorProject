@@ -13,7 +13,11 @@ void EnemyScript::start() {
 }
 
 void EnemyScript::update(TimeDelta dt) {
-
+    // Update enemy position
+    ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
+    ComponentHandle<Transform> transform = entity.component<Transform>();
+    transform.get()->xpos = rigidBody.get()->body->GetPosition().x;
+    transform.get()->ypos = rigidBody.get()->body->GetPosition().y;
 }
 
 void EnemyScript::beginContact(Entity* entityA, Entity* entityB) {
