@@ -10,6 +10,7 @@
 // Small knockback after block
 
 ShieldScript::ShieldScript(entityx::Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity), spriteHeight(spriteHeight), spriteWidth(spriteWidth) {
+    damage = 0;
     shieldCooldown = 0;
     isActive = false;
     hitVelocity = b2Vec2_zero;
@@ -50,6 +51,7 @@ void ShieldScript::start() {
     ComponentHandle<RigidBody> physicsComp = getEntity()->component<RigidBody>();
     physicsComp.get()->body = PhysicsManager::instance().getWorld()->CreateBody(&physicsComp.get()->bodyDef);
     physicsComp.get()->createFixture();
+    physicsComp.get()->setUserData(getEntity());
 
     // Active
     ComponentHandle<Active> activeComp = getEntity()->component<Active>();

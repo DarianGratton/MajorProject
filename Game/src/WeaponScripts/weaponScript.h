@@ -14,7 +14,7 @@ public:
     virtual void useWeapon() = 0;
     
     inline void setIsActive(bool active) { isActive = active; }
-    inline float getDamage() { return damage; }
+    inline int getDamage() { return damage; }
     inline Entity* getEntity() { return &entity; }
 
     // Collision detection
@@ -23,6 +23,6 @@ public:
 
 protected:
     bool isActive;
-    float damage;
+    int damage;
     CScript* cscript;
 };

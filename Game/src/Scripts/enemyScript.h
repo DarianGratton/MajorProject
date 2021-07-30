@@ -13,4 +13,6 @@ public:
     void beginContact(Entity* entityA, Entity* entityB) override;
     void endContact(Entity* entityA, Entity* entityB) override;
 
+private:
+    int health;
 };

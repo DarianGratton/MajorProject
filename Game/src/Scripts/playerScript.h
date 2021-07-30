@@ -19,6 +19,7 @@ private:
     Entity weapon1;
     Entity weapon2; 
     bool canPlayerMove;
+    int health;
 
     std::string getScriptName(int i);
 };

@@ -10,6 +10,7 @@
 // Small knockback after block
 
 GauntletScript::GauntletScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity), spriteHeight(spriteHeight), spriteWidth(spriteWidth) {
+    damage = 15;
     spriteOffset = 8.5f;
     attackRate = 0;
     isActive = false;
@@ -49,6 +50,7 @@ void GauntletScript::start() {
     ComponentHandle<RigidBody> physicsComp = getEntity()->component<RigidBody>();
     physicsComp.get()->body = PhysicsManager::instance().getWorld()->CreateBody(&physicsComp.get()->bodyDef);
     physicsComp.get()->createFixture();
+    physicsComp.get()->setUserData(getEntity());
 
     // Active
     ComponentHandle<Active> activeComp = getEntity()->component<Active>();

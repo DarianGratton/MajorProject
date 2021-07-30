@@ -11,6 +11,7 @@
 // Small knockback after block
 
 GrenadeScript::GrenadeScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity), spriteHeight(spriteHeight), spriteWidth(spriteWidth) {
+    damage = 30;
     spriteOffset = 10.0f;
     projectileSpeed = 0.7f;
     projectileLifespan = 1.5f;
@@ -192,7 +193,7 @@ void GrenadeScript::spawnExplosion() {
         };
     explosionEntity.assign<SpriteVertices>(spriteVertices);
 
-    explosionEntity.assign<Name>("Explosion");
+    explosionEntity.assign<Name>("WeaponExplosion");
     
     // TODO: Factor for enemy using weapon
     // Rigidbody bits

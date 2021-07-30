@@ -11,6 +11,7 @@
 // Small knockback after block
 
 BowScript::BowScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity), spriteHeight(spriteHeight), spriteWidth(spriteWidth) {
+    damage = 5;
     spriteOffset = 10.0f;
     projectileSpeed = 2.0f;
     projectileLifespan = 2.0f;
@@ -170,7 +171,7 @@ void BowScript::spawnArrow() {
         };
     e.assign<SpriteVertices>(spriteVertices);
 
-    std::string name = "Arrow" + std::to_string(arrowNumber);
+    std::string name = "WeaponArrow" + std::to_string(arrowNumber);
     e.assign<Name>(name);
     
     // TODO: Factor for enemy using weapon
@@ -220,7 +221,7 @@ void BowScript::spawnArrow() {
 // Collision detection
 void BowScript::beginContact(Entity* entityA, Entity* entityB) {
     ComponentHandle<Name> nameComp = entityA->component<Name>();
-    if (nameComp.get()->name.find("Arrow") != std::string::npos) {
+    if (nameComp.get()->name.find("WeaponArrow") != std::string::npos) {
         projectilesFlaggedForDeletion.push_back(nameComp.get()->name);
     }
 }

@@ -10,6 +10,8 @@
 #include "../ECS.h"
 
 PlayerScript::PlayerScript(entityx::Entity* entity) : CScript(entity) {
+    // Initialize variables
+    health = 100;
     canPlayerMove = true;
 }
 
@@ -149,8 +151,13 @@ std::string PlayerScript::getScriptName(int i) {
 
 void PlayerScript::beginContact(Entity* entityA, Entity* entityB) {
     ComponentHandle<Name> entityName = entityB->component<Name>();
-    if (entityName.get()->name.find("Enemy") != std::string::npos)
-        LOG_INFO("Player script made contact with something");
+    if (entityName.get()->name.find("Weapon") != std::string::npos) {
+
+        ComponentHandle<Script> weaponScript = entityB->component<Script>();
+        int damage = reinterpret_cast<WeaponScript*>(weaponScript.get()->script)->getDamage();
+        health -= damage;
+
+    }
 }
 
 void PlayerScript::endContact(Entity* entityA, Entity* entityB) {
