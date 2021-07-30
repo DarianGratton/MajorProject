@@ -58,4 +58,30 @@
         <Component name="Script" value="EnemyScript"/>
         <Component name="RigidBody" value="0.0f, 20.0f, 5.0f, 5.0f, 1.0f, 1.0f, 1, 3, 1, 2, 4"/>
     </Entity>
+    <Entity name="PauseBackground" height="90.0f" width="135.0f">
+        <Component name="Texture" value="src/Assets/textures/BlackTile.png"/>
+        <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
+        <Component name="Transform" value="0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2"/>
+        <Component name="SpriteVertices" value=""/>
+    </Entity>
+    <Entity name="PausedText">
+        <Component name="TextSprite" value="Paused, 1.0f, 1.0f, 1.0f, 0, 24"/>
+        <Component name="Transform" value="-42.0f, 50.0f, 0.0f, 0, 0, 0, 1, 0.1f, 0.1f"/>
+    </Entity>
+    <Entity name="FinishText">
+        <Component name="TextSprite" value="You Win!, 1.0f, 1.0f, 1.0f, 0, 24"/>
+        <Component name="Transform" value="-45.0f, 50.0f, 0.0f, 0, 0, 0, 1, 0.1f, 0.1f"/>
+    </Entity>
+    <Entity name="ResumeText">
+        <Component name="TextSprite" value="Resume, 1.0f, 1.0f, 1.0f, 0, 24"/>
+        <Component name="Transform" value="-45.0f, 0.0f, 0.0f, 0, 0, 0, 1, 0.1f, 0.1f"/>
+    </Entity>
+    <Entity name="RestartText">
+        <Component name="TextSprite" value="Restart, 1.0f, 1.0f, 1.0f, 0, 24"/>
+        <Component name="Transform" value="-45.0f, 0.0f, 0.0f, 0, 0, 0, 1, 0.1f, 0.1f"/>
+    </Entity>
+    <Entity name="QuitText">
+        <Component name="TextSprite" value="End match, 1.0f, 1.0f, 1.0f, 0, 24"/>
+        <Component name="Transform" value="-55.0f, -50.0f, 0.0f, 0, 0, 0, 1, 0.1f, 0.1f"/>
+    </Entity>
 </root>
