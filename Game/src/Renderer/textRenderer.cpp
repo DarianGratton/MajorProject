@@ -86,7 +86,7 @@ void TextRenderer::setFontSize(unsigned int pixelwidth, unsigned int pixelheight
     FT_Error error = FT_Set_Pixel_Sizes(face, pixelwidth, pixelheight);
 }
 
-void TextRenderer::renderText(std::string text, glm::vec2 position, glm::vec3 color, glm::mat4 proj, glm::mat4 view) {
+void TextRenderer::renderText(std::string text, glm::vec2 position, glm::vec2 scale, glm::vec3 color, glm::mat4 proj, glm::mat4 view) {
     VertexArray va;
     VertexBuffer vb(NULL, sizeof(float) * 6 * 4);
 
@@ -97,7 +97,7 @@ void TextRenderer::renderText(std::string text, glm::vec2 position, glm::vec3 co
 
     float x = position.x;
     float y = position.y; 
-    float scale = 1.0f;
+    float charScale = 1.0f;
 
     // activate corresponding render state	
     Shader shader("src/Assets/shaders/BasicColor.shader");
@@ -116,11 +116,11 @@ void TextRenderer::renderText(std::string text, glm::vec2 position, glm::vec3 co
         
         Character ch = characters[*c];
 
-        float xpos = x + ch.bearing.x * scale;
-        float ypos = y - (ch.size.y - ch.bearing.y) * scale;
+        float xpos = x + ch.bearing.x * charScale;
+        float ypos = y - (ch.size.y - ch.bearing.y) * charScale;
 
-        float w = ch.size.x * scale;
-        float h = ch.size.y * scale;
+        float w = ch.size.x * charScale;
+        float h = ch.size.y * charScale;
         // update VBO for each character
         float vertices[6][4] = {
             { xpos,     ypos + h,   0.0f, 0.0f },            
@@ -148,6 +148,7 @@ void TextRenderer::renderText(std::string text, glm::vec2 position, glm::vec3 co
         glBindTexture(GL_TEXTURE_2D, ch.textureID);
         glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(translation));
         model = glm::rotate(model, 3.141592f / 180 * 0, glm::vec3(0, 0, 1)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+        model = glm::scale(model, glm::vec3(scale.x, scale.y, 1.0f)); // Test for text size
         glm::mat4 mvp;
         mvp = proj * view * model; 
 
@@ -161,7 +162,7 @@ void TextRenderer::renderText(std::string text, glm::vec2 position, glm::vec3 co
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
         // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-        x += (ch.advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
+        x += (ch.advance >> 6) * charScale; // bitshift by 6 to get value in pixels (2^6 = 64)
     }
 
     va.unbind();

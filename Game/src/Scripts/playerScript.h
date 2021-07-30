@@ -18,6 +18,7 @@ public:
 private:
     Entity weapon1;
     Entity weapon2; 
+    Entity playerHpText;
     bool canPlayerMove;
     int health;
 

@@ -17,7 +17,7 @@ public:
     ~TextRenderer();
 
     void setFontSize(unsigned int pixelwidth, unsigned int pixelheight);
-    void renderText(std::string text, glm::vec2 position, glm::vec3 color, glm::mat4 proj, glm::mat4 view);
+    void renderText(std::string text, glm::vec2 position, glm::vec2 scale, glm::vec3 color, glm::mat4 proj, glm::mat4 view);
 
 private:
     struct Character {

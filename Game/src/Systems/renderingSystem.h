@@ -119,7 +119,8 @@ public:
                 // TODO: Add as class member, currently the only way to do different font sizes
                 TextRenderer textRenderer("src/Assets/fonts/arial.ttf", textSprite.fontpixelheight);
                 glm::vec2 textPosition = glm::vec2(transformComp.xpos, transformComp.ypos);
-                textRenderer.renderText(textSprite.text, textPosition, textSprite.color, proj, view);
+                glm::vec2 textScale = glm::vec2(transformComp.xscl, transformComp.yscl);
+                textRenderer.renderText(textSprite.text, textPosition, textScale, textSprite.color, proj, view);
             }
             
         });

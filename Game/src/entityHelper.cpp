@@ -236,8 +236,30 @@ void EntityHelper::addTransformComponent(Entity* entity, const std::vector<std::
         LOG_ERROR("Scene parsing - addTransform Error: float 7 invalid value.");
         return;
     }
+    if (parameters.size() == 7) {
+        entity->assign<Transform>(xpos, ypos, zpos, angle, xrot, yrot, zrot);
+        return;
+    }
 
-    entity->assign<Transform>(xpos, ypos, zpos, angle, xrot, yrot, zrot);
+    // 8 parameters
+	str = std::stringstream(parameters.at(7));
+    if (!(str >> xscl)) {
+        LOG_ERROR("Scene parsing - addTransform Error: float 8 invalid value.");
+        return;
+    }
+    if (parameters.size() == 8) {
+        entity->assign<Transform>(xpos, ypos, zpos, angle, xrot, yrot, zrot, xscl);
+        return;
+    }
+
+    // 9 parameters
+	str = std::stringstream(parameters.at(8));
+    if (!(str >> yscl)) {
+        LOG_ERROR("Scene parsing - addTransform Error: float 9 invalid value.");
+        return;
+    }
+        
+    entity->assign<Transform>(xpos, ypos, zpos, angle, xrot, yrot, zrot, xscl, yscl);    
 }
 
 void EntityHelper::addAudioComponent(Entity* entity, const std::vector<std::string>& parameters) {

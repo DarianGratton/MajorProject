@@ -14,5 +14,6 @@ public:
     void endContact(Entity* entityA, Entity* entityB) override;
 
 private:
+    Entity enemyHpText;
     int health;
 };

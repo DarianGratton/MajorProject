@@ -25,6 +25,9 @@ void PlayerScript::start() {
 
         if (entityName.get()->name == "PlayerWeapon2")
             weapon2 = e;
+
+        if (entityName.get()->name == "PlayerHpText")
+            playerHpText = e;
     
     }
 
@@ -37,6 +40,12 @@ void PlayerScript::start() {
     if (weapon2.valid() && !weapon2.has_component<Script>()) {
         std::string scriptName = getScriptName(PlayerPrefs::instance().getWeapon2());
         weapon2.assign<Script>(scriptName, &weapon2);
+    }
+
+    // Display Player HP
+    if (playerHpText.valid()) {
+        ComponentHandle<TextSprite> textComp = playerHpText.component<TextSprite>();
+        textComp.get()->text = "Player HP: " + std::to_string(health); 
     }
 }
 
@@ -153,10 +162,14 @@ void PlayerScript::beginContact(Entity* entityA, Entity* entityB) {
     ComponentHandle<Name> entityName = entityB->component<Name>();
     if (entityName.get()->name.find("Weapon") != std::string::npos) {
 
+        // Update player hp
         ComponentHandle<Script> weaponScript = entityB->component<Script>();
         int damage = reinterpret_cast<WeaponScript*>(weaponScript.get()->script)->getDamage();
         health -= damage;
 
+        // Display updated Player HP
+        ComponentHandle<TextSprite> textComp = playerHpText.component<TextSprite>();
+        textComp.get()->text = "Player HP: " + std::to_string(health); 
     }
 }
 
