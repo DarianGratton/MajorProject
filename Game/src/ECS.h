@@ -22,6 +22,11 @@ public:
     void endGame(); 
     bool gameEnded;
 
+    void pauseGame();
+    void unpauseGame();
+    bool isGamePaused();
+    bool gamePaused;
+
 private:
     ECS() {}
 };

@@ -9,6 +9,7 @@
 // Scene 3 scripts (arena.xml)
 #include "Scripts/playerScript.h"
 #include "Scripts/enemyScript.h"
+#include "Scripts/pausemenuScript.h"
 #include "WeaponScripts/weaponScript.h"
 #include "WeaponScripts/shieldScript.h"
 #include "WeaponScripts/swordScript.h"

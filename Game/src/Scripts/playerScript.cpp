@@ -51,6 +51,10 @@ void PlayerScript::start() {
 
 void PlayerScript::update(TimeDelta dt) {
 
+    // Don't want to play if game is paused
+    if (ECS::instance().isGamePaused())
+        return;
+
     // Movement
     float desiredVelX = 0;
     float desiredVelY = 0;

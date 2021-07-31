@@ -27,6 +27,10 @@ void EnemyScript::start() {
 }
 
 void EnemyScript::update(TimeDelta dt) {
+
+    if (ECS::instance().isGamePaused())
+        return; 
+
     // Update enemy position
     ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
     ComponentHandle<Transform> transform = entity.component<Transform>();

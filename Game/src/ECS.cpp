@@ -20,3 +20,15 @@ void ECS::update(TimeDelta dt) {
 void ECS::endGame() {
     gameEnded = true;
 }
+
+void ECS::pauseGame() {
+    gamePaused = true;
+}
+
+void ECS::unpauseGame() {
+    gamePaused = false;
+}
+
+bool ECS::isGamePaused() {
+    return gamePaused;
+}
