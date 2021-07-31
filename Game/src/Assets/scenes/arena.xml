@@ -72,15 +72,16 @@
         <Component name="TextSprite" value="Resume, 1.0f, 1.0f, 1.0f, 0, 24"/>
         <Component name="Transform" value="-45.0f, 0.0f, 0.0f, 0, 0, 0, 1, 0.1f, 0.1f"/>
     </Entity>
-    <Entity name="EndMatchText">
-        <Component name="TextSprite" value="End match, 1.0f, 1.0f, 1.0f, 0, 24"/>
-        <Component name="Transform" value="-55.0f, -50.0f, 0.0f, 0, 0, 0, 1, 0.1f, 0.1f"/>
+    <Entity name="ExitText">
+        <Component name="TextSprite" value="Exit, 1.0f, 1.0f, 1.0f, 0, 24"/>
+        <Component name="Transform" value="-20.0f, -50.0f, 0.0f, 0, 0, 0, 1, 0.1f, 0.1f"/>
     </Entity>
     <Entity name="EndingText">
         <Component name="TextSprite" value="You Win!, 1.0f, 1.0f, 1.0f, 0, 24"/>
         <Component name="Transform" value="-45.0f, 50.0f, 0.0f, 0, 0, 0, 1, 0.1f, 0.1f"/>
     </Entity>
     <Entity name="RestartText">
+        <Component name="TextSprite" value="Restart, 1.0f, 1.0f, 1.0f, 0, 24"/>
         <Component name="Transform" value="-45.0f, 0.0f, 0.0f, 0, 0, 0, 1, 0.1f, 0.1f"/>
     </Entity>
     <Entity name="OptionArrow" height="2.5f" width="5.0f">
@@ -89,5 +90,12 @@
         <Component name="Transform" value="-10.0f, 0.5f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
         <Component name="Script" value="PauseMenuScript"/>
+    </Entity>
+    <Entity name="OptionArrow" height="2.5f" width="5.0f">
+        <Component name="Texture" value="src/Assets/textures/OptionArrow.png"/>
+        <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
+        <Component name="Transform" value="-10.0f, 0.5f, 0.0f, 0, 0, 0, 1, 2"/>
+        <Component name="SpriteVertices" value=""/>
+        <Component name="Script" value="EndScreenScript"/>
     </Entity>
 </root>

@@ -45,6 +45,11 @@ CScript* ScriptFactory::getScript(std::string scriptName, entityx::Entity* entit
         return new PauseMenuScript(entity);
     }
 
+    if (scriptName == "EndScreenScript") {
+        return new EndScreenScript(entity);
+    }
+
+
     // If scriptName is not found
     return nullptr;
 

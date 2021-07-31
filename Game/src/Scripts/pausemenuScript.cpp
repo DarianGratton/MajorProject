@@ -18,8 +18,8 @@ void PauseMenuScript::start() {
         if (entityName.get()->name == "ResumeText")
             resumeText = entity;
 
-        if (entityName.get()->name == "EndMatchText")
-            endMatchText = entity;
+        if (entityName.get()->name == "ExitText")
+            exitText = entity;
 
         if (entityName.get()->name == "PauseBackground")
             pauseBackground = entity;
@@ -57,6 +57,10 @@ void PauseMenuScript::update(TimeDelta dt) {
             ECS::instance().pauseGame();
     }
 
+    if (!isActive)
+        return;
+
+
     // Selection made
     if (Input::instance().isKeyPressed(GLFW_KEY_ENTER)) {
         if (currOption == 0) {
@@ -72,9 +76,6 @@ void PauseMenuScript::update(TimeDelta dt) {
             SceneManager::instance().loadScene("LoadoutSelection");
         }
     }
-
-    if (!isActive)
-        return;
 
     // Browse options
     if (Input::instance().isKeyPressed(GLFW_KEY_W)) {
@@ -108,7 +109,7 @@ void PauseMenuScript::hideEntities(bool active) {
     activeComp = resumeText.component<Active>();
     activeComp.get()->isActive = active;
 
-    activeComp = endMatchText.component<Active>();
+    activeComp = exitText.component<Active>();
     activeComp.get()->isActive = active;
 
     activeComp = pauseBackground.component<Active>();

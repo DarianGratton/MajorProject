@@ -14,6 +14,7 @@ public:
     void endContact(Entity* entityA, Entity* entityB) override;
 
     inline void setCanPlayerMove(bool canMove) { canPlayerMove = canMove; }
+    inline int getHealth() { return health; }
 
 private:
     Entity weapon1;
