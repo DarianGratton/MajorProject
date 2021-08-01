@@ -67,7 +67,7 @@ void LoadoutSelectionScript::start() {
 
 void LoadoutSelectionScript::update(TimeDelta dt) {
 
-     // Update cooldown
+    // Update cooldown
     float cooldown = cooldownTimer - dt;
     if (cooldown <= 0) {
         cooldownTimer = 0;
@@ -130,7 +130,7 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             }   
         }
 
-        cooldownTimer = 0.1f;
+        cooldownTimer = 0.2f;
     }
 
     // Browse options
@@ -165,7 +165,7 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             currOption = 5;
         }
 
-        cooldownTimer = 0.1f;
+        cooldownTimer = 0.2f;
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
@@ -206,7 +206,7 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             currOption = 6;
         }
 
-        cooldownTimer = 0.1f;
+        cooldownTimer = 0.2f;
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_D)) {
@@ -230,7 +230,7 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             currOption = 5;
         }
 
-        cooldownTimer = 0.1f;
+        cooldownTimer = 0.2f;
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_A)) {
@@ -254,7 +254,7 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             currOption = 4;
         }
 
-        cooldownTimer = 0.1f;
+        cooldownTimer = 0.2f;
     }
 
     // Update weapon preview

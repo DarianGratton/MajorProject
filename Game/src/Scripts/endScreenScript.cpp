@@ -41,12 +41,8 @@ void EndScreenScript::start() {
             enemy = entity;
     }
 
-    LOG_TRACE("Start");
-
     isActive = false;
     hideEntities(isActive);
-
-    LOG_TRACE("After hide");
 
     currOption = 0;
     numOfOptions = 2;
@@ -90,6 +86,15 @@ void EndScreenScript::update(TimeDelta dt) {
             }
         }
     } else {
+        // Update cooldown
+        float cooldown = cooldownTimer - dt;
+        if (cooldown <= 0) {
+            cooldownTimer = 0;
+        } else {
+            cooldownTimer = cooldown;
+            return;
+        }
+
         // Selection made
         if (Input::instance().isKeyPressed(GLFW_KEY_ENTER)) {
             // Restart
@@ -113,6 +118,8 @@ void EndScreenScript::update(TimeDelta dt) {
                 transform.get()->ypos += 5.0f;
                 currOption--;
             }
+
+            cooldownTimer = 0.2f;
         }
 
         if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
@@ -124,6 +131,8 @@ void EndScreenScript::update(TimeDelta dt) {
                 transform.get()->ypos -= 5.0f;
                 currOption++;
             }
+
+            cooldownTimer = 0.2f;
         }
     }
 

@@ -44,6 +44,15 @@ void PauseMenuScript::start() {
 
 void PauseMenuScript::update(TimeDelta dt) {
 
+    // Update cooldown
+    float cooldown = cooldownTimer - dt;
+    if (cooldown <= 0) {
+        cooldownTimer = 0;
+    } else {
+        cooldownTimer = cooldown;
+        return;
+    }
+
     // Pause program
     if (Input::instance().isKeyPressed(GLFW_KEY_ESCAPE)) {
         // Display pause screen
@@ -55,6 +64,8 @@ void PauseMenuScript::update(TimeDelta dt) {
             ECS::instance().unpauseGame();
         else
             ECS::instance().pauseGame();
+
+        cooldownTimer = 0.2f;
     }
 
     if (!isActive)
@@ -75,6 +86,8 @@ void PauseMenuScript::update(TimeDelta dt) {
         if (currOption == 1) {
             SceneManager::instance().loadScene("LoadoutSelection");
         }
+
+        cooldownTimer = 0.2f;
     }
 
     // Browse options
@@ -87,6 +100,8 @@ void PauseMenuScript::update(TimeDelta dt) {
             transform.get()->ypos += 5.0f;
             currOption--;
         }
+
+        cooldownTimer = 0.2f;
     }
 
     if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
@@ -98,6 +113,8 @@ void PauseMenuScript::update(TimeDelta dt) {
             transform.get()->ypos -= 5.0f;
             currOption++;
         }
+
+        cooldownTimer = 0.2f;
     }
 
 }
