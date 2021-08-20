@@ -85,19 +85,23 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
         else if (currOption == 6) {
 
             if (numberSelected == 2) {
+                bool weapon1Set = false;
                 for (int i = 0; i < 5; i++) {
                     if (weaponsSelected[i]) {
                         // Set weapon one
-                        if (PlayerPrefs::instance().getWeapon1() == 0) {
+                        if (!weapon1Set) {
                             PlayerPrefs::instance().setWeapon1(i + 1);
+                            weapon1Set = true;
+                            continue;
 
                         // Set weapon two
-                        } else if (PlayerPrefs::instance().getWeapon2() == 0) {
+                        } else {
                             PlayerPrefs::instance().setWeapon2(i + 1);
+                            continue;
                         }
                     }
                 }
-
+                
                 SceneManager::instance().loadScene("Arena");
             }
         }
