@@ -101,7 +101,7 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
                         }
                     }
                 }
-                
+
                 SceneManager::instance().loadScene("Arena");
             }
         }
@@ -234,6 +234,13 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
             currOption = 5;
         }
 
+        // Back Text -> Option 4
+        else if (currOption == 0) {
+            transform.get()->xpos = weaponOption4.component<Transform>().get()->xpos - arrowPosOffset;
+            transform.get()->ypos = weaponOption4.component<Transform>().get()->ypos;
+            currOption = 4;
+        }
+
         cooldownTimer = 0.2f;
     }
 
@@ -256,6 +263,20 @@ void LoadoutSelectionScript::update(TimeDelta dt) {
         else if (currOption == 5) {
             transform.get()->xpos = weaponOption4.component<Transform>().get()->xpos - arrowPosOffset;
             currOption = 4;
+        }
+
+        // Option 4 -> Back Text
+        else if (currOption == 4) {
+            transform.get()->xpos = backOption.component<Transform>().get()->xpos - 35.0f;
+            transform.get()->ypos = backOption.component<Transform>().get()->ypos + 12.5f;
+            currOption = 0;
+        }
+
+        // Option 1 -> Back Text
+        else if (currOption == 1) {
+            transform.get()->xpos = backOption.component<Transform>().get()->xpos - 35.0f;
+            transform.get()->ypos = backOption.component<Transform>().get()->ypos + 12.5f;
+            currOption = 0;
         }
 
         cooldownTimer = 0.2f;
