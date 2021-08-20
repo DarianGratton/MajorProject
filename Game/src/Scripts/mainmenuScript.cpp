@@ -25,9 +25,19 @@ void MainMenuScript::start() {
     currOption = 0;
     numOfOptions = 2;
     cooldownBetweenKeys = 0;
+    sceneLoadDelay = 0.2;
 }
 
 void MainMenuScript::update(TimeDelta dt) {
+
+    // Update delay
+    float delay = sceneLoadDelay - dt;
+    if (delay <= 0) {
+        sceneLoadDelay = 0;
+    } else {
+        sceneLoadDelay = delay;
+        return;
+    }
 
     // Selection made
     if (Input::instance().isKeyPressed(GLFW_KEY_ENTER)) {

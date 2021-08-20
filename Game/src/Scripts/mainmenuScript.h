@@ -17,4 +17,5 @@ private:
     unsigned int currOption;
     unsigned int numOfOptions;
     unsigned int cooldownBetweenKeys;
+    float sceneLoadDelay;
 };
