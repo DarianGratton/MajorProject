@@ -39,36 +39,36 @@ protected:
         NORTHWEST
     };
 
-    Direction getDirection(int key1, int key2 = 0) 
+    Direction getDirection() 
     {
-        if (!key2) 
-        {
-            if (key1 == GLFW_KEY_UP)
-                return NORTH;
+        bool isUpPressed    = Input::instance().isKeyPressed(GLFW_KEY_UP);
+        bool isDownPressed  = Input::instance().isKeyPressed(GLFW_KEY_DOWN);
+        bool isLeftPressed  = Input::instance().isKeyPressed(GLFW_KEY_LEFT);
+        bool isRightPressed = Input::instance().isKeyPressed(GLFW_KEY_RIGHT);
+        
+        if (isUpPressed && isLeftPressed)
+            return NORTHWEST;
 
-            if (key1 == GLFW_KEY_DOWN)
-                return SOUTH;
+        if (isUpPressed && isRightPressed)
+            return NORTHEAST;
 
-            if (key1 == GLFW_KEY_LEFT)
-                return WEST;
+        if (isDownPressed && isLeftPressed)
+            return SOUTHWEST;
 
-            if (key1 == GLFW_KEY_RIGHT)
-                return EAST;
-        }
-        else
-        {
-            if (key1 == GLFW_KEY_UP && key2 == GLFW_KEY_LEFT)
-                return NORTHWEST;
+        if (isDownPressed && isRightPressed)
+            return SOUTHEAST;
 
-            if (key1 == GLFW_KEY_UP && key2 == GLFW_KEY_RIGHT)
-                return NORTHEAST;
+        if (isUpPressed)
+            return NORTH;
 
-            if (key1 == GLFW_KEY_DOWN && key2 == GLFW_KEY_LEFT)
-                return SOUTHWEST;
+        if (isDownPressed)
+            return SOUTH;
 
-            if (key1 == GLFW_KEY_DOWN && key2 == GLFW_KEY_RIGHT)
-                return SOUTHEAST;
-        }
+        if (isLeftPressed)
+            return WEST;
+
+        if (isRightPressed)
+            return EAST;
 
         // Otherwise
         return NONE;
