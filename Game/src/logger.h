@@ -4,7 +4,7 @@
 
 class Logger {
 public:
-    static void init();
+    static void Init();
 
     inline static std::shared_ptr<spdlog::logger>& log() { return logger; }
     

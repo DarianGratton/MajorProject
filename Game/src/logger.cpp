@@ -4,7 +4,7 @@
 
 std::shared_ptr<spdlog::logger> Logger::logger;
 
-void Logger::init() {
+void Logger::Init() {
 
     spdlog::set_pattern("%^[%T] %n: %v%$");
     
