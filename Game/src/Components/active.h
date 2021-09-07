@@ -1,10 +1,9 @@
 #pragma once
 
-#include "entityx/entityx.h"
+#include "../Logger.h"
 
-#include "../logger.h"
-
-struct Active {
+struct Active 
+{
     Active(bool active) : isActive(active) {}
 
     bool isActive;

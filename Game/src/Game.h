@@ -9,10 +9,12 @@
 using namespace std;
 using namespace entityx;
 
-class Game {
+class Game 
+{
 public:
     // Returns the class instance
-    static Game& Instance() {
+    static Game& Instance() 
+    {
         static Game *instance = new Game();
         return *instance;
     }

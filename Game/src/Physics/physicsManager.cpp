@@ -1,8 +1,10 @@
 
-#include "physicsManager.h"
+#include "PhysicsManager.h"
 
-void PhysicsManager::update() {
-    if (world == nullptr) {
+void PhysicsManager::Update() 
+{
+    if (world == nullptr) 
+    {
         LOG_WARN("PhysicsManager: World has yet to be created");
         return;
     }
@@ -13,8 +15,10 @@ void PhysicsManager::update() {
     world->Step(timeStep, velocityIterations, positionIterations);  
 }
 
-void PhysicsManager::draw(glm::mat4 proj, glm::mat4 view) {
-    if (world == nullptr) {
+void PhysicsManager::Draw(glm::mat4 proj, glm::mat4 view) 
+{
+    if (world == nullptr) 
+    {
         LOG_WARN("PhysicsManager: World has yet to be created");
         return;
     }
@@ -28,7 +32,8 @@ void PhysicsManager::draw(glm::mat4 proj, glm::mat4 view) {
     world->DebugDraw();
 }
 
-void PhysicsManager::createWorld(float gravX, float gravY) {
+void PhysicsManager::CreateWorld(float gravX, float gravY) 
+{
     b2Vec2 gravity(gravX, gravY);
     world = new b2World(gravity);
 
@@ -36,10 +41,10 @@ void PhysicsManager::createWorld(float gravX, float gravY) {
     world->SetContactListener(contactListener);
 }
 
-PhysicsManager::bodyCategory PhysicsManager::intToCategory(int i) {
+PhysicsManager::bodyCategory PhysicsManager::IntToCategory(int i) 
+{
     // TODO: Test if previous method worked
     // return static_cast<PhysicsManager::bodyCategory>(i);
-
     switch(i) {
         case 1:
             return BOUNDARY;
@@ -56,7 +61,7 @@ PhysicsManager::bodyCategory PhysicsManager::intToCategory(int i) {
     }
 }
 
-b2World* PhysicsManager::getWorld() {
+b2World* PhysicsManager::GetWorld() 
+{
     return world;
 }
-

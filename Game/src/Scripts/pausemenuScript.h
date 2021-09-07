@@ -1,15 +1,16 @@
 #pragma once
 
-#include "entityx/entityx.h"
+#include <entityx/entityx.h>
 
-#include "../cScript.h"
+#include "../CScript.h"
 
-class PauseMenuScript : public CScript {
+class PauseMenuScript : public CScript
+{
 public:
     PauseMenuScript(Entity* entity);
 
-    void start() override;
-    void update(TimeDelta dt) override;
+    void Start() override;
+    void Update(TimeDelta dt) override;
 
 private:
     Entity pauseText;
@@ -24,5 +25,5 @@ private:
     unsigned int numOfOptions;
 
     bool isActive;
-    void hideEntities(bool active);
+    void HideEntities(bool active);
 };

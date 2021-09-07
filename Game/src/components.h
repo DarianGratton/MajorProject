@@ -1,18 +1,18 @@
 #pragma once
 
 // Rendering Components
-#include "Components/camera.h"
-#include "Components/spriteVertices.h"
-#include "Components/shader.h"
-#include "Components/transform.h"
-#include "Components/texture.h"
-#include "Components/textSprite.h"
+#include "Components/Camera.h"
+#include "Components/SpriteVertices.h"
+#include "Components/Shader.h"
+#include "Components/Transform.h"
+#include "Components/Texture.h"
+#include "Components/TextSprite.h"
 
 // Physics Components
-#include "Components/rigidbody.h"
+#include "Components/Rigidbody.h"
 
 // Other components
-#include "Components/audio.h"
-#include "Components/name.h"
-#include "Components/script.h"
-#include "Components/active.h"
+#include "Components/Audio.h"
+#include "Components/Name.h"
+#include "Components/Script.h"
+#include "Components/Active.h"

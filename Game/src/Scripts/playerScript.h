@@ -2,19 +2,22 @@
 
 #include <entityx/entityx.h>
 
-#include "../cScript.h"
+#include <string>
 
-class PlayerScript : public CScript {
+#include "../CScript.h"
+
+class PlayerScript : public CScript 
+{
 public:
-    PlayerScript(entityx::Entity* entity);
+    PlayerScript(Entity* entity);
 
-    void start() override;
-    void update(TimeDelta dt) override;
-    void beginContact(Entity* entityA, Entity* entityB) override;
-    void endContact(Entity* entityA, Entity* entityB) override;
+    void Start() override;
+    void Update(TimeDelta dt) override;
+    void BeginContact(Entity* entityA, Entity* entityB) override;
+    void EndContact(Entity* entityA, Entity* entityB) override;
 
-    inline void setCanPlayerMove(bool canMove) { canPlayerMove = canMove; }
-    inline int getHealth() { return health; }
+    inline void SetCanPlayerMove(bool canMove) { canPlayerMove = canMove; }
+    inline int GetHealth() { return health; }
 
 private:
     Entity weapon1;
@@ -23,5 +26,5 @@ private:
     bool canPlayerMove;
     int health;
 
-    std::string getScriptName(int i);
+    string GetScriptName(int i);
 };

@@ -1,19 +1,20 @@
 #pragma once
 
-#include "entityx/entityx.h"
+#include <entityx/entityx.h>
 
-#include "../cScript.h"
+#include "../CScript.h"
 
-class EnemyScript : public CScript {
+class EnemyScript : public CScript 
+{
 public:
-    EnemyScript(entityx::Entity* entity);
+    EnemyScript(Entity* entity);
 
-    void start() override;
-    void update(TimeDelta dt) override;
-    void beginContact(Entity* entityA, Entity* entityB) override;
-    void endContact(Entity* entityA, Entity* entityB) override;
+    void Start() override;
+    void Update(TimeDelta dt) override;
+    void BeginContact(Entity* entityA, Entity* entityB) override;
+    void EndContact(Entity* entityA, Entity* entityB) override;
 
-    inline int getHealth() { return health; }
+    inline int GetHealth() { return health; }
 
 private:
     Entity enemyHpText;

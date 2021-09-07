@@ -1,8 +1,9 @@
 #include "ECS.h"
 
-#include "systems.h"
+#include "Systems.h"
 
-void ECS::init() {
+void ECS::Init() 
+{
     systems.add<AudioSystem>();
     systems.add<ScriptSystem>();
     systems.add<PhysicsSystem>();
@@ -10,25 +11,30 @@ void ECS::init() {
     systems.configure();
 }
 
-void ECS::update(TimeDelta dt) {
+void ECS::Update(TimeDelta dt) 
+{
     systems.update<AudioSystem>(dt);
     systems.update<ScriptSystem>(dt);
     systems.update<PhysicsSystem>(dt);
     systems.update<RenderingSystem>(dt);
 }
 
-void ECS::endGame() {
+void ECS::EndGame() 
+{
     gameEnded = true;
 }
 
-void ECS::pauseGame() {
+void ECS::PauseGame() 
+{
     gamePaused = true;
 }
 
-void ECS::unpauseGame() {
+void ECS::UnpauseGame() 
+{
     gamePaused = false;
 }
 
-bool ECS::isGamePaused() {
+bool ECS::IsGamePaused() 
+{
     return gamePaused;
 }

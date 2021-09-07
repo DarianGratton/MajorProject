@@ -3,19 +3,19 @@
 #include <entityx/entityx.h>
 #include <vector>
 
-#include "weaponScript.h"
+#include "WeaponScript.h"
 
 class GrenadeScript : public WeaponScript {
 public:
     GrenadeScript(Entity* entity, float spriteHeight, float spriteWidth);
 
-    void start() override;
-    void update(TimeDelta dt) override;
-    void useWeapon() override;
+    void Start() override;
+    void Update(TimeDelta dt) override;
+    void UseWeapon() override;
 
     // Collision detection
-    void beginContact(Entity* entityA, Entity* entityB) override;
-    void endContact(Entity* entityA, Entity* entityB) override;
+    void BeginContact(Entity* entityA, Entity* entityB) override;
+    void EndContact(Entity* entityA, Entity* entityB) override;
 
 private:
     Entity player;
@@ -31,7 +31,7 @@ private:
     float cooldownTimer;
     float timeElapsed;
 
-    int getPlayerDirection();
-    void spawnGrenade();
-    void spawnExplosion();
+    int GetPlayerDirection();
+    void SpawnGrenade();
+    void SpawnExplosion();
 };

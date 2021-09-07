@@ -2,25 +2,28 @@
 
 #include <entityx/entityx.h>
 
-#include "../components.h"
-#include "../logger.h"
+#include "../Components.h"
+#include "../Logger.h"
 
 using namespace entityx;
 
-class AudioSystem : public System<AudioSystem> {
+// TODO: Move temp
+class AudioSystem : public System<AudioSystem> 
+{
 public:
-    void update(EntityManager& es, EventManager& events, TimeDelta dt) override {
-        es.each<Audio>([this, dt](
-            Entity entity, Audio &audioComp) {
-
-            if (audioComp.playOnStart && !temp) {
+    void update(EntityManager& es, EventManager& events, TimeDelta dt) override 
+    {
+        es.each<Audio>([this, dt](Entity entity, Audio &audioComp) 
+        {
+            if (audioComp.playOnStart && !temp) 
+            {
                 temp = true;
-                audioComp.sound->play();
+                audioComp.sound->Play();
             }
-            audioComp.sound->setVolume(audioComp.volume);
-
+            audioComp.sound->SetVolume(audioComp.volume);
         });
     }
+
 private:
     bool temp;
 };

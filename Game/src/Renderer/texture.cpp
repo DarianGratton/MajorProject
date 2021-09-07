@@ -5,9 +5,9 @@
 #include <stb_image/stb_image.h>
 #include <glad/glad.h>
 
-Texture::Texture(const std::string& path)
-    : m_RendererID(0), m_FilePath(path), m_LocalBuffer(nullptr), m_Width(0), m_Height(0), m_BPP(0) {
-
+Texture::Texture(const string& path)
+    : m_RendererID(0), m_FilePath(path), m_LocalBuffer(nullptr), m_Width(0), m_Height(0), m_BPP(0)
+{
     // Flip because pngs load top to bottom but OpenGL loads bottom left to top
     stbi_set_flip_vertically_on_load(1);
     m_LocalBuffer = stbi_load(path.c_str(), &m_Width, &m_Height, &m_BPP, 4);
@@ -31,11 +31,13 @@ Texture::~Texture()
     stbi_image_free(m_LocalBuffer);
 }
 
-void Texture::bind(unsigned int slot) const {
+void Texture::Bind(unsigned int slot) const 
+{
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_2D, m_RendererID);
 }
 
-void Texture::unbind() const {
+void Texture::Unbind() const 
+{
     glBindTexture(GL_TEXTURE_2D, 0);
 }

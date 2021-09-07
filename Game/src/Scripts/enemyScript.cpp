@@ -1,34 +1,35 @@
-#include "enemyScript.h"
+#include "EnemyScript.h"
 
-#include "../components.h"
-#include "../logger.h"
-#include "../input.h"
+#include "../Components.h"
+#include "../Logger.h"
+#include "../Input.h"
 
-EnemyScript::EnemyScript(entityx::Entity* entity) : CScript(entity) {
+EnemyScript::EnemyScript(entityx::Entity* entity) : CScript(entity) 
+{
     // Initialize variables
     health = 100;
 }
 
-void EnemyScript::start() {
+void EnemyScript::Start() 
+{
     ComponentHandle<Name> entityName;
-    for (Entity e : ECS::instance().entities.entities_with_components(entityName)) {
-
+    for (Entity e : ECS::Instance().entities.entities_with_components(entityName)) 
+    {
         if (entityName.get()->name == "EnemyHpText")
             enemyHpText = e;
-    
     }
 
     // Display Enemy HP
-    if (enemyHpText.valid()) {
+    if (enemyHpText.valid()) 
+    {
         ComponentHandle<TextSprite> textComp = enemyHpText.component<TextSprite>();
         textComp.get()->text = "Enemy HP: " + std::to_string(health); 
     }
-
 }
 
-void EnemyScript::update(TimeDelta dt) {
-
-    if (ECS::instance().isGamePaused())
+void EnemyScript::Update(TimeDelta dt) 
+{
+    if (ECS::Instance().IsGamePaused())
         return; 
 
     // Update enemy position
@@ -38,13 +39,14 @@ void EnemyScript::update(TimeDelta dt) {
     transform.get()->ypos = rigidBody.get()->body->GetPosition().y;
 }
 
-void EnemyScript::beginContact(Entity* entityA, Entity* entityB) {
+void EnemyScript::BeginContact(Entity* entityA, Entity* entityB) 
+{
     ComponentHandle<Name> entityName = entityB->component<Name>();
-    if (entityName.get()->name.find("Weapon") != std::string::npos) {
-
+    if (entityName.get()->name.find("Weapon") != std::string::npos) 
+    {
         // Update enemy hp
         ComponentHandle<Script> weaponScript = entityB->component<Script>();
-        int damage = reinterpret_cast<WeaponScript*>(weaponScript.get()->script)->getDamage();
+        int damage = reinterpret_cast<WeaponScript*>(weaponScript.get()->script)->GetDamage();
         health -= damage;
 
         // Display Enemy HP
@@ -53,6 +55,4 @@ void EnemyScript::beginContact(Entity* entityA, Entity* entityB) {
     }
 }
 
-void EnemyScript::endContact(Entity* entityA, Entity* entityB) {
-
-}
+void EnemyScript::EndContact(Entity* entityA, Entity* entityB) {}

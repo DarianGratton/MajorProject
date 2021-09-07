@@ -1,20 +1,22 @@
-#include "scene.h"
+#include "Scene.h"
 
 #include <entityx/entityx.h>
 #include <tinyxml2.h>
 #include <sstream>
 
 #include "ECS.h"
-#include "entityHelper.h"
-#include "logger.h"
+#include "EntityHelper.h"
+#include "Logger.h"
 
 using namespace tinyxml2;
 
-bool Scene::load() {
+bool Scene::Load()
+{
     // Create xml object to read from
     TinyXMLDocument* doc = new TinyXMLDocument();
     XMLError xmlerr = doc->LoadFile(filename.c_str());
-    if (xmlerr != XML_SUCCESS) {
+    if (xmlerr != XML_SUCCESS) 
+    {
         LOG_ERROR("Failed to open " + filename + "!");
         return 0;
     }
@@ -24,31 +26,36 @@ bool Scene::load() {
     XMLNode* entity = root->FirstChild();
 
     // Get entity components
-    while (entity != NULL) {
+    while (entity != NULL) 
+    {
         XMLNode* component = entity->FirstChild();
-        Entity e = ECS::instance().entities.create();
+        Entity e = ECS::Instance().entities.create();
 
         // Get entity attrbutes
         float width, height;
         const XMLAttribute* attr = entity->ToElement()->FirstAttribute();
-        while (attr != NULL) {
-            std::string attrName = attr->Name();
-            if (attrName == "name") {   // Name of the sprite
+        while (attr != NULL) 
+        {
+            string attrName = attr->Name();
+            if (attrName == "name") 
+            {   // Name of the sprite
                 e.assign<Name>(attr->Value());
             }
-            if (attrName == "width") {  // Width of the sprite
-                std::stringstream str(attr->Value());
+            if (attrName == "width") 
+            {   // Width of the sprite
+                stringstream str(attr->Value());
                 str >> width;
             }
-            if (attrName == "height") { // Height of the sprite
-                std::stringstream str(attr->Value());
+            if (attrName == "height") 
+            {   // Height of the sprite
+                stringstream str(attr->Value());
                 str >> height;
             }
             attr = attr->Next();
         }
 
         // Add spritevertices
-        std::vector<float> spriteVertices =  {
+        vector<float> spriteVertices =  {
                 -width/2, -height/2, 0.0f, 0.0f,
                  width/2, -height/2, 1.0f, 0.0f,
                  width/2,  height/2, 1.0f, 1.0f,
@@ -59,25 +66,29 @@ bool Scene::load() {
         // Add active
         e.assign<Active>(true);
 
-        while (component != NULL) {
+        while (component != NULL) 
+        {
             // Error check
-            std::string name = component->Value();
-            if (name != "Component")  {
+            string name = component->Value();
+            if (name != "Component")  
+            {
                 component = component->NextSibling();
                 continue;
             }
 
             // Setup
             const XMLAttribute* attr = component->ToElement()->FirstAttribute();
-            std::unordered_map<std::string, std::string> attributes;
+            unordered_map<std::string, std::string> attributes;
+            
             // Get Attributes
-            while (attr != NULL) {
+            while (attr != NULL) 
+            {
                 attributes.insert(std::make_pair(attr->Name(), attr->Value()));
                 attr = attr->Next();
             }
 
             // Setup entity
-            EntityHelper::instance().addComponent(&e, attributes.at("name"), attributes.at("value"));
+            EntityHelper::Instance().AddComponent(&e, attributes.at("name"), attributes.at("value"));
 
             component = component->NextSibling();
         }

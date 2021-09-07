@@ -1,17 +1,18 @@
 #pragma once
 
-#include <vector>
-
 #include <entityx/entityx.h>
 
-#include "../cScript.h"
+#include <vector>
 
-class LoadoutSelectionScript : public CScript {
+#include "../CScript.h"
+
+class LoadoutSelectionScript : public CScript 
+{
 public:
     LoadoutSelectionScript(Entity* entity);
 
-    void start() override;
-    void update(TimeDelta dt) override;
+    void Start() override;
+    void Update(TimeDelta dt) override;
 
 private:
     Entity weaponOption1;

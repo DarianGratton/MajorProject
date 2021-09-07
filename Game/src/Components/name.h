@@ -2,9 +2,10 @@
 
 #include <string>
 
-#include "../logger.h"
+#include "../Logger.h"
 
-struct Name {
+struct Name 
+{
     Name(std::string name) : name(name) {}
 
     std::string name;

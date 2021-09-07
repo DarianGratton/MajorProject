@@ -1,18 +1,19 @@
-#include "pausemenuScript.h"
+#include "PausemenuScript.h"
 
-#include "../sceneManager.h"
-#include "../components.h"
-#include "../logger.h"
-#include "../input.h"
+#include "../SceneManager.h"
+#include "../Components.h"
+#include "../Logger.h"
+#include "../Input.h"
 #include "../ECS.h"
 
 PauseMenuScript::PauseMenuScript(entityx::Entity* entity) : CScript(entity) {}
 
-void PauseMenuScript::start() {
-
+void PauseMenuScript::Start() 
+{
     // TODO: Currently has a O(N) runtime looking for two objects, can probably reduce
     ComponentHandle<Name> entityName;
-    for (Entity entity : ECS::instance().entities.entities_with_components(entityName)) {
+    for (Entity entity : ECS::Instance().entities.entities_with_components(entityName)) 
+    {
         entityName = entity.component<Name>();
         
         if (entityName.get()->name == "ResumeText")
@@ -35,35 +36,39 @@ void PauseMenuScript::start() {
     }
 
     isActive = false;
-    hideEntities(isActive);
+    HideEntities(isActive);
 
     currOption = 0;
     numOfOptions = 2;
     cooldownTimer = 0;
 }
 
-void PauseMenuScript::update(TimeDelta dt) {
-
+void PauseMenuScript::Update(TimeDelta dt) 
+{
     // Update cooldown
     float cooldown = cooldownTimer - dt;
-    if (cooldown <= 0) {
+    if (cooldown <= 0) 
+    {
         cooldownTimer = 0;
-    } else {
+    } 
+    else 
+    {
         cooldownTimer = cooldown;
         return;
     }
 
     // Pause program
-    if (Input::instance().isKeyPressed(GLFW_KEY_ESCAPE)) {
+    if (Input::Instance().IsKeyPressed(GLFW_KEY_ESCAPE)) 
+    {
         // Display pause screen
         isActive = !isActive;
-        hideEntities(isActive);
+        HideEntities(isActive);
 
         // Pause or unpause game
-        if (ECS::instance().isGamePaused())
-            ECS::instance().unpauseGame();
+        if (ECS::Instance().IsGamePaused())
+            ECS::Instance().UnpauseGame();
         else
-            ECS::instance().pauseGame();
+            ECS::Instance().PauseGame();
 
         cooldownTimer = 0.2f;
     }
@@ -71,32 +76,36 @@ void PauseMenuScript::update(TimeDelta dt) {
     if (!isActive)
         return;
 
-
     // Selection made
-    if (Input::instance().isKeyPressed(GLFW_KEY_ENTER)) {
-        if (currOption == 0) {
+    if (Input::Instance().IsKeyPressed(GLFW_KEY_ENTER)) 
+    {
+        if (currOption == 0) 
+        {
             // Display pause screen
             isActive = !isActive;
-            hideEntities(isActive);
+            HideEntities(isActive);
 
             // Unpause game
-            ECS::instance().unpauseGame();
+            ECS::Instance().UnpauseGame();
         }
 
-        if (currOption == 1) {
-            SceneManager::instance().loadScene("LoadoutSelection");
-        }
+        if (currOption == 1) 
+            SceneManager::Instance().LoadScene("LoadoutSelection");
 
         cooldownTimer = 0.2f;
     }
 
     // Browse options
-    if (Input::instance().isKeyPressed(GLFW_KEY_W)) {
+    if (Input::Instance().IsKeyPressed(GLFW_KEY_W)) 
+    {
         ComponentHandle<Transform> transform = entity.component<Transform>();
-        if (currOption == 0) {
+        if (currOption == 0) 
+        {
             transform.get()->ypos -= (5.0f * (numOfOptions - 1));
             currOption = numOfOptions - 1;
-        } else {
+        } 
+        else 
+        {
             transform.get()->ypos += 5.0f;
             currOption--;
         }
@@ -104,22 +113,26 @@ void PauseMenuScript::update(TimeDelta dt) {
         cooldownTimer = 0.2f;
     }
 
-    if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
+    if (Input::Instance().IsKeyPressed(GLFW_KEY_S)) 
+    {
         ComponentHandle<Transform> transform = entity.component<Transform>();
-        if (currOption == (numOfOptions - 1)) {
+        if (currOption == (numOfOptions - 1)) 
+        {
             transform.get()->ypos += (5.0f * (numOfOptions - 1));
             currOption = 0;
-        } else {
+        } 
+        else 
+        {
             transform.get()->ypos -= 5.0f;
             currOption++;
         }
 
         cooldownTimer = 0.2f;
     }
-
 }
 
-void PauseMenuScript::hideEntities(bool active) {
+void PauseMenuScript::HideEntities(bool active) 
+{
     ComponentHandle<Active> activeComp = pauseText.component<Active>();
     activeComp.get()->isActive = active;
 

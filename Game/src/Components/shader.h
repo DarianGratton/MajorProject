@@ -1,13 +1,16 @@
 #pragma once
 
-#include "../Renderer/shader.h"
+#include "../Renderer/Shader.h"
 
-struct ShaderComp {
-    ShaderComp(const char* filepath) {
+struct ShaderComp 
+{
+    ShaderComp(const char* filepath) 
+    {
         shader = new Shader(filepath);
     }
 
-    ~ShaderComp() {
+    ~ShaderComp() 
+    {
         delete shader;
     }
 

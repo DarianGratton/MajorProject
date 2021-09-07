@@ -1,23 +1,23 @@
 #pragma once
 
-#include <string>
-
 #include <entityx/entityx.h>
+
+#include <string>
 
 #include "Systems.h"
 
+using namespace std;
 using namespace entityx;
 
-class Scene {
+class Scene 
+{
 public:
-    Scene(std::string name, std::string filename) : name(name), filename(filename) {}
+    Scene(string name, std::string filename) : name(name), filename(filename) {}
 
-    bool load();
-    inline std::string getName() { return name; }
+    bool Load();
+    inline string GetName() { return name; }
 
 private:
-    std::string name;
-    std::string filename;
-
-    // TODO: Move to separate class as it doesn't fit the scene object
+    string name;
+    string filename;
 };

@@ -3,8 +3,10 @@
 #include <vector>
 
 // TODO: Vector is more memory than an array so it would be good to change.
-struct SpriteVertices {
-    SpriteVertices(std::vector<float> verts = {}, std::vector<unsigned int> inds = {}) : vertices(verts), indices(inds) {
+struct SpriteVertices 
+{
+    SpriteVertices(std::vector<float> verts = {}, std::vector<unsigned int> inds = {}) : vertices(verts), indices(inds) 
+    {
         // Default size
         if (verts.empty())
             vertices = {

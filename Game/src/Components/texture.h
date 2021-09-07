@@ -4,18 +4,24 @@
 #include <sstream>
 #include <cstring>
 
-#include "../Renderer/texture.h"
+#include "../Renderer/Texture.h"
 
-struct TextureComp {
-    TextureComp(const char* filepath, std::string filename = "") : filename(filename) {
+using namespace std;
+
+struct TextureComp 
+{
+    TextureComp(const char* filepath, string filename = "") : filename(filename) 
+    {
         texture = new Texture(filepath);
     }
 
-    ~TextureComp() {
+    ~TextureComp() 
+    {
         delete texture;
     }
 
-    void setTexture(const char* filepath) {
+    void SetTexture(const char* filepath) 
+    {
         // Clear old texture memory
         delete texture;
 
@@ -31,13 +37,14 @@ struct TextureComp {
 
         // Get filename
         char* token = strtok(chararray, "/");
-        while (token != NULL) {
+        while (token != NULL) 
+        {
             filename = token;
             token = strtok(NULL, "/");
         } 
     }
 
     Texture* texture;
-    std::string filename;
+    string filename;
     bool ready = false;
 };

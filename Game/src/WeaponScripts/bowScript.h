@@ -3,19 +3,20 @@
 #include <entityx/entityx.h>
 #include <vector>
 
-#include "weaponScript.h"
+#include "WeaponScript.h"
 
-class BowScript : public WeaponScript {
+class BowScript : public WeaponScript 
+{
 public:
     BowScript(Entity* entity, float spriteHeight, float spriteWidth);
 
-    void start() override;
-    void update(TimeDelta dt) override;
-    void useWeapon() override;
+    void Start() override;
+    void Update(TimeDelta dt) override;
+    void UseWeapon() override;
 
     // Collision detection
-    void beginContact(Entity* entityA, Entity* entityB) override;
-    void endContact(Entity* entityA, Entity* entityB) override;
+    void BeginContact(Entity* entityA, Entity* entityB) override;
+    void EndContact(Entity* entityA, Entity* entityB) override;
 
 private:
     Entity player;
@@ -28,10 +29,10 @@ private:
     int arrowNumber;
 
     // Projectile data structures
-    std::vector<std::pair<Entity, int>> projectiles;
-    std::vector<float> projectilesTimeElapsed;
-    std::vector<std::string> projectilesFlaggedForDeletion; 
+    vector<pair<Entity, int>> projectiles;
+    vector<float> projectilesTimeElapsed;
+    vector<string> projectilesFlaggedForDeletion; 
 
-    int getPlayerDirection();
-    void spawnArrow();
+    int GetPlayerDirection();
+    void SpawnArrow();
 };

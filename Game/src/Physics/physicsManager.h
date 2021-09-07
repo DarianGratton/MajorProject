@@ -2,13 +2,15 @@
 
 #include <box2d/box2d.h>
 
-#include "../Renderer/b2Renderer.h"
-#include "contactListener.h"
-#include "../logger.h"
+#include "ContactListener.h"
+#include "../Renderer/B2Renderer.h"
+#include "../Logger.h"
 
-class PhysicsManager {
+class PhysicsManager 
+{
 public:
-    enum bodyCategory {
+    enum bodyCategory 
+    {
         BOUNDARY     = 0x0001,
         PLAYER       = 0x0002,
         ENEMY        = 0x0004,
@@ -16,7 +18,8 @@ public:
         ENEMYWEAPON  = 0x00010,
     };
 
-    static PhysicsManager& instance() {
+    static PhysicsManager& Instance() 
+    {
         static PhysicsManager *instance = new PhysicsManager();
         return *instance;
     }
@@ -24,13 +27,13 @@ public:
     PhysicsManager(PhysicsManager const&) = delete;
     void operator=(PhysicsManager const&) = delete;
 
-    void update();
-    void draw(glm::mat4 proj, glm::mat4 view);
+    void Update();
+    void Draw(glm::mat4 proj, glm::mat4 view);
 
-    void createWorld(float gravX, float gravY);
-    bodyCategory intToCategory(int i);
+    void CreateWorld(float gravX, float gravY);
+    bodyCategory IntToCategory(int i);
 
-    b2World* getWorld();
+    b2World* GetWorld();
 
 private:
     PhysicsManager() {}

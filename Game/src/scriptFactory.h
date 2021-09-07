@@ -1,15 +1,19 @@
 #pragma once
 
-#include <string>
-
 #include <entityx/entityx.h>
 
-#include "cScript.h"
-#include "scripts.h"
+#include <string>
 
-class ScriptFactory {
+#include "CScript.h"
+#include "Scripts.h"
+
+using namespace std;
+using namespace entityx;
+
+class ScriptFactory 
+{
 public:
     ScriptFactory() {}
 
-    CScript* getScript(std::string scriptName, entityx::Entity* entity);
+    CScript* GetScript(string scriptName, Entity* entity);
 };

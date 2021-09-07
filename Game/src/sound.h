@@ -6,22 +6,25 @@
 
 #include "logger.h"
 
-class Sound {
-public:
-    Sound(std::string filename, bool ifLoop = false);
+using namespace std;
 
-    void setUpSound();
-    void play();
-    void pause();
-    void stop();
-    void loop(bool loop);
-    void setVolume(float vol); 
-    void cleanUp();
+class Sound 
+{
+public:
+    Sound(string filename, bool ifLoop = false);
+
+    void SetUpSound();
+    void Play();
+    void Pause();
+    void Stop();
+    void Loop(bool loop);
+    void SetVolume(float vol); 
+    void CleanUp();
 
 private:
     HSTREAM sound;
-    std::string filename;       // Name of the file
-    std::string storagepath;    // Path to store the sound
+    string filename;            // Name of the file
+    string storagepath;         // Path to store the sound
     bool ifLoop;                // Set if loop the sound
     bool ifReverb = false;      // Set if reverb the sound
     float volume = -1;          // Volume of the sound

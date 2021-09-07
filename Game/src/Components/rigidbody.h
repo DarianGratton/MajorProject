@@ -4,16 +4,17 @@
 #include <box2d/box2d.h>
 
 #include "../ECS.h"
-#include "../logger.h"
+#include "../Logger.h"
 
 using namespace entityx;
 
-struct RigidBody {
+struct RigidBody 
+{
     RigidBody(float xpos, float ypos, float hx, float hy, 
         float density = 0.0f, float friction = 1.0f, bool isDynamicBody = false, 
         uint16 categoryBits = 0, uint16 maskBits = 0)
-        : density(density), friction(friction), isDynamicBody(isDynamicBody), categoryBits(categoryBits), maskBits(maskBits) {
-                
+        : density(density), friction(friction), isDynamicBody(isDynamicBody), categoryBits(categoryBits), maskBits(maskBits) 
+    {            
         // Create rigid body
         if (isDynamicBody)
             bodyDef.type = b2_dynamicBody;
@@ -22,12 +23,13 @@ struct RigidBody {
         bodyDef.position.Set(xpos, ypos);
 
         // Attach a polygon shape
-        collisionBox.SetAsBox(hx, hy); 
-
+        collisionBox.SetAsBox(hx, hy);
     }
 
-    void createFixture() {
-        if (body == nullptr) {
+    void CreateFixture() 
+    {
+        if (body == nullptr) 
+        {
             LOG_ERROR("RigidBody createFixture: Body has not yet been created in the physics world");
             return;
         }
@@ -38,23 +40,28 @@ struct RigidBody {
         if (maskBits != 0)
             fixtureDef.filter.maskBits = maskBits;
 
-        if (isDynamicBody) {
+        if (isDynamicBody) 
+        {
             fixtureDef.shape = &collisionBox;
             fixtureDef.density = density;
             fixtureDef.friction = friction; 
             body->CreateFixture(&fixtureDef);
-        } else {
+        } 
+        else 
+        {
             body->CreateFixture(&collisionBox, density);
         }
     }
 
-    void setUserData(Entity* e) {
-        if (body == nullptr) {
+    void SetUserData(Entity* e) 
+    {
+        if (body == nullptr) 
+        {
             LOG_ERROR("RigidBody createFixture: Body has not yet been created in the physics world");
             return;
         }
 
-        entity = ECS::instance().entities.get(e->id());
+        entity = ECS::Instance().entities.get(e->id());
         body->GetUserData().pointer = reinterpret_cast<uintptr_t>(&entity);
     }
 

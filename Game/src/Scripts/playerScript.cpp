@@ -1,24 +1,24 @@
-#include "playerScript.h"
+#include "PlayerScript.h"
 
-#include <string>
-
-#include "../playerPrefs.h"
-#include "../scriptFactory.h"
-#include "../components.h"
-#include "../logger.h"
-#include "../input.h"
+#include "../PlayerPrefs.h"
+#include "../ScriptFactory.h"
+#include "../Components.h"
+#include "../Logger.h"
+#include "../Input.h"
 #include "../ECS.h"
 
-PlayerScript::PlayerScript(entityx::Entity* entity) : CScript(entity) {
+PlayerScript::PlayerScript(Entity* entity) : CScript(entity) 
+{
     // Initialize variables
     health = 100;
     canPlayerMove = true;
 }
 
-void PlayerScript::start() {
+void PlayerScript::Start() 
+{
     ComponentHandle<Name> entityName;
-    for (Entity e : ECS::instance().entities.entities_with_components(entityName)) {
-        
+    for (Entity e : ECS::Instance().entities.entities_with_components(entityName)) 
+    {       
         entityName = e.component<Name>();
         if (entityName.get()->name == "PlayerWeapon1")
             weapon1 = e;
@@ -28,68 +28,75 @@ void PlayerScript::start() {
 
         if (entityName.get()->name == "PlayerHpText")
             playerHpText = e;
-    
     }
 
     // Note: should be calling start but for some reason it does it for me, something weird with how entityx does for loops.
-    if (weapon1.valid() && !weapon1.has_component<Script>()) {
-        std::string scriptName = getScriptName(PlayerPrefs::instance().getWeapon1());
+    if (weapon1.valid() && !weapon1.has_component<Script>()) 
+    {
+        string scriptName = GetScriptName(PlayerPrefs::Instance().GetWeapon1());
         weapon1.assign<Script>(scriptName, &weapon1);
     }
 
-    if (weapon2.valid() && !weapon2.has_component<Script>()) {
-        std::string scriptName = getScriptName(PlayerPrefs::instance().getWeapon2());
+    if (weapon2.valid() && !weapon2.has_component<Script>()) 
+    {
+        string scriptName = GetScriptName(PlayerPrefs::Instance().GetWeapon2());
         weapon2.assign<Script>(scriptName, &weapon2);
     }
 
     // Display Player HP
-    if (playerHpText.valid()) {
+    if (playerHpText.valid()) 
+    {
         ComponentHandle<TextSprite> textComp = playerHpText.component<TextSprite>();
-        textComp.get()->text = "Player HP: " + std::to_string(health); 
+        textComp.get()->text = "Player HP: " + to_string(health); 
     }
 }
 
-void PlayerScript::update(TimeDelta dt) {
-
+void PlayerScript::Update(TimeDelta dt) 
+{
     // Don't want to play if game is paused
-    if (ECS::instance().isGamePaused())
+    if (ECS::Instance().IsGamePaused())
         return;
 
     // Movement
     float desiredVelX = 0;
     float desiredVelY = 0;
 
-    if (canPlayerMove) {
+    if (canPlayerMove) 
+    {
         // Movement UP
-        if (Input::instance().isKeyPressed(GLFW_KEY_W)) {
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_W)) 
+        {
             desiredVelY = 250;
 
             ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
-            textureComp.get()->setTexture("src/Assets/textures/PlayerUp.png");
+            textureComp.get()->SetTexture("src/Assets/textures/PlayerUp.png");
         }
 
         // Movement DOWN
-        if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_S)) 
+        {
             desiredVelY = -250;
 
             ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
-            textureComp.get()->setTexture("src/Assets/textures/PlayerDown.png");
+            textureComp.get()->SetTexture("src/Assets/textures/PlayerDown.png");
         }
         
         // Movement RIGHT
-        if (Input::instance().isKeyPressed(GLFW_KEY_D)) {
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_D)) 
+        {
             desiredVelX = 250;
 
             ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
-            textureComp.get()->setTexture("src/Assets/textures/PlayerRight.png");
+            textureComp.get()->SetTexture("src/Assets/textures/PlayerRight.png");
         }
         
         // Movement LEFT
-        if (Input::instance().isKeyPressed(GLFW_KEY_A)) {
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_A)) 
+        {
             desiredVelX = -250;
 
             ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
-            textureComp.get()->setTexture("src/Assets/textures/PlayerLeft.png");
+            textureComp.get()->SetTexture("src/Assets/textures/PlayerLeft.png");
         }    
     }
 
@@ -110,43 +117,48 @@ void PlayerScript::update(TimeDelta dt) {
     
     // Attack
     // Use weapon 1
-    if (weapon1.valid()) {
-        
-        if (Input::instance().isKeyPressed(GLFW_KEY_K)) {
-        ComponentHandle<Script> scriptComp = weapon1.component<Script>();
-        WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
-        if (weaponScript)
-            weaponScript->useWeapon();
-        } else {
+    if (weapon1.valid()) 
+    {
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_K)) 
+        {
+            ComponentHandle<Script> scriptComp = weapon1.component<Script>();
+            WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
+            if (weaponScript)
+                weaponScript->UseWeapon();
+        } 
+        else 
+        {
             ComponentHandle<Script> scriptComp = weapon1.component<Script>();
             WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
             if (weaponScript) 
-                weaponScript->setIsActive(false);
+                weaponScript->SetIsActive(false);
         }
    
     }
 
     // Use weapon 2
-    if (weapon2.valid()) {
-       
-        if (Input::instance().isKeyPressed(GLFW_KEY_L)) {
+    if (weapon2.valid()) 
+    {
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_L)) {
             ComponentHandle<Script> scriptComp = weapon2.component<Script>();
             WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
             if (weaponScript)
-                weaponScript->useWeapon();
-        } else {
+                weaponScript->UseWeapon();
+        } 
+        else 
+        {
             ComponentHandle<Script> scriptComp = weapon2.component<Script>();
             WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
             if (weaponScript) 
-                weaponScript->setIsActive(false);
+                weaponScript->SetIsActive(false);
         }
-    
     }
-
 }
 
-std::string PlayerScript::getScriptName(int i) {
-    switch(i) {
+string PlayerScript::GetScriptName(int i) 
+{
+    switch(i) 
+    {
         case 1:
             return "SwordScript";
         case 2:
@@ -162,21 +174,20 @@ std::string PlayerScript::getScriptName(int i) {
     }
 }
 
-void PlayerScript::beginContact(Entity* entityA, Entity* entityB) {
+void PlayerScript::BeginContact(Entity* entityA, Entity* entityB) 
+{
     ComponentHandle<Name> entityName = entityB->component<Name>();
-    if (entityName.get()->name.find("Weapon") != std::string::npos) {
-
+    if (entityName.get()->name.find("Weapon") != string::npos) 
+    {
         // Update player hp
         ComponentHandle<Script> weaponScript = entityB->component<Script>();
-        int damage = reinterpret_cast<WeaponScript*>(weaponScript.get()->script)->getDamage();
+        int damage = reinterpret_cast<WeaponScript*>(weaponScript.get()->script)->GetDamage();
         health -= damage;
 
         // Display updated Player HP
         ComponentHandle<TextSprite> textComp = playerHpText.component<TextSprite>();
-        textComp.get()->text = "Player HP: " + std::to_string(health); 
+        textComp.get()->text = "Player HP: " + to_string(health); 
     }
 }
 
-void PlayerScript::endContact(Entity* entityA, Entity* entityB) {
-
-}
+void PlayerScript::EndContact(Entity* entityA, Entity* entityB) { }

@@ -1,13 +1,18 @@
 #pragma once
 
 #include <entityx/entityx.h>
+
 #include <string>
 
-#include "../components.h"
+#include "../Components.h"
 
-struct SceneLoad {
-    SceneLoad(std::string sceneName, entityx::EntityManager* entities) : sceneName(sceneName), entities(entities) {}
+using namespace std;
+using namespace entityx;
 
-    std::string sceneName;
-    entityx::EntityManager* entities;
+struct SceneLoad 
+{
+    SceneLoad(string sceneName, EntityManager* entities) : sceneName(sceneName), entities(entities) {}
+
+    string sceneName;
+    EntityManager* entities;
 };

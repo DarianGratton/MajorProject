@@ -2,31 +2,33 @@
 
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
+
 #include <vector>
 
-class Input {
+class Input 
+{
 public:
-
-    static Input& instance() {
+    static Input& Instance()
+    {
         static Input *instance = new Input();
         return *instance;
     }
 
-    void init(GLFWwindow* window);
+    void Init(GLFWwindow* window);
 
-    void pressKey(int key);
-    void releaseKey(int key);
-    void pressMouseButton(int button);
+    void PressKey(int key);
+    void ReleaseKey(int key);
+    void PressMouseButton(int button);
 
-    bool isKeyPressed(int key);
-    bool isMousePressed(bool isLeft);
+    bool IsKeyPressed(int key);
+    bool IsMousePressed(bool isLeft);
 
-    void cursorPositionCallback(float xpos, float ypos);
-    void cursorEnterCallback(int entered);
+    void CursorPositionCallback(float xpos, float ypos);
+    void CursorEnterCallback(int entered);
 
-    float getCursorPosition(bool isX);
+    float GetCursorPosition(bool isX);
 
-    void clear();
+    void Clear();
 
 private:
     Input() {}

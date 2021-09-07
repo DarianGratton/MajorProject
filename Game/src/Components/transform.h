@@ -1,6 +1,7 @@
 #pragma once
 
-struct Transform {
+struct Transform 
+{
    Transform(
         float xpos = 0.0f, float ypos = 0.0f, float zpos = 0.0f,
         float angle = 0, float xrot = 0, float yrot = 0, float zrot = 0,

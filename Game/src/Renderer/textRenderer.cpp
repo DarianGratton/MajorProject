@@ -1,28 +1,32 @@
-
-#include "textRenderer.h"
+#include "TextRenderer.h"
 
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 
-#include "../Renderer/vertexArray.h"
-#include "../Renderer/indexBuffer.h"
-#include "../Renderer/shader.h"
-#include "../Renderer/texture.h"
-#include "../logger.h"
+#include "../Renderer/VertexArray.h"
+#include "../Renderer/IndexBuffer.h"
+#include "../Renderer/Shader.h"
+#include "../Renderer/Texture.h"
+#include "../Logger.h"
 
-TextRenderer::TextRenderer(const char * fontpath, unsigned int fontsize) {
+TextRenderer::TextRenderer(const char * fontpath, unsigned int fontsize) 
+{
     // Initialize FreeType
-    if (FT_Init_FreeType(&library)) {
+    if (FT_Init_FreeType(&library)) 
+    {
         LOG_ERROR("FreeType could not be initialized");
         return;
     }
 
     // Font
     FT_Error error = FT_New_Face(library, fontpath, 0, &face);
-    if (error == FT_Err_Unknown_File_Format) {
+    if (error == FT_Err_Unknown_File_Format) 
+    {
         LOG_ERROR("FreeType font format is unsupported");
         return;
-    } else if (error) {
+    } 
+    else if (error) 
+    {
         LOG_ERROR("FreeType font file could not be opened or read");
         return;
     }
@@ -69,31 +73,33 @@ TextRenderer::TextRenderer(const char * fontpath, unsigned int fontsize) {
             glm::ivec3(face->glyph->bitmap_left, face->glyph->bitmap_top, 0),
             (unsigned int)face->glyph->advance.x
         };
-        characters.insert(std::pair<char, Character>(c, character));
+        characters.insert(pair<char, Character>(c, character));
     }
 }
 
-TextRenderer::~TextRenderer() {
-    for (auto c : characters) {
+TextRenderer::~TextRenderer() 
+{
+    for (auto c : characters) 
         glDeleteTextures(1, &c.second.textureID);
-    }
 
     FT_Done_Face(face);
     FT_Done_FreeType(library);
 }
 
-void TextRenderer::setFontSize(unsigned int pixelwidth, unsigned int pixelheight) {
+void TextRenderer::SetFontSize(unsigned int pixelwidth, unsigned int pixelheight) 
+{
     FT_Error error = FT_Set_Pixel_Sizes(face, pixelwidth, pixelheight);
 }
 
-void TextRenderer::renderText(std::string text, glm::vec2 position, glm::vec2 scale, glm::vec3 color, glm::mat4 proj, glm::mat4 view) {
+void TextRenderer::RenderText(string text, glm::vec2 position, glm::vec2 scale, glm::vec3 color, glm::mat4 proj, glm::mat4 view) 
+{
     VertexArray va;
     VertexBuffer vb(NULL, sizeof(float) * 6 * 4);
 
     VertexBufferLayout layout;
-    layout.push<float>(2);
-    layout.push<float>(2);
-    va.addBuffer(vb, layout);
+    layout.Push<float>(2);
+    layout.Push<float>(2);
+    va.AddBuffer(vb, layout);
 
     float x = position.x;
     float y = position.y; 
@@ -101,19 +107,19 @@ void TextRenderer::renderText(std::string text, glm::vec2 position, glm::vec2 sc
 
     // activate corresponding render state	
     Shader shader("src/Assets/shaders/BasicColor.shader");
-    shader.bind();
+    shader.Bind();
 
     // Setup texture
     glActiveTexture(GL_TEXTURE0);
-    shader.setUniforms1i("u_Texture", 0);
-    shader.setUniforms3f("u_Color", color.x, color.y, color.z);
+    shader.SetUniforms1i("u_Texture", 0);
+    shader.SetUniforms3f("u_Color", color.x, color.y, color.z);
     
-    va.bind();
+    va.Bind();
 
     // iterate through all characters
-    std::string::const_iterator c;
-    for (c = text.begin(); c != text.end(); c++) {
-        
+    string::const_iterator c;
+    for (c = text.begin(); c != text.end(); c++) 
+    {
         Character ch = characters[*c];
 
         float xpos = x + ch.bearing.x * charScale;
@@ -133,17 +139,17 @@ void TextRenderer::renderText(std::string text, glm::vec2 position, glm::vec2 sc
         };
 
         // Stuff
-        va.unbind();
-        vb.unbind();
+        va.Unbind();
+        vb.Unbind();
 
         // update content of VBO memory
-        vb.bind();
+        vb.Bind();
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); 
-        vb.unbind();
+        vb.Unbind();
 
-        shader.unbind();
+        shader.Unbind();
         glm::vec3 translation((int)round(0.0f), (int)round(0.0f), (int)round(0.0f));
-        shader.bind();
+        shader.Bind();
 
         glBindTexture(GL_TEXTURE_2D, ch.textureID);
         glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(translation));
@@ -153,10 +159,10 @@ void TextRenderer::renderText(std::string text, glm::vec2 position, glm::vec2 sc
         mvp = proj * view * model; 
 
         // Set Shaders uniforms
-        shader.setUniformsMat4f("u_MVP", mvp);
+        shader.SetUniformsMat4f("u_MVP", mvp);
 
-        shader.bind();
-        va.bind();
+        shader.Bind();
+        va.Bind();
 
         // render quad
         glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -165,6 +171,6 @@ void TextRenderer::renderText(std::string text, glm::vec2 position, glm::vec2 sc
         x += (ch.advance >> 6) * charScale; // bitshift by 6 to get value in pixels (2^6 = 64)
     }
 
-    va.unbind();
+    va.Unbind();
     glBindTexture(GL_TEXTURE_2D, 0);
 }

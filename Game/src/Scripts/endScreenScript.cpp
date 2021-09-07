@@ -1,19 +1,20 @@
-#include "endScreenScript.h"
+#include "EndScreenScript.h"
 
-#include "../sceneManager.h"
-#include "../components.h"
-#include "../scripts.h"
-#include "../logger.h"
-#include "../input.h"
+#include "../SceneManager.h"
+#include "../Components.h"
+#include "../Scripts.h"
+#include "../Logger.h"
+#include "../Input.h"
 #include "../ECS.h"
 
 EndScreenScript::EndScreenScript(entityx::Entity* entity) : CScript(entity) {}
 
-void EndScreenScript::start() {
-
+void EndScreenScript::Start() 
+{
     // TODO: Currently has a O(N) runtime looking for two objects, can probably reduce
     ComponentHandle<Name> entityName;
-    for (Entity entity : ECS::instance().entities.entities_with_components(entityName)) {
+    for (Entity entity : ECS::Instance().entities.entities_with_components(entityName)) 
+    {
         entityName = entity.component<Name>();
         
         if (entityName.get()->name == "EndingText")
@@ -42,26 +43,29 @@ void EndScreenScript::start() {
     }
 
     isActive = false;
-    hideEntities(isActive);
+    HideEntities(isActive);
 
     currOption = 0;
     numOfOptions = 2;
     cooldownTimer = 0;
 }
 
-void EndScreenScript::update(TimeDelta dt) {
-
-    if (!isActive) {
-        if (player.valid()) {
+void EndScreenScript::Update(TimeDelta dt) 
+{
+    if (!isActive) 
+    {
+        if (player.valid())
+        {
             ComponentHandle<Script> playerScript = player.component<Script>();
-            int currHp = reinterpret_cast<PlayerScript*>(playerScript.get()->script)->getHealth();
-            if (currHp <= 0) {
+            int currHp = reinterpret_cast<PlayerScript*>(playerScript.get()->script)->GetHealth();
+            if (currHp <= 0) 
+            {
                 // Display end screen
                 isActive = !isActive;
-                hideEntities(isActive);
+                HideEntities(isActive);
 
                 // Pause game
-                ECS::instance().pauseGame();
+                ECS::Instance().PauseGame();
 
                 // Change text to proper text
                 ComponentHandle<TextSprite> endText = endingText.component<TextSprite>();
@@ -69,52 +73,61 @@ void EndScreenScript::update(TimeDelta dt) {
             }
         }
 
-        if (enemy.valid()) {
+        if (enemy.valid()) 
+        {
             ComponentHandle<Script> enemyScript = enemy.component<Script>();
-            int currHp = reinterpret_cast<EnemyScript*>(enemyScript.get()->script)->getHealth();
+            int currHp = reinterpret_cast<EnemyScript*>(enemyScript.get()->script)->GetHealth();
             if (currHp <= 0) {
                 // Display end screen
                 isActive = !isActive;
-                hideEntities(isActive);
+                HideEntities(isActive);
 
                 // Pause game
-                ECS::instance().pauseGame();
+                ECS::Instance().PauseGame();
 
                 // Change text to proper text
                 ComponentHandle<TextSprite> endText = endingText.component<TextSprite>();
                 endText.get()->text = "You Win!";
             }
         }
-    } else {
+    } 
+    else 
+    {
         // Update cooldown
         float cooldown = cooldownTimer - dt;
-        if (cooldown <= 0) {
+        if (cooldown <= 0) 
+        {
             cooldownTimer = 0;
-        } else {
+        } 
+        else 
+        {
             cooldownTimer = cooldown;
             return;
         }
 
         // Selection made
-        if (Input::instance().isKeyPressed(GLFW_KEY_ENTER)) {
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_ENTER)) 
+        {
             // Restart
-            if (currOption == 0) {
-                SceneManager::instance().loadScene("Arena");
-            }
+            if (currOption == 0)
+                SceneManager::Instance().LoadScene("Arena");
 
             // Exit
-            if (currOption == 1) {
-                SceneManager::instance().loadScene("LoadoutSelection");
-            }
+            if (currOption == 1) 
+                SceneManager::Instance().LoadScene("LoadoutSelection");
         }
 
         // Browse options
-        if (Input::instance().isKeyPressed(GLFW_KEY_W)) {
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_W)) 
+        {
             ComponentHandle<Transform> transform = entity.component<Transform>();
-            if (currOption == 0) {
+            if (currOption == 0) 
+            {
                 transform.get()->ypos -= (5.0f * (numOfOptions - 1));
                 currOption = numOfOptions - 1;
-            } else {
+            } 
+            else 
+            {
                 transform.get()->ypos += 5.0f;
                 currOption--;
             }
@@ -122,12 +135,16 @@ void EndScreenScript::update(TimeDelta dt) {
             cooldownTimer = 0.2f;
         }
 
-        if (Input::instance().isKeyPressed(GLFW_KEY_S)) {
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_S)) 
+        {
             ComponentHandle<Transform> transform = entity.component<Transform>();
-            if (currOption == (numOfOptions - 1)) {
+            if (currOption == (numOfOptions - 1)) 
+            {
                 transform.get()->ypos += (5.0f * (numOfOptions - 1));
                 currOption = 0;
-            } else {
+            } 
+            else 
+            {
                 transform.get()->ypos -= 5.0f;
                 currOption++;
             }
@@ -135,10 +152,10 @@ void EndScreenScript::update(TimeDelta dt) {
             cooldownTimer = 0.2f;
         }
     }
-
 }
 
-void EndScreenScript::hideEntities(bool active) {
+void EndScreenScript::HideEntities(bool active) 
+{
     ComponentHandle<Active> activeComp = endingText.component<Active>();
     activeComp.get()->isActive = active;
 

@@ -2,18 +2,20 @@
 
 #include <entityx/entityx.h>
 
+using namespace std;
 using namespace entityx;
 
-class CScript {
+class CScript 
+{
 public:
     CScript(Entity* entity);
 
-    virtual void start() = 0;
-    virtual void update(TimeDelta dt) = 0;
+    virtual void Start() = 0;
+    virtual void Update(TimeDelta dt) = 0;
 
     // Collision detection
-    virtual void beginContact(Entity* entityA, Entity* entityB);
-    virtual void endContact(Entity* entityA, Entity* entityB);
+    virtual void BeginContact(Entity* entityA, Entity* entityB);
+    virtual void EndContact(Entity* entityA, Entity* entityB);
 
 protected:
     Entity entity;

@@ -4,9 +4,11 @@
 
 using namespace entityx;
 
-class ECS : public EntityX {
+class ECS : public EntityX 
+{
 public:
-    static ECS& instance() {
+    static ECS& Instance() 
+    {
         static ECS *instance = new ECS();
         return *instance;
     }
@@ -14,17 +16,17 @@ public:
     ECS(ECS const&) = delete;
     void operator=(ECS const&) = delete;
 
-    void init();
-    void update(TimeDelta dt);
+    void Init();
+    void Update(TimeDelta dt);
     
     // TODO: Shouldn't be in ECS, should be in a game class or something that handles the game loop and stuff.
     // This is a quick solution to fix a low priority problem.
-    void endGame(); 
+    void EndGame(); 
     bool gameEnded;
 
-    void pauseGame();
-    void unpauseGame();
-    bool isGamePaused();
+    void PauseGame();
+    void UnpauseGame();
+    bool IsGamePaused();
     bool gamePaused;
 
 private:

@@ -1,15 +1,16 @@
 #pragma once
 
-#include "entityx/entityx.h"
+#include <entityx/entityx.h>
 
-#include "../cScript.h"
+#include "../CScript.h"
 
-class MainMenuScript : public CScript {
+class MainMenuScript : public CScript 
+{
 public:
     MainMenuScript(Entity* entity);
 
-    void start() override;
-    void update(TimeDelta dt) override;
+    void Start() override;
+    void Update(TimeDelta dt) override;
 
 private:
     Entity startText;

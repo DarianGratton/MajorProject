@@ -1,15 +1,16 @@
 #pragma once
 
-#include "entityx/entityx.h"
+#include <entityx/entityx.h>
 
-#include "../cScript.h"
+#include "../CScript.h"
 
-class EndScreenScript : public CScript {
+class EndScreenScript : public CScript 
+{
 public:
     EndScreenScript(Entity* entity);
 
-    void start() override;
-    void update(TimeDelta dt) override;
+    void Start() override;
+    void Update(TimeDelta dt) override;
 
 private:
     Entity endingText;
@@ -27,5 +28,5 @@ private:
     unsigned int numOfOptions;
 
     bool isActive;
-    void hideEntities(bool active);
+    void HideEntities(bool active);
 };

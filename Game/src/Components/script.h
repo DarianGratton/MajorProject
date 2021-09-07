@@ -1,18 +1,20 @@
 #pragma once
 
-#include "entityx/entityx.h"
+#include <entityx/entityx.h>
 
-#include "../cScript.h"
-#include "../scripts.h"
-#include "../scriptFactory.h"
-#include "../logger.h"
+#include "../CScript.h"
+#include "../Scripts.h"
+#include "../ScriptFactory.h"
+#include "../Logger.h"
 
-struct Script {
-    Script(std::string scriptName, entityx::Entity* entity) {
+using namespace std;
 
+struct Script 
+{
+    Script(string scriptName, entityx::Entity* entity) 
+    {
         ScriptFactory scriptFactory;
-        script = scriptFactory.getScript(scriptName, entity);
-    
+        script = scriptFactory.GetScript(scriptName, entity);
     }
 
     Script(CScript* script) : script(script) {}

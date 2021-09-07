@@ -3,19 +3,20 @@
 #include <entityx/entityx.h>
 #include <box2d/box2d.h>
 
-#include "weaponScript.h"
+#include "WeaponScript.h"
 
-class ShieldScript : public WeaponScript {
+class ShieldScript : public WeaponScript 
+{
 public:
     ShieldScript(entityx::Entity* entity, float spriteHeight, float spriteWidth);
 
-    void start() override;
-    void update(TimeDelta dt) override;
-    void useWeapon() override;
+    void Start() override;
+    void Update(TimeDelta dt) override;
+    void UseWeapon() override;
 
     // Collision detection
-    void beginContact(Entity* entityA, Entity* entityB) override;
-    void endContact(Entity* entityA, Entity* entityB) override;
+    void BeginContact(Entity* entityA, Entity* entityB) override;
+    void EndContact(Entity* entityA, Entity* entityB) override;
 
 private:
     Entity player;

@@ -1,7 +1,6 @@
-
 #include "Game.h"
 
-#include "logger.h"
+#include "Logger.h"
 #include "ECS.h"
 #include "input.h"
 #include "sceneManager.h"
@@ -18,28 +17,31 @@ bool Game::Init()
     Logger::Init();
 
     // GLFW
-    if (!InitGLFW()) {
+    if (!InitGLFW()) 
+    {
         LOG_ERROR("Error occurred in initializing GLFW");
         return -1;
     }
 
     // GLAD
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) 
+    {
         LOG_ERROR("GLAD could not be initialized");
         return -1;
     }
 
     // Input (GLFW)
-    Input::instance().init(window);
+    Input::Instance().Init(window);
 
     // Audio (BASS)
-    if (!BASS_Init(-1, 44100, 0, NULL, NULL)) {
+    if (!BASS_Init(-1, 44100, 0, NULL, NULL)) 
+    {
         LOG_ERROR("Bass could not be initialized");
         return -1;
     }
 
     // Entity Component System (EntityX)
-    ECS::instance().init();
+    ECS::Instance().Init();
 
     // Setup layers
     glEnable(GL_BLEND);
@@ -54,7 +56,8 @@ bool Game::Init()
 bool Game::InitGLFW()
 {
     // Initialize GLFW
-    if (!glfwInit()) {
+    if (!glfwInit()) 
+    {
         LOG_ERROR("GLFW could not be initialized");
         return 0;
     }
@@ -66,7 +69,8 @@ bool Game::InitGLFW()
 
     // Create window
     window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME, NULL, NULL);
-    if (!window) {
+    if (!window) 
+    {
         LOG_ERROR("GLFW Window failed to be created");
         glfwTerminate();
         return 0;
@@ -95,16 +99,17 @@ TimeDelta Game::CalculateDT()
 void Game::Run()
 {
     // Game Loop
-    while (!glfwWindowShouldClose(window) && !ECS::instance().gameEnded) {
+    while (!glfwWindowShouldClose(window) && !ECS::Instance().gameEnded) 
+    {
         // Clear any input from last frame
-        Input::instance().clear();
+        Input::Instance().Clear();
 
         // Poll for and process events
         glfwPollEvents();
 
         // Update Systems
         TimeDelta dt = CalculateDT();
-        ECS::instance().update(dt);
+        ECS::Instance().Update(dt);
 
         // Swap front and back buffers
         glfwSwapBuffers(window);

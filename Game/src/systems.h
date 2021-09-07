@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Systems/audioSystem.h"
-#include "Systems/renderingSystem.h"
-#include "Systems/scriptSystem.h"
-#include "Systems/physicsSystem.h"
+#include "Systems/AudioSystem.h"
+#include "Systems/RenderingSystem.h"
+#include "Systems/ScriptSystem.h"
+#include "Systems/PhysicsSystem.h"

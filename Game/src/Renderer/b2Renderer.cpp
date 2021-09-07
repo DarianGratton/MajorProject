@@ -1,16 +1,17 @@
-#include "b2Renderer.h"
+#include "B2Renderer.h"
 
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 #include <vector>
 
-#include "../Renderer/vertexArray.h"
-#include "../Renderer/indexBuffer.h"
-#include "../Renderer/shader.h"
-#include "../Renderer/texture.h"
-#include "../logger.h"
+#include "../Renderer/VertexArray.h"
+#include "../Renderer/IndexBuffer.h"
+#include "../Renderer/Shader.h"
+#include "../Renderer/Texture.h"
+#include "../Logger.h"
 
-void Box2DRenderer::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) {
+void Box2DRenderer::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) 
+{
     std::vector<float> spriteVertices = {
         vertices[0].x, vertices[0].y, 0.0f, 0.0f,
         vertices[1].x, vertices[1].y, 1.0f, 0.0f,
@@ -28,27 +29,27 @@ void Box2DRenderer::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, 
     VertexBuffer vb(&spriteVertices[0], sizeof(float) * spriteVertices.size());
 
     VertexBufferLayout layout;
-    layout.push<float>(2);
-    layout.push<float>(2);
-    va.addBuffer(vb, layout);
+    layout.Push<float>(2);
+    layout.Push<float>(2);
+    va.AddBuffer(vb, layout);
 
     IndexBuffer ib(&indices[0], indices.size());
 
     // activate corresponding render state	
     Shader shader("src/Assets/shaders/DebugColor.shader");
-    shader.bind();
+    shader.Bind();
 
     // Setup texture
-    shader.setUniforms3f("u_Color", color.r, color.g, color.b);
+    shader.SetUniforms3f("u_Color", color.r, color.g, color.b);
 
     // Stuff
-    va.unbind();
-    vb.unbind();
-    ib.unbind();
+    va.Unbind();
+    vb.Unbind();
+    ib.Unbind();
 
-    shader.unbind();
+    shader.Unbind();
     glm::vec3 translation((int)round(0.0f), (int)round(0.0f), (int)round(0.0f));
-    shader.bind();
+    shader.Bind();
 
     glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(translation));
     model = glm::rotate(model, 3.141592f / 180 * 0, glm::vec3(0, 0, 1)); // where x, y, z is axis of rotation (e.g. 0 1 0)
@@ -57,16 +58,15 @@ void Box2DRenderer::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, 
     mvp = proj * view * model; 
 
     // Set Shaders uniforms
-    shader.setUniformsMat4f("u_MVP", mvp);
+    shader.SetUniformsMat4f("u_MVP", mvp);
 
-    shader.bind();
-    va.bind();
-    ib.bind();
+    shader.Bind();
+    va.Bind();
+    ib.Bind();
 
-    glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr);
 }
 
-// We just need to have these to prevent override errors, they don't actually do anything right now
 void Box2DRenderer::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) {}
 void Box2DRenderer::DrawCircle(const b2Vec2& center, float radius, const b2Color& color) {}
 void Box2DRenderer::DrawSolidCircle(const b2Vec2& center, float radius, const b2Vec2& axis, const b2Color& color) {}

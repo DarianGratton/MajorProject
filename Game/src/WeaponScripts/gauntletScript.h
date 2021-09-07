@@ -2,19 +2,20 @@
 
 #include <entityx/entityx.h>
 
-#include "weaponScript.h"
+#include "WeaponScript.h"
 
-class GauntletScript : public WeaponScript {
+class GauntletScript : public WeaponScript 
+{
 public:
     GauntletScript(Entity* entity, float spriteHeight, float spriteWidth);
 
-    void start() override;
-    void update(TimeDelta dt) override;
-    void useWeapon() override;
+    void Start() override;
+    void Update(TimeDelta dt) override;
+    void UseWeapon() override;
 
     // Collision detection
-    void beginContact(Entity* entityA, Entity* entityB) override;
-    void endContact(Entity* entityA, Entity* entityB) override;
+    void BeginContact(Entity* entityA, Entity* entityB) override;
+    void EndContact(Entity* entityA, Entity* entityB) override;
 
 private:
     Entity player;
@@ -23,5 +24,5 @@ private:
     float spriteHeight;
     float spriteWidth;
 
-    int getPlayerDirection();
+    int GetPlayerDirection();
 };
