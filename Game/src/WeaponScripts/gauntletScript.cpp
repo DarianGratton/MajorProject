@@ -9,7 +9,8 @@
 // Cooldown between blocks
 // Small knockback after block
 
-GauntletScript::GauntletScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity), spriteHeight(spriteHeight), spriteWidth(spriteWidth) {
+GauntletScript::GauntletScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity, spriteHeight, spriteWidth)
+{
     damage = 15;
     spriteOffset = 8.5f;
     attackRate = 0;

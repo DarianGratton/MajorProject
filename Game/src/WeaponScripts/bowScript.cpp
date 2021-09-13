@@ -6,7 +6,7 @@
 #include "../ECS.h"
 #include "../CScript.h"
 
-BowScript::BowScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity), spriteHeight(spriteHeight), spriteWidth(spriteWidth) 
+BowScript::BowScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity, spriteHeight, spriteWidth)
 {
     damage = 5;
     spriteOffset = 10.0f;

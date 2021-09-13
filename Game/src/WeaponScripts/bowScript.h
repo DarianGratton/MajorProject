@@ -21,8 +21,6 @@ public:
 private:
     Entity player;
     float spriteOffset;
-    float spriteHeight;
-    float spriteWidth;
     float projectileSpeed;
     float projectileLifespan;
     float fireRate;

@@ -23,8 +23,6 @@ private:
     Entity explosionEntity;
     int directionThrown;
     float spriteOffset;
-    float spriteHeight;
-    float spriteWidth;
     float projectileSpeed;
     float projectileLifespan;
     float explosionLifespan;

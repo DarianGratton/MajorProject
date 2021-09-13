@@ -6,7 +6,7 @@
 #include "../ECS.h"
 #include "../CScript.h"
 
-GrenadeScript::GrenadeScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity), spriteHeight(spriteHeight), spriteWidth(spriteWidth) 
+GrenadeScript::GrenadeScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity, spriteHeight, spriteWidth)
 {
     damage = 30;
     spriteOffset = 10.0f;

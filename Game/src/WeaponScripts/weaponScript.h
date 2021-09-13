@@ -7,7 +7,8 @@
 class WeaponScript : CScript 
 {
 public:
-    WeaponScript(Entity* entity) : CScript(entity) 
+    WeaponScript(Entity* entity, float spriteHeight, float spriteWidth) : 
+                 CScript(entity), spriteHeight(spriteHeight), spriteWidth(spriteWidth) 
     {
         cscript = reinterpret_cast<CScript*>(this);
     }
@@ -15,6 +16,7 @@ public:
     virtual void UseWeapon() = 0;
     
     inline void SetIsActive(bool active) { isActive = active; }
+
     inline int GetDamage() { return damage; }
     inline Entity* GetEntity() { return &entity; }
 
@@ -24,53 +26,55 @@ public:
 
 protected:
     bool isActive;
-    int damage;
+    int damage; 
+    float spriteHeight;
+    float spriteWidth; 
     CScript* cscript;
 
-    enum Direction {
-        NONE,
-        NORTH,
-        NORTHEAST,
-        EAST,
-        SOUTHEAST,
-        SOUTH,
-        SOUTHWEST,
-        WEST,
-        NORTHWEST
-    };
+    // enum Direction {
+    //     NONE,
+    //     NORTH,
+    //     NORTHEAST,
+    //     EAST,
+    //     SOUTHEAST,
+    //     SOUTH,
+    //     SOUTHWEST,
+    //     WEST,
+    //     NORTHWEST
+    // };
 
-    Direction getDirection() 
-    {
-        bool isUpPressed    = Input::Instance().IsKeyPressed(GLFW_KEY_UP);
-        bool isDownPressed  = Input::Instance().IsKeyPressed(GLFW_KEY_DOWN);
-        bool isLeftPressed  = Input::Instance().IsKeyPressed(GLFW_KEY_LEFT);
-        bool isRightPressed = Input::Instance().IsKeyPressed(GLFW_KEY_RIGHT);
+    // Direction getDirection() 
+    // {
+    //     bool isUpPressed    = Input::Instance().IsKeyPressed(GLFW_KEY_UP);
+    //     bool isDownPressed  = Input::Instance().IsKeyPressed(GLFW_KEY_DOWN);
+    //     bool isLeftPressed  = Input::Instance().IsKeyPressed(GLFW_KEY_LEFT);
+    //     bool isRightPressed = Input::Instance().IsKeyPressed(GLFW_KEY_RIGHT);
         
-        if (isUpPressed && isLeftPressed)
-            return NORTHWEST;
+    //     if (isUpPressed && isLeftPressed)
+    //         return NORTHWEST;
 
-        if (isUpPressed && isRightPressed)
-            return NORTHEAST;
+    //     if (isUpPressed && isRightPressed)
+    //         return NORTHEAST;
 
-        if (isDownPressed && isLeftPressed)
-            return SOUTHWEST;
+    //     if (isDownPressed && isLeftPressed)
+    //         return SOUTHWEST;
 
-        if (isDownPressed && isRightPressed)
-            return SOUTHEAST;
+    //     if (isDownPressed && isRightPressed)
+    //         return SOUTHEAST;
 
-        if (isUpPressed)
-            return NORTH;
+    //     if (isUpPressed)
+    //         return NORTH;
 
-        if (isDownPressed)
-            return SOUTH;
+    //     if (isDownPressed)
+    //         return SOUTH;
 
-        if (isLeftPressed)
-            return WEST;
+    //     if (isLeftPressed)
+    //         return WEST;
 
-        if (isRightPressed)
-            return EAST;
+    //     if (isRightPressed)
+    //         return EAST;
 
-        // Otherwise
-        return NONE;
-    }
+    //     // Otherwise
+    //     return NONE;
+    // }
 };

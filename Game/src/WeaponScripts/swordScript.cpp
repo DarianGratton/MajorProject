@@ -5,7 +5,7 @@
 #include "../Scripts.h"
 #include "../ECS.h"
 
-SwordScript::SwordScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity), spriteHeight(spriteHeight), spriteWidth(spriteWidth) 
+SwordScript::SwordScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity, spriteHeight, spriteWidth)
 {
     damage = 10;
     spriteOffset = 10.5f;

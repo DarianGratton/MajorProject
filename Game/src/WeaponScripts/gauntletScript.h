@@ -21,8 +21,6 @@ private:
     Entity player;
     float spriteOffset;
     float attackRate;
-    float spriteHeight;
-    float spriteWidth;
 
     int GetPlayerDirection();
 };

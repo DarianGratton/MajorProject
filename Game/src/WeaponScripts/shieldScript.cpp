@@ -5,7 +5,7 @@
 #include "../Scripts.h"
 #include "../ECS.h"
 
-ShieldScript::ShieldScript(entityx::Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity), spriteHeight(spriteHeight), spriteWidth(spriteWidth) 
+ShieldScript::ShieldScript(entityx::Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity, spriteHeight, spriteWidth)
 {
     damage = 0;
     shieldCooldown = 0;
