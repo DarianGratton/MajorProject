@@ -27,6 +27,12 @@ public:
     void Run();
     void CleanUp();
 
+    inline void EndGame() { isGameEnded = true; } 
+    inline void PauseGame() { isGamePaused = true; }
+    inline void UnpauseGame() { isGamePaused = false; } 
+    inline bool IsGamePaused() { return isGamePaused; }
+    inline bool IsGameEnded() { return isGameEnded; }
+
 private:
     // Private default constructor
     Game() {}
@@ -47,6 +53,6 @@ private:
     std::chrono::milliseconds deltaTime;
 
     // Game
-    bool isGamePaused;
-    bool isGameEnded;
+    bool isGamePaused = false;
+    bool isGameEnded = false;
 };

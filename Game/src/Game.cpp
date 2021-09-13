@@ -99,7 +99,7 @@ TimeDelta Game::CalculateDT()
 void Game::Run()
 {
     // Game Loop
-    while (!glfwWindowShouldClose(window) && !ECS::Instance().gameEnded) 
+    while (!glfwWindowShouldClose(window) && !isGameEnded) 
     {
         // Clear any input from last frame
         Input::Instance().Clear();

@@ -18,23 +18,3 @@ void ECS::Update(TimeDelta dt)
     systems.update<PhysicsSystem>(dt);
     systems.update<RenderingSystem>(dt);
 }
-
-void ECS::EndGame() 
-{
-    gameEnded = true;
-}
-
-void ECS::PauseGame() 
-{
-    gamePaused = true;
-}
-
-void ECS::UnpauseGame() 
-{
-    gamePaused = false;
-}
-
-bool ECS::IsGamePaused() 
-{
-    return gamePaused;
-}

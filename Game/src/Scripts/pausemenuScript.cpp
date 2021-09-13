@@ -4,7 +4,7 @@
 #include "../Components.h"
 #include "../Logger.h"
 #include "../Input.h"
-#include "../ECS.h"
+#include "../Game.h"
 
 PauseMenuScript::PauseMenuScript(entityx::Entity* entity) : CScript(entity) {}
 
@@ -65,10 +65,10 @@ void PauseMenuScript::Update(TimeDelta dt)
         HideEntities(isActive);
 
         // Pause or unpause game
-        if (ECS::Instance().IsGamePaused())
-            ECS::Instance().UnpauseGame();
+        if (Game::Instance().IsGamePaused())
+            Game::Instance().UnpauseGame();
         else
-            ECS::Instance().PauseGame();
+            Game::Instance().PauseGame();
 
         cooldownTimer = 0.2f;
     }
@@ -86,7 +86,7 @@ void PauseMenuScript::Update(TimeDelta dt)
             HideEntities(isActive);
 
             // Unpause game
-            ECS::Instance().UnpauseGame();
+            Game::Instance().UnpauseGame();
         }
 
         if (currOption == 1) 

@@ -3,6 +3,7 @@
 #include "../Components.h"
 #include "../Logger.h"
 #include "../Input.h"
+#include "../Game.h"
 
 EnemyScript::EnemyScript(entityx::Entity* entity) : CScript(entity) 
 {
@@ -29,7 +30,7 @@ void EnemyScript::Start()
 
 void EnemyScript::Update(TimeDelta dt) 
 {
-    if (ECS::Instance().IsGamePaused())
+    if (Game::Instance().IsGamePaused())
         return; 
 
     // Update enemy position

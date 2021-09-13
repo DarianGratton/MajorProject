@@ -5,7 +5,7 @@
 #include "../Scripts.h"
 #include "../Logger.h"
 #include "../Input.h"
-#include "../ECS.h"
+#include "../Game.h"
 
 EndScreenScript::EndScreenScript(entityx::Entity* entity) : CScript(entity) {}
 
@@ -65,7 +65,7 @@ void EndScreenScript::Update(TimeDelta dt)
                 HideEntities(isActive);
 
                 // Pause game
-                ECS::Instance().PauseGame();
+                Game::Instance().PauseGame();
 
                 // Change text to proper text
                 ComponentHandle<TextSprite> endText = endingText.component<TextSprite>();
@@ -83,7 +83,7 @@ void EndScreenScript::Update(TimeDelta dt)
                 HideEntities(isActive);
 
                 // Pause game
-                ECS::Instance().PauseGame();
+                Game::Instance().PauseGame();
 
                 // Change text to proper text
                 ComponentHandle<TextSprite> endText = endingText.component<TextSprite>();

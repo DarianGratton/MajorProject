@@ -181,7 +181,6 @@ void EntityHelper::AddTextureComponent(Entity* entity, const string& filepath)
     entity->assign<TextureComp>(chararray, filename);
 }
 
-// TODO: Scale should be used
 void EntityHelper::AddTransformComponent(Entity* entity, const vector<string>& parameters) 
 {
     float xpos, ypos, zpos;        // Position

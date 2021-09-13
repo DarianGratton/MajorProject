@@ -18,16 +18,6 @@ public:
 
     void Init();
     void Update(TimeDelta dt);
-    
-    // TODO: Shouldn't be in ECS, should be in a game class or something that handles the game loop and stuff.
-    // This is a quick solution to fix a low priority problem.
-    void EndGame(); 
-    bool gameEnded;
-
-    void PauseGame();
-    void UnpauseGame();
-    bool IsGamePaused();
-    bool gamePaused;
 
 private:
     ECS() {}

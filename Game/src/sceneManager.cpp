@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "Game.h"
 #include "ECS.h"
 #include "Events.h"
 #include "Components.h"
@@ -37,7 +38,7 @@ bool SceneManager::LoadScene(std::string sceneName)
         // Load scene
         scene->Load();
         ECS::Instance().events.emit<SceneLoad>(scene->GetName(), &ECS::Instance().entities);
-        ECS::Instance().UnpauseGame();
+        Game::Instance().UnpauseGame();
         isSceneLoaded = true;
 
         return 1;

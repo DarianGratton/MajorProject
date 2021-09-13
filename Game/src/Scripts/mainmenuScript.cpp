@@ -4,7 +4,7 @@
 #include "../Components.h"
 #include "../Logger.h"
 #include "../Input.h"
-#include "../ECS.h"
+#include "../Game.h"
 
 MainMenuScript::MainMenuScript(entityx::Entity* entity) : CScript(entity) {}
 
@@ -50,12 +50,12 @@ void MainMenuScript::Update(TimeDelta dt)
             SceneManager::Instance().LoadScene("LoadoutSelection");
 
         if (currOption == 1) 
-            ECS::Instance().EndGame();
+            Game::Instance().EndGame();
     }
 
     // Exit program
     if (Input::Instance().IsKeyPressed(GLFW_KEY_ESCAPE))
-        ECS::Instance().EndGame();
+        Game::Instance().EndGame();
 
     if (cooldownBetweenKeys != 0) 
     {

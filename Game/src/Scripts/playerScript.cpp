@@ -5,7 +5,7 @@
 #include "../Components.h"
 #include "../Logger.h"
 #include "../Input.h"
-#include "../ECS.h"
+#include "../Game.h"
 
 PlayerScript::PlayerScript(Entity* entity) : CScript(entity) 
 {
@@ -54,7 +54,7 @@ void PlayerScript::Start()
 void PlayerScript::Update(TimeDelta dt) 
 {
     // Don't want to play if game is paused
-    if (ECS::Instance().IsGamePaused())
+    if (Game::Instance().IsGamePaused())
         return;
 
     // Movement
