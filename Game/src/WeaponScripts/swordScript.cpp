@@ -7,14 +7,19 @@
 
 SwordScript::SwordScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity, spriteHeight, spriteWidth)
 {
+    // Parent class variables
     damage = 10;
-    spriteOffset = 10.5f;
-    attackRate = 0;
     isActive = false;
+
+    // Member variables
+    spriteOffset = 10.5f;
+    attackRate = 0.3f;
+    attackCooldown = 0.0f;
 }
 
 void SwordScript::Start() 
 {
+    // Get reference to player
     ComponentHandle<Name> entityName;
     for (Entity e : ECS::Instance().entities.entities_with_components(entityName)) 
     {
@@ -23,6 +28,86 @@ void SwordScript::Start()
             player = e;
     }
 
+    // Create and setup the sword enitity
+    CreateEntity();
+}
+
+void SwordScript::Update(TimeDelta dt) 
+{
+    ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
+    if (entityBody.get()->body->IsEnabled()) 
+    {
+        attackCooldown -= dt;
+        if (attackCooldown > 0) 
+            return;
+
+        // Disable collision
+        entityBody.get()->body->SetEnabled(false);
+
+        // Disable entity
+        ComponentHandle<Active> activeComp = GetEntity()->component<Active>();
+        activeComp.get()->isActive = false;
+
+        // Enable player movement
+        ComponentHandle<Script> playerScript = player.component<Script>(); 
+        reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetCanPlayerMove(true);
+    }
+}
+
+void SwordScript::UseWeapon() 
+{
+    if (isActive)
+        return;
+
+    isActive = true;
+    attackCooldown = attackRate;
+
+    // Update sword's transform
+    ComponentHandle<Transform> entityTransform = GetEntity()->component<Transform>();
+    ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
+
+    // Determine the direction to use the weapon
+    Direction playerDirection = GetDirection(&player);
+    if (playerDirection == NORTH) 
+    {
+        entityTransform.get()->xpos = playerTransform.get()->xpos;
+        entityTransform.get()->ypos = playerTransform.get()->ypos + spriteOffset; 
+    
+    }
+    else if (playerDirection == SOUTH) 
+    {
+        entityTransform.get()->xpos = playerTransform.get()->xpos;
+        entityTransform.get()->ypos = playerTransform.get()->ypos - spriteOffset; 
+    
+    }
+    else if (playerDirection == EAST) 
+    {
+        entityTransform.get()->xpos = playerTransform.get()->xpos + spriteOffset;
+        entityTransform.get()->ypos = playerTransform.get()->ypos; 
+    
+    }
+    else if (playerDirection == WEST) 
+    {
+        entityTransform.get()->xpos = playerTransform.get()->xpos - spriteOffset;
+        entityTransform.get()->ypos = playerTransform.get()->ypos; 
+    }
+
+    // Update body transform
+    ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
+    entityBody.get()->body->SetTransform(b2Vec2(entityTransform.get()->xpos, entityTransform.get()->ypos), 0.0f);
+
+    // Disable player movement
+    ComponentHandle<Script> playerScript = player.component<Script>(); 
+    reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetCanPlayerMove(false);
+
+    // Activate entity
+    ComponentHandle<Active> activeComp = GetEntity()->component<Active>();
+    activeComp.get()->isActive = true;
+    entityBody.get()->body->SetEnabled(true);
+}
+
+void SwordScript::CreateEntity() 
+{
     // Set up entity components
     GetEntity()->assign<TextureComp>("src/Assets/textures/SwordSlash.png", "SwordSlash.png");
     GetEntity()->assign<ShaderComp>("src/Assets/shaders/Basic.shader");
@@ -51,105 +136,10 @@ void SwordScript::Start()
     physicsComp.get()->CreateFixture();
     physicsComp.get()->SetUserData(GetEntity());
 
-    // Active
+    // Active   
     ComponentHandle<Active> activeComp = GetEntity()->component<Active>();
     activeComp.get()->isActive = false;
     physicsComp.get()->body->SetEnabled(false);
-}
-
-void SwordScript::Update(TimeDelta dt) 
-{
-    ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
-
-    if (entityBody.get()->body->IsEnabled()) 
-    {
-        attackRate -= dt;
-        if (attackRate > 0) 
-            return;
-
-        // Disable collision
-        entityBody.get()->body->SetEnabled(false);
-
-        // Disable entity
-        ComponentHandle<Active> activeComp = GetEntity()->component<Active>();
-        activeComp.get()->isActive = false;
-
-        // Enable player movement
-        ComponentHandle<Script> playerScript = player.component<Script>(); 
-        reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetCanPlayerMove(true);
-    }
-}
-
-void SwordScript::UseWeapon() 
-{
-    if (isActive)
-        return;
-
-    isActive = true;
-    attackRate = 0.3f;
-
-    // Update sword's transform
-    ComponentHandle<Transform> entityTransform = GetEntity()->component<Transform>();
-    ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
-
-    int playerDirection = GetPlayerDirection();
-    // Up or no direction found
-    if (playerDirection <= 1) 
-    {
-        entityTransform.get()->xpos = playerTransform.get()->xpos;
-        entityTransform.get()->ypos = playerTransform.get()->ypos + spriteOffset; 
-    
-    } // Down
-    else if (playerDirection == 2) 
-    {
-        entityTransform.get()->xpos = playerTransform.get()->xpos;
-        entityTransform.get()->ypos = playerTransform.get()->ypos - spriteOffset; 
-    
-    } // Right 
-    else if (playerDirection == 3) 
-    {
-        entityTransform.get()->xpos = playerTransform.get()->xpos + spriteOffset;
-        entityTransform.get()->ypos = playerTransform.get()->ypos; 
-    
-    } // Left 
-    else if (playerDirection == 4) 
-    {
-        entityTransform.get()->xpos = playerTransform.get()->xpos - spriteOffset;
-        entityTransform.get()->ypos = playerTransform.get()->ypos; 
-    }
-
-    // Update body transform
-    ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
-    entityBody.get()->body->SetTransform(b2Vec2(entityTransform.get()->xpos, entityTransform.get()->ypos), 0.0f);
-
-    // Disable player movement
-    ComponentHandle<Script> playerScript = player.component<Script>(); 
-    reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetCanPlayerMove(false);
-
-    // Activate entity
-    ComponentHandle<Active> activeComp = GetEntity()->component<Active>();
-    activeComp.get()->isActive = true;
-    entityBody.get()->body->SetEnabled(true);
-}
-
-// Up = 1, Down = 2, Right = 3, Left = 4
-int SwordScript::GetPlayerDirection() 
-{
-    ComponentHandle<TextureComp> playerTexture = player.component<TextureComp>();
-    if (playerTexture.get()->filename == "PlayerUp.png") 
-        return 1;
-
-    if (playerTexture.get()->filename == "PlayerDown.png")
-        return 2;
-
-    if (playerTexture.get()->filename == "PlayerRight.png")
-        return 3;
-
-    if (playerTexture.get()->filename == "PlayerLeft.png")
-        return 4;
-
-    // No direction found
-    return 0;
 }
 
 // Collision detection

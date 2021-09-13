@@ -20,8 +20,9 @@ public:
 private:
     Entity player;
 
-    float spriteOffset; // Sword sprite offset from player sprite
-    float attackRate;   // Attack rate of the sword
+    float spriteOffset;   // Sword sprite offset from player sprite
+    float attackRate;     // Attack rate of the sword
+    float attackCooldown; // Attack cooldown of the sword
 
-    int GetPlayerDirection();
+    void CreateEntity();
 };

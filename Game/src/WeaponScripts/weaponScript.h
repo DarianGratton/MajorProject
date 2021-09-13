@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../CScript.h"
+#include "../Components/Texture.h"
 #include "../Input.h"
 #include "../Logger.h"
 
@@ -31,50 +32,30 @@ protected:
     float spriteWidth; 
     CScript* cscript;
 
-    // enum Direction {
-    //     NONE,
-    //     NORTH,
-    //     NORTHEAST,
-    //     EAST,
-    //     SOUTHEAST,
-    //     SOUTH,
-    //     SOUTHWEST,
-    //     WEST,
-    //     NORTHWEST
-    // };
+    enum Direction {
+        NONE,
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST,
+    };
 
-    // Direction getDirection() 
-    // {
-    //     bool isUpPressed    = Input::Instance().IsKeyPressed(GLFW_KEY_UP);
-    //     bool isDownPressed  = Input::Instance().IsKeyPressed(GLFW_KEY_DOWN);
-    //     bool isLeftPressed  = Input::Instance().IsKeyPressed(GLFW_KEY_LEFT);
-    //     bool isRightPressed = Input::Instance().IsKeyPressed(GLFW_KEY_RIGHT);
-        
-    //     if (isUpPressed && isLeftPressed)
-    //         return NORTHWEST;
+    Direction GetDirection(Entity* entity) 
+    {
+        ComponentHandle<TextureComp> playerTexture = entity->component<TextureComp>();
+        if (playerTexture.get()->filename == "PlayerUp.png") 
+            return NORTH;
 
-    //     if (isUpPressed && isRightPressed)
-    //         return NORTHEAST;
+        if (playerTexture.get()->filename == "PlayerDown.png")
+            return SOUTH;
 
-    //     if (isDownPressed && isLeftPressed)
-    //         return SOUTHWEST;
+        if (playerTexture.get()->filename == "PlayerRight.png")
+            return EAST;
 
-    //     if (isDownPressed && isRightPressed)
-    //         return SOUTHEAST;
+        if (playerTexture.get()->filename == "PlayerLeft.png")
+            return WEST;
 
-    //     if (isUpPressed)
-    //         return NORTH;
-
-    //     if (isDownPressed)
-    //         return SOUTH;
-
-    //     if (isLeftPressed)
-    //         return WEST;
-
-    //     if (isRightPressed)
-    //         return EAST;
-
-    //     // Otherwise
-    //     return NONE;
-    // }
+        // No direction found
+        return NONE;
+    }
 };
