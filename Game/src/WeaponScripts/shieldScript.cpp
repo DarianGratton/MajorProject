@@ -7,9 +7,12 @@
 
 ShieldScript::ShieldScript(entityx::Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity, spriteHeight, spriteWidth)
 {
+    // Parent class variables
     damage = 0;
-    shieldCooldown = 0;
     isActive = false;
+
+    // Member variables
+    shieldCooldown = 0;
     hitVelocity = b2Vec2_zero;
 }
 
@@ -24,6 +27,92 @@ void ShieldScript::Start()
             player = e;
     }
 
+    CreateEntity();
+}
+
+void ShieldScript::Update(TimeDelta dt) 
+{
+    // Update cooldown
+    float cooldown = shieldCooldown - dt;
+    if (cooldown <= 0) 
+    {
+        shieldCooldown = 0;
+    } 
+    else 
+    {
+        shieldCooldown = cooldown;
+        return;
+    }
+
+    if (isActive)
+    {
+        // Update shield's transform
+        ComponentHandle<Transform> entityTransform = GetEntity()->component<Transform>();
+        ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
+        entityTransform.get()->xpos = playerTransform.get()->xpos;
+        entityTransform.get()->ypos = playerTransform.get()->ypos;
+
+        // Update body transform
+        ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
+        entityBody.get()->body->SetTransform(b2Vec2(entityTransform.get()->xpos, entityTransform.get()->ypos), 0.0f);
+    }
+
+    ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
+    if (!isActive && entityBody.get()->body->IsEnabled()) 
+    {
+        // Disable collision
+        entityBody.get()->body->SetEnabled(false);
+
+        // Disable entity
+        ComponentHandle<Active> activeComp = GetEntity()->component<Active>();
+        activeComp.get()->isActive = false;
+
+        // Enable player movement
+        ComponentHandle<Script> playerScript = player.component<Script>(); 
+        reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetIsMovementReduced(false);
+
+        // Enable player body
+        ComponentHandle<RigidBody> playerBody = player.component<RigidBody>(); 
+        // playerBody.get()->body->SetEnabled(true);
+        playerBody.get()->body->GetFixtureList()->SetSensor(true);
+        playerBody.get()->body->SetLinearVelocity(hitVelocity);
+        hitVelocity = b2Vec2_zero;
+    }
+}
+
+void ShieldScript::UseWeapon() 
+{
+    if (isActive)
+        return;
+
+    isActive = true; 
+
+    // Update shield's transform
+    ComponentHandle<Transform> entityTransform = GetEntity()->component<Transform>();
+    ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
+    entityTransform.get()->xpos = playerTransform.get()->xpos;
+    entityTransform.get()->ypos = playerTransform.get()->ypos;
+
+    // Update body transform
+    ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
+    entityBody.get()->body->SetTransform(b2Vec2(entityTransform.get()->xpos, entityTransform.get()->ypos), 0.0f);
+
+    // Reduce player movement
+    ComponentHandle<Script> playerScript = player.component<Script>(); 
+    reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetIsMovementReduced(true);
+
+    // Disable player body
+    ComponentHandle<RigidBody> playerBody = player.component<RigidBody>(); 
+    playerBody.get()->body->GetFixtureList()->SetSensor(false);
+
+    // Activate entity
+    ComponentHandle<Active> activeComp = GetEntity()->component<Active>();
+    activeComp.get()->isActive = true;
+    entityBody.get()->body->SetEnabled(true);
+}
+
+void ShieldScript::CreateEntity()
+{
     // Set up entity components
     GetEntity()->assign<TextureComp>("src/Assets/textures/Shield.png");
     GetEntity()->assign<ShaderComp>("src/Assets/shaders/Basic.shader");
@@ -56,73 +145,6 @@ void ShieldScript::Start()
     ComponentHandle<Active> activeComp = GetEntity()->component<Active>();
     activeComp.get()->isActive = false;
     physicsComp.get()->body->SetEnabled(false);
-}
-
-void ShieldScript::Update(TimeDelta dt) 
-{
-    // Update cooldown
-    float cooldown = shieldCooldown - dt;
-    if (cooldown <= 0) 
-    {
-        shieldCooldown = 0;
-    } 
-    else 
-    {
-        shieldCooldown = cooldown;
-        return;
-    }
-
-    ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
-    if (!isActive && entityBody.get()->body->IsEnabled()) 
-    {
-        // Disable collision
-        entityBody.get()->body->SetEnabled(false);
-
-        // Disable entity
-        ComponentHandle<Active> activeComp = GetEntity()->component<Active>();
-        activeComp.get()->isActive = false;
-
-        // Enable player movement
-        ComponentHandle<Script> playerScript = player.component<Script>(); 
-        reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetCanPlayerMove(true);
-
-        // Enable player body
-        ComponentHandle<RigidBody> playerBody = player.component<RigidBody>(); 
-        playerBody.get()->body->SetEnabled(true);
-        playerBody.get()->body->SetLinearVelocity(hitVelocity);
-        hitVelocity = b2Vec2_zero;
-    }
-}
-
-void ShieldScript::UseWeapon() 
-{
-    if (isActive)
-        return;
-
-    isActive = true; 
-
-    // Update shield's transform
-    ComponentHandle<Transform> entityTransform = GetEntity()->component<Transform>();
-    ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
-    entityTransform.get()->xpos = playerTransform.get()->xpos;
-    entityTransform.get()->ypos = playerTransform.get()->ypos;
-
-    // Update body transform
-    ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
-    entityBody.get()->body->SetTransform(b2Vec2(entityTransform.get()->xpos, entityTransform.get()->ypos), 0.0f);
-
-    // Disable player movement
-    ComponentHandle<Script> playerScript = player.component<Script>(); 
-    reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetCanPlayerMove(false);
-
-    // Disable player body
-    ComponentHandle<RigidBody> playerBody = player.component<RigidBody>(); 
-    playerBody.get()->body->SetEnabled(false);
-
-    // Activate entity
-    ComponentHandle<Active> activeComp = GetEntity()->component<Active>();
-    activeComp.get()->isActive = true;
-    entityBody.get()->body->SetEnabled(true);
 }
 
 // Collision detection

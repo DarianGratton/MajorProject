@@ -22,4 +22,6 @@ private:
     Entity player;
     b2Vec2 hitVelocity;
     float shieldCooldown;
+
+    void CreateEntity();
 };

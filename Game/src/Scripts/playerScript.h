@@ -16,14 +16,18 @@ public:
     void BeginContact(Entity* entityA, Entity* entityB) override;
     void EndContact(Entity* entityA, Entity* entityB) override;
 
-    inline void SetCanPlayerMove(bool canMove) { canPlayerMove = canMove; }
+    inline void SetCanMove(bool _canMove) { canMove = _canMove; }
+    inline void SetIsMovementReduced(bool movementReduced) { isMovementReduced = movementReduced; }
     inline int GetHealth() { return health; }
 
 private:
     Entity weapon1;
     Entity weapon2; 
     Entity playerHpText;
-    bool canPlayerMove;
+    bool canMove;
+    bool isMovementReduced;
+    float normalMovementVelocity;
+    float reducedMovementVelocity;
     int health;
 
     string GetScriptName(int i);

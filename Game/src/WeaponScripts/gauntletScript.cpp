@@ -79,7 +79,7 @@ void GauntletScript::Update(TimeDelta dt)
 
         // Enable player movement
         ComponentHandle<Script> playerScript = player.component<Script>(); 
-        reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetCanPlayerMove(true);
+        reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetCanMove(true);
     }
 }
 
@@ -127,7 +127,7 @@ void GauntletScript::UseWeapon()
 
     // Disable player movement
     ComponentHandle<Script> playerScript = player.component<Script>(); 
-    reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetCanPlayerMove(false);
+    reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetCanMove(false);
 
     // Activate entity
     ComponentHandle<Active> activeComp = GetEntity()->component<Active>();

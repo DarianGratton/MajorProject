@@ -11,7 +11,10 @@ PlayerScript::PlayerScript(Entity* entity) : CScript(entity)
 {
     // Initialize variables
     health = 100;
-    canPlayerMove = true;
+    canMove = true;
+    isMovementReduced = false;
+    normalMovementVelocity = 250.0f;
+    reducedMovementVelocity = 50.0f;
 }
 
 void PlayerScript::Start() 
@@ -60,13 +63,14 @@ void PlayerScript::Update(TimeDelta dt)
     // Movement
     float desiredVelX = 0;
     float desiredVelY = 0;
+    float velcityChange = (isMovementReduced ? reducedMovementVelocity : normalMovementVelocity);
 
-    if (canPlayerMove) 
+    if (canMove)
     {
         // Movement UP
         if (Input::Instance().IsKeyPressed(GLFW_KEY_W)) 
         {
-            desiredVelY = 250;
+            desiredVelY = velcityChange;
 
             ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
             textureComp.get()->SetTexture("src/Assets/textures/PlayerUp.png");
@@ -75,7 +79,7 @@ void PlayerScript::Update(TimeDelta dt)
         // Movement DOWN
         if (Input::Instance().IsKeyPressed(GLFW_KEY_S)) 
         {
-            desiredVelY = -250;
+            desiredVelY = -velcityChange;
 
             ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
             textureComp.get()->SetTexture("src/Assets/textures/PlayerDown.png");
@@ -84,7 +88,7 @@ void PlayerScript::Update(TimeDelta dt)
         // Movement RIGHT
         if (Input::Instance().IsKeyPressed(GLFW_KEY_D)) 
         {
-            desiredVelX = 250;
+            desiredVelX = velcityChange;
 
             ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
             textureComp.get()->SetTexture("src/Assets/textures/PlayerRight.png");
@@ -93,7 +97,7 @@ void PlayerScript::Update(TimeDelta dt)
         // Movement LEFT
         if (Input::Instance().IsKeyPressed(GLFW_KEY_A)) 
         {
-            desiredVelX = -250;
+            desiredVelX = -velcityChange;
 
             ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
             textureComp.get()->SetTexture("src/Assets/textures/PlayerLeft.png");
