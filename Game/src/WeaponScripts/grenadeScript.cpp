@@ -8,14 +8,18 @@
 
 GrenadeScript::GrenadeScript(Entity* entity, float spriteHeight, float spriteWidth) : WeaponScript(entity, spriteHeight, spriteWidth)
 {
+    // Parent member variables
     damage = 30;
+    isActive = false;
+
+    // Member variables
     spriteOffset = 10.0f;
-    projectileSpeed = 0.7f;
-    projectileLifespan = 1.5f;
+    projectileVelocity = 75.0f;
+    projectileLifespan = 5.0f;
     explosionLifespan = 3.0f;
     cooldownTimer = 0.0f;
-    isActive = false;
     timeElapsed = 0.0f;
+    directionThrown = NONE;
 }
 
 void GrenadeScript::Start() 
@@ -49,7 +53,7 @@ void GrenadeScript::Update(TimeDelta dt)
         PhysicsManager::Instance().GetWorld()->DestroyBody(physicsComp.get()->body);
 
         grenadeEntity.destroy();
-        directionThrown = 0;
+        directionThrown = NONE;
         timeElapsed = 0.0f;
     }
 
@@ -60,32 +64,46 @@ void GrenadeScript::Update(TimeDelta dt)
         PhysicsManager::Instance().GetWorld()->DestroyBody(physicsComp.get()->body);
 
         explosionEntity.destroy();
-        directionThrown = 0;
     }
 
-    // Update position of arrows
+    // Update position of grenade
     if (grenadeEntity.valid()) 
     { 
+        float desiredVelX = 0;
+        float desiredVelY = 0;
+
         ComponentHandle<Transform> entityTransform = grenadeEntity.component<Transform>();
-
-        // Up or no direction found
-        if (directionThrown <= 1) 
-            entityTransform.get()->ypos += projectileSpeed;
-
-        // Down
-        else if (directionThrown == 2) 
-            entityTransform.get()->ypos -= projectileSpeed;  
-        
-        // Right
-        else if (directionThrown == 3) 
-            entityTransform.get()->xpos += projectileSpeed; 
-        
-        // Left
-        else if (directionThrown == 4)
-            entityTransform.get()->xpos -= projectileSpeed; 
+        switch(directionThrown)
+        {
+            case NORTH:
+                desiredVelY = projectileVelocity;
+                break;
+            case SOUTH:
+                desiredVelY = -projectileVelocity;
+                break;
+            case EAST:
+                desiredVelX = projectileVelocity;
+                break;
+            case WEST:
+                desiredVelX = -projectileVelocity;
+                break;
+            default:
+                break;
+        }
         
         ComponentHandle<RigidBody> entityBody = grenadeEntity.component<RigidBody>();
-        entityBody.get()->body->SetTransform(b2Vec2(entityTransform.get()->xpos, entityTransform.get()->ypos), 0);
+        b2Vec2 grenadeVelocity = entityBody.get()->body->GetLinearVelocity();
+    
+        float velChangeX = desiredVelX - grenadeVelocity.x;
+        float velChangeY = desiredVelY - grenadeVelocity.y;
+        float impulseX = entityBody.get()->body->GetMass() * velChangeX;
+        float impulseY = entityBody.get()->body->GetMass() * velChangeY;
+        entityBody.get()->body->ApplyLinearImpulse(b2Vec2(impulseX, impulseY), entityBody.get()->body->GetWorldCenter(), true);
+    
+        // Update player position
+        ComponentHandle<Transform> transform = grenadeEntity.component<Transform>();
+        transform.get()->xpos = entityBody.get()->body->GetPosition().x;
+        transform.get()->ypos = entityBody.get()->body->GetPosition().y;
     }
 }
 
@@ -97,30 +115,6 @@ void GrenadeScript::UseWeapon()
     cooldownTimer = projectileLifespan + explosionLifespan + 3.0f;
     timeElapsed = 0.0f;
     SpawnGrenade();
-}
-
-// Up = 1, Down = 2, Right = 3, Left = 4
-int GrenadeScript::GetPlayerDirection() 
-{
-    ComponentHandle<TextureComp> playerTexture = player.component<TextureComp>();
-    if (playerTexture.get()->filename == "PlayerUp.png") {
-        return 1;
-    }
-
-    if (playerTexture.get()->filename == "PlayerDown.png") {
-        return 2;
-    }
-
-    if (playerTexture.get()->filename == "PlayerRight.png") {
-        return 3;
-    }
-
-    if (playerTexture.get()->filename == "PlayerLeft.png") {
-        return 4;
-    }
-
-    // No direction found
-    return 0;
 }
 
 void GrenadeScript::SpawnGrenade() 
@@ -148,25 +142,32 @@ void GrenadeScript::SpawnGrenade()
     uint16 maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMY;
 
     // Transform
-    int playerDirection = GetPlayerDirection();
+    Direction playerDirection = GetDirection(&player);
     ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
-    // Up or no direction found
-    if (playerDirection <= 1) 
-        grenadeEntity.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2);
+    switch(playerDirection)
+    {
+        case NORTH:
+            grenadeEntity.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2);
+            grenadeEntity.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            break;
+        case SOUTH:
+            grenadeEntity.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 0.0f, 0, 0, 0, 1, 2);
+            grenadeEntity.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            break;
+        case EAST:
+            grenadeEntity.assign<Transform>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2); 
+            grenadeEntity.assign<RigidBody>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            break;
+        case WEST:
+            grenadeEntity.assign<Transform>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2);
+            grenadeEntity.assign<RigidBody>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            break;
+        default:
+            break;
+    }
     
-    // Down
-    else if (playerDirection == 2)
-        grenadeEntity.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 0.0f, 0, 0, 0, 1, 2);
-    
-    // Right
-    else if (playerDirection == 3) 
-        grenadeEntity.assign<Transform>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2); 
-    
-    // Left
-    else if (playerDirection == 4) 
-        grenadeEntity.assign<Transform>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0.0f, 1, 2); 
-    
-    grenadeEntity.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+    // Assign script
+    grenadeEntity.assign<Script>(cscript);
 
     ComponentHandle<RigidBody> physicsComp = grenadeEntity.component<RigidBody>();
     physicsComp.get()->body = PhysicsManager::Instance().GetWorld()->CreateBody(&physicsComp.get()->bodyDef);
@@ -204,7 +205,6 @@ void GrenadeScript::SpawnExplosion()
     uint16 maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMY | PhysicsManager::Instance().PLAYER;
 
     // Transform
-    int playerDirection = GetPlayerDirection();
     ComponentHandle<Transform> grenadeTransform = grenadeEntity.component<Transform>(); 
     explosionEntity.assign<Transform>(grenadeTransform.get()->xpos, grenadeTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2);
     explosionEntity.assign<RigidBody>(grenadeTransform.get()->xpos, grenadeTransform.get()->ypos, 10.0f, 10.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
@@ -218,6 +218,32 @@ void GrenadeScript::SpawnExplosion()
 }
 
 // Collision detection
-void GrenadeScript::BeginContact(Entity* entityA, Entity* entityB) { }
+void GrenadeScript::BeginContact(Entity* entityA, Entity* entityB) 
+{ 
+    ComponentHandle<Name> entityNameA = entityA->component<Name>();
+    ComponentHandle<Name> entityNameB = entityB->component<Name>();
+    if (entityNameA.get()->name.find("Explosion") == string::npos &&
+        entityNameB.get()->name.find("Wall") != string::npos) 
+    {
+        switch(directionThrown)
+        {
+            case NORTH:
+                directionThrown = SOUTH;
+                break;
+            case SOUTH:
+                directionThrown = NORTH;
+                break;
+            case EAST:
+                directionThrown = WEST;
+                break;
+            case WEST:
+                directionThrown = EAST;
+                break;
+            default:
+                LOG_ERROR("GrenadeScript BeginContact(): Error directionThrown not set.");
+                break;
+        }
+    }
+}
 
 void GrenadeScript::EndContact(Entity* entityA, Entity* entityB) { }

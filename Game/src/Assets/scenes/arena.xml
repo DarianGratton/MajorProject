@@ -25,16 +25,16 @@
         <Component name="SpriteVertices" value=""/>
     </Entity>
     <Entity name="TopWall" height="1.0f" width="1.0f">
-        <Component name="RigidBody" value="0.0f, -38.0f, 55.0f, 2.0f, 1.0f, 1.0f, 0"/>
+        <Component name="RigidBody" value="0.0f, -42.0f, 55.0f, 6.0f, 1.0f, 1.0f, 0"/>
     </Entity>
     <Entity name="BottomWall" height="1.0f" width="1.0f">
-        <Component name="RigidBody" value="0.0f, 38.0f, 55.0f, 2.0f, 1.0f, 1.0f, 0"/>
+        <Component name="RigidBody" value="0.0f, 42.0f, 55.0f, 6.0f, 1.0f, 1.0f, 0"/>
     </Entity>
     <Entity name="LeftWall" height="1.0f" width="1.0f">
-        <Component name="RigidBody" value="-56.0f, 0.0f, 2.0f, 40.0f, 1.0f, 1.0f, 0"/>
+        <Component name="RigidBody" value="-60.0f, 0.0f, 6.0f, 40.0f, 1.0f, 1.0f, 0"/>
     </Entity>
-    <Entity name="BottomWall" height="1.0f" width="1.0f">
-        <Component name="RigidBody" value="56.0f, 0.0f, 2.0f, 40.0f, 1.0f, 1.0f, 0"/>
+    <Entity name="RightWall" height="1.0f" width="1.0f">
+        <Component name="RigidBody" value="60.0f, 0.0f, 6.0f, 40.0f, 1.0f, 1.0f, 0"/>
     </Entity>
     <Entity name="Player" height="10.0f" width="10.0f">
         <Component name="Texture" value="src/Assets/textures/PlayerUp.png"/>

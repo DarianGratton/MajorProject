@@ -12,7 +12,7 @@ ShieldScript::ShieldScript(entityx::Entity* entity, float spriteHeight, float sp
     isActive = false;
 
     // Member variables
-    shieldCooldown = 0;
+    shieldCooldown = 3.0f;
     hitVelocity = b2Vec2_zero;
 }
 

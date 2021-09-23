@@ -40,9 +40,12 @@ protected:
         WEST,
     };
 
-    Direction GetDirection(Entity* entity) 
+    Direction GetDirection(Entity* e) 
     {
-        ComponentHandle<TextureComp> playerTexture = entity->component<TextureComp>();
+        if (!(e->has_component<TextureComp>()))
+            return NONE;
+
+        ComponentHandle<TextureComp> playerTexture = e->component<TextureComp>();
         if (playerTexture.get()->filename == "PlayerUp.png") 
             return NORTH;
 

@@ -5,7 +5,8 @@
 
 #include "WeaponScript.h"
 
-class GrenadeScript : public WeaponScript {
+class GrenadeScript : public WeaponScript 
+{
 public:
     GrenadeScript(Entity* entity, float spriteHeight, float spriteWidth);
 
@@ -21,15 +22,15 @@ private:
     Entity player;
     Entity grenadeEntity;
     Entity explosionEntity;
-    int directionThrown;
+    Direction directionThrown;
+
     float spriteOffset;
-    float projectileSpeed;
+    float projectileVelocity;
     float projectileLifespan;
     float explosionLifespan;
     float cooldownTimer;
     float timeElapsed;
-
-    int GetPlayerDirection();
+    
     void SpawnGrenade();
     void SpawnExplosion();
 };

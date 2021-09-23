@@ -13,7 +13,7 @@ PlayerScript::PlayerScript(Entity* entity) : CScript(entity)
     health = 100;
     canMove = true;
     isMovementReduced = false;
-    normalMovementVelocity = 250.0f;
+    normalMovementVelocity = 150.0f;
     reducedMovementVelocity = 50.0f;
 }
 

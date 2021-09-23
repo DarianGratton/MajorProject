@@ -12,7 +12,7 @@ struct RigidBody
 {
     RigidBody(float xpos, float ypos, float hx, float hy, 
         float density = 0.0f, float friction = 1.0f, bool isDynamicBody = false, 
-        uint16 categoryBits = 0, uint16 maskBits = 0)
+        uint16 categoryBits = 0, uint16 maskBits = 0, bool setSensor = true)
         : density(density), friction(friction), isDynamicBody(isDynamicBody), categoryBits(categoryBits), maskBits(maskBits) 
     {            
         // Create rigid body
@@ -63,6 +63,11 @@ struct RigidBody
 
         entity = ECS::Instance().entities.get(e->id());
         body->GetUserData().pointer = reinterpret_cast<uintptr_t>(&entity);
+    }
+
+    void SetSensor(bool sensor)
+    {
+        body->GetFixtureList()->SetSensor(sensor);
     }
 
     float density;
