@@ -13,7 +13,7 @@ PlayerScript::PlayerScript(Entity* entity) : CScript(entity)
     health = 100;
     canMove = true;
     isMovementReduced = false;
-    normalMovementVelocity = 150.0f;
+    normalMovementVelocity = 175.0f;
     reducedMovementVelocity = 50.0f;
 }
 
@@ -61,6 +61,52 @@ void PlayerScript::Update(TimeDelta dt)
         return;
 
     // Movement
+    ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
+    MoveCharacter(rigidBody.get()->body);
+    
+    // Attack
+    // Use weapon 1
+    if (weapon1.valid()) 
+    {
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_K)) 
+        {
+            ComponentHandle<Script> scriptComp = weapon1.component<Script>();
+            WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
+            if (weaponScript)
+                weaponScript->UseWeapon();
+        } 
+        else 
+        {
+            ComponentHandle<Script> scriptComp = weapon1.component<Script>();
+            WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
+            if (weaponScript) 
+                weaponScript->SetIsActive(false);
+        }
+   
+    }
+
+    // Use weapon 2
+    if (weapon2.valid()) 
+    {
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_L)) {
+            ComponentHandle<Script> scriptComp = weapon2.component<Script>();
+            WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
+            if (weaponScript)
+                weaponScript->UseWeapon();
+        } 
+        else 
+        {
+            ComponentHandle<Script> scriptComp = weapon2.component<Script>();
+            WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
+            if (weaponScript) 
+                weaponScript->SetIsActive(false);
+        }
+    }
+}
+
+void PlayerScript::MoveCharacter(b2Body* body)
+{
+    // Movement
     float desiredVelX = 0;
     float desiredVelY = 0;
     float velcityChange = (isMovementReduced ? reducedMovementVelocity : normalMovementVelocity);
@@ -105,58 +151,18 @@ void PlayerScript::Update(TimeDelta dt)
     }
 
     // Apply forces
-    ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
-    b2Vec2 playerVelocity = rigidBody.get()->body->GetLinearVelocity();
+    b2Vec2 playerVelocity = body->GetLinearVelocity();
     
     float velChangeX = desiredVelX - playerVelocity.x;
     float velChangeY = desiredVelY - playerVelocity.y;
-    float impulseX = rigidBody.get()->body->GetMass() * velChangeX;
-    float impulseY = rigidBody.get()->body->GetMass() * velChangeY;
-    rigidBody.get()->body->ApplyLinearImpulse(b2Vec2(impulseX, impulseY), rigidBody.get()->body->GetWorldCenter(), true);
+    float impulseX = body->GetMass() * velChangeX;
+    float impulseY = body->GetMass() * velChangeY;
+    body->ApplyLinearImpulse(b2Vec2(impulseX, impulseY), body->GetWorldCenter(), true);
 
     // Update player position
     ComponentHandle<Transform> transform = entity.component<Transform>();
-    transform.get()->xpos = rigidBody.get()->body->GetPosition().x;
-    transform.get()->ypos = rigidBody.get()->body->GetPosition().y;
-    
-    // Attack
-    // Use weapon 1
-    if (weapon1.valid()) 
-    {
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_K)) 
-        {
-            ComponentHandle<Script> scriptComp = weapon1.component<Script>();
-            WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
-            if (weaponScript)
-                weaponScript->UseWeapon();
-        } 
-        else 
-        {
-            ComponentHandle<Script> scriptComp = weapon1.component<Script>();
-            WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
-            if (weaponScript) 
-                weaponScript->SetIsActive(false);
-        }
-   
-    }
-
-    // Use weapon 2
-    if (weapon2.valid()) 
-    {
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_L)) {
-            ComponentHandle<Script> scriptComp = weapon2.component<Script>();
-            WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
-            if (weaponScript)
-                weaponScript->UseWeapon();
-        } 
-        else 
-        {
-            ComponentHandle<Script> scriptComp = weapon2.component<Script>();
-            WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
-            if (weaponScript) 
-                weaponScript->SetIsActive(false);
-        }
-    }
+    transform.get()->xpos = body->GetPosition().x;
+    transform.get()->ypos = body->GetPosition().y;
 }
 
 string PlayerScript::GetScriptName(int i) 

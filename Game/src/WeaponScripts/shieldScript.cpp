@@ -12,8 +12,11 @@ ShieldScript::ShieldScript(entityx::Entity* entity, float spriteHeight, float sp
     isActive = false;
 
     // Member variables
-    shieldCooldown = 3.0f;
+    shieldMaxCooldown = 3.0f;
+    shieldCurrCooldown = 0.0f;
     hitVelocity = b2Vec2_zero;
+    maxHealth = 10;
+    currHealth = maxHealth;
 }
 
 void ShieldScript::Start() 
@@ -33,28 +36,33 @@ void ShieldScript::Start()
 void ShieldScript::Update(TimeDelta dt) 
 {
     // Update cooldown
-    float cooldown = shieldCooldown - dt;
+    float cooldown = shieldCurrCooldown - dt;
     if (cooldown <= 0) 
     {
-        shieldCooldown = 0;
+        shieldCurrCooldown = 0;
     } 
     else 
     {
-        shieldCooldown = cooldown;
+        shieldCurrCooldown = cooldown;
         return;
     }
 
     if (isActive)
     {
-        // Update shield's transform
+        // Move player based on entity body
+        ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
+        ComponentHandle<Script> playerScript = player.component<Script>(); 
+        reinterpret_cast<PlayerScript*>(playerScript.get()->script)->MoveCharacter(entityBody.get()->body);
+
+        // Update entity transform
         ComponentHandle<Transform> entityTransform = GetEntity()->component<Transform>();
         ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
         entityTransform.get()->xpos = playerTransform.get()->xpos;
         entityTransform.get()->ypos = playerTransform.get()->ypos;
 
-        // Update body transform
-        ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
-        entityBody.get()->body->SetTransform(b2Vec2(entityTransform.get()->xpos, entityTransform.get()->ypos), 0.0f);
+        // Update player body transform (used because of movement logic)
+        ComponentHandle<RigidBody> playerBody = player.component<RigidBody>();
+        playerBody.get()->body->SetTransform(b2Vec2(entityBody.get()->body->GetTransform().p.x, entityBody.get()->body->GetTransform().p.y), 0.0f);
     }
 
     ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
@@ -72,11 +80,12 @@ void ShieldScript::Update(TimeDelta dt)
         reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetIsMovementReduced(false);
 
         // Enable player body
+        ComponentHandle<Transform> playerTransform = player.component<Transform>();
         ComponentHandle<RigidBody> playerBody = player.component<RigidBody>(); 
-        // playerBody.get()->body->SetEnabled(true);
-        playerBody.get()->body->GetFixtureList()->SetSensor(true);
-        playerBody.get()->body->SetLinearVelocity(hitVelocity);
-        hitVelocity = b2Vec2_zero;
+        playerBody.get()->body->SetTransform(b2Vec2(playerTransform.get()->xpos, playerTransform.get()->ypos), 0.0f);
+        playerBody.get()->body->SetEnabled(true);
+        // playerBody.get()->body->SetLinearVelocity(hitVelocity);
+        // hitVelocity = b2Vec2_zero;
     }
 }
 
@@ -103,7 +112,7 @@ void ShieldScript::UseWeapon()
 
     // Disable player body
     ComponentHandle<RigidBody> playerBody = player.component<RigidBody>(); 
-    playerBody.get()->body->GetFixtureList()->SetSensor(false);
+    playerBody.get()->body->SetEnabled(false);
 
     // Activate entity
     ComponentHandle<Active> activeComp = GetEntity()->component<Active>();
@@ -150,16 +159,16 @@ void ShieldScript::CreateEntity()
 // Collision detection
 void ShieldScript::BeginContact(Entity* entityA, Entity* entityB) 
 {
-    ComponentHandle<Name> nameComp = entityB->component<Name>();
-    if (!(nameComp.get()->name.find("Enemy") != std::string::npos)) 
-    {
-        isActive = false;
+    // ComponentHandle<Name> nameComp = entityB->component<Name>();
+    // if (!(nameComp.get()->name.find("Enemy") != std::string::npos)) 
+    // {
+    //     isActive = false;
 
-        ComponentHandle<RigidBody> shieldBody = entityA->component<RigidBody>();
-        hitVelocity = shieldBody.get()->body->GetLinearVelocity();
+    //     ComponentHandle<RigidBody> shieldBody = entityA->component<RigidBody>();
+    //     hitVelocity = shieldBody.get()->body->GetLinearVelocity();
 
-        shieldCooldown = 3.0f;
-    }
+    //     shieldCooldown = 3.0f;
+    // }
 }
 
 void ShieldScript::EndContact(Entity* entityA, Entity* entityB) {

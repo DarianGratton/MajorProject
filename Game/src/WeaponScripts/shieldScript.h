@@ -21,7 +21,10 @@ public:
 private:
     Entity player;
     b2Vec2 hitVelocity;
-    float shieldCooldown;
+    int maxHealth;
+    int currHealth;
+    float shieldMaxCooldown;
+    float shieldCurrCooldown;
 
     void CreateEntity();
 };
