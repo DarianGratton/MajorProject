@@ -21,16 +21,15 @@ public:
 private:
     Entity player;
     float spriteOffset;
-    float projectileSpeed;
+    float projectileVelocity;
     float projectileLifespan;
     float fireRate;
     int arrowNumber;
 
     // Projectile data structures
-    vector<pair<Entity, int>> projectiles;
+    vector<pair<Entity, Direction>> projectiles;
     vector<float> projectilesTimeElapsed;
     vector<string> projectilesFlaggedForDeletion; 
 
-    int GetPlayerDirection();
     void SpawnArrow();
 };
