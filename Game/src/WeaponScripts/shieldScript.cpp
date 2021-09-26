@@ -10,13 +10,14 @@ ShieldScript::ShieldScript(entityx::Entity* entity, float spriteHeight, float sp
     // Parent class variables
     damage = 0;
     isActive = false;
+    canDamageShield = false;
 
     // Member variables
     shieldMaxCooldown = 3.0f;
     shieldCurrCooldown = 0.0f;
     hitVelocity = b2Vec2_zero;
-    maxHealth = 10;
-    currHealth = maxHealth;
+    shieldMaxHealth = 10;
+    shieldCurrHealth = shieldMaxHealth;
 }
 
 void ShieldScript::Start() 
@@ -159,16 +160,27 @@ void ShieldScript::CreateEntity()
 // Collision detection
 void ShieldScript::BeginContact(Entity* entityA, Entity* entityB) 
 {
-    // ComponentHandle<Name> nameComp = entityB->component<Name>();
-    // if (!(nameComp.get()->name.find("Enemy") != std::string::npos)) 
-    // {
-    //     isActive = false;
+    ComponentHandle<Name> nameComp = entityB->component<Name>();
+    if (nameComp.get()->name.find("Weapon") != std::string::npos) 
+    {
+        ComponentHandle<RigidBody> shieldBody = entityA->component<RigidBody>();
+        hitVelocity = shieldBody.get()->body->GetLinearVelocity();
 
-    //     ComponentHandle<RigidBody> shieldBody = entityA->component<RigidBody>();
-    //     hitVelocity = shieldBody.get()->body->GetLinearVelocity();
+        ComponentHandle<Script> weaponScript = entityB->component<Script>();
+        
+        if (!reinterpret_cast<WeaponScript*>(weaponScript.get()->script)->CanDamageShield())
+            return; 
 
-    //     shieldCooldown = 3.0f;
-    // }
+        int damage = reinterpret_cast<WeaponScript*>(weaponScript.get()->script)->GetDamage();
+        shieldCurrHealth -= damage;
+
+        if (shieldCurrHealth < 0)
+        {
+            shieldCurrCooldown = shieldMaxCooldown;
+            shieldCurrHealth = shieldMaxHealth;
+            isActive = false;       
+        }
+    }
 }
 
 void ShieldScript::EndContact(Entity* entityA, Entity* entityB) {

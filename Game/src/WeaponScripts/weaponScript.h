@@ -20,6 +20,7 @@ public:
 
     inline int GetDamage() { return damage; }
     inline Entity* GetEntity() { return &entity; }
+    inline bool CanDamageShield() { return canDamageShield; }
 
     // Collision detection
     virtual void BeginContact(Entity* entityA, Entity* entityB) { LOG_WARN("WeaponScript: Abstract class' start contact called."); }
@@ -30,6 +31,7 @@ protected:
     int damage; 
     float spriteHeight;
     float spriteWidth; 
+    bool canDamageShield;
     CScript* cscript;
 
     enum Direction {

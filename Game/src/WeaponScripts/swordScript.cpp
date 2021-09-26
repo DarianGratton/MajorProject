@@ -10,6 +10,7 @@ SwordScript::SwordScript(Entity* entity, float spriteHeight, float spriteWidth) 
     // Parent class variables
     damage = 10;
     isActive = false;
+    canDamageShield = true;
 
     // Member variables
     spriteOffset = 10.5f;

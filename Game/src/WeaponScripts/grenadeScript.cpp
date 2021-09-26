@@ -11,6 +11,7 @@ GrenadeScript::GrenadeScript(Entity* entity, float spriteHeight, float spriteWid
     // Parent member variables
     damage = 30;
     isActive = false;
+    canDamageShield = true;
 
     // Member variables
     spriteOffset = 10.0f;

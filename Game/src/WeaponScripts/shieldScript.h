@@ -21,8 +21,8 @@ public:
 private:
     Entity player;
     b2Vec2 hitVelocity;
-    int maxHealth;
-    int currHealth;
+    int shieldMaxHealth;
+    int shieldCurrHealth;
     float shieldMaxCooldown;
     float shieldCurrCooldown;
 
