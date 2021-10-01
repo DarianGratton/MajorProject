@@ -26,9 +26,16 @@ bool Scene::Load()
     XMLNode* entity = root->FirstChild();
 
     // Get entity components
-    while (entity != NULL) 
+    while (entity != nullptr) 
     {
         XMLNode* component = entity->FirstChild();
+    
+        if (component == nullptr)
+        {
+            entity = entity->NextSibling();
+            continue;
+        }
+        
         Entity e = ECS::Instance().entities.create();
 
         // Get entity attrbutes
@@ -66,11 +73,11 @@ bool Scene::Load()
         // Add active
         e.assign<Active>(true);
 
-        while (component != NULL) 
+        while (component != nullptr) 
         {
             // Error check
-            string name = component->Value();
-            if (name != "Component")  
+            
+            if (string(component->Value()) != "Component")  
             {
                 component = component->NextSibling();
                 continue;
@@ -85,6 +92,12 @@ bool Scene::Load()
             {
                 attributes.insert(std::make_pair(attr->Name(), attr->Value()));
                 attr = attr->Next();
+            }
+
+            if (attributes.find("name") == attributes.end() || attributes.find("value") == attributes.end())
+            {
+                component = component->NextSibling();
+                continue;
             }
 
             // Setup entity
