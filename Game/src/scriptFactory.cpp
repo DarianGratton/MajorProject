@@ -25,6 +25,9 @@ CScript* ScriptFactory::GetScript(std::string scriptName, entityx::Entity* entit
     if (scriptName == "GauntletScript") 
         return reinterpret_cast<CScript*>(new GauntletScript(entity, 8.0f, 8.0f));
 
+    if (scriptName == "GunScript")
+        return reinterpret_cast<CScript*>(new GunScript(entity, 8.0f, 8.0f));
+
     // Menu Navigation
     if (scriptName == "MainMenuScript") 
         return new MainMenuScript(entity);

@@ -59,8 +59,8 @@
         <Component name="Transform" value="125.0f, -100.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
-    <Entity name="WeaponOption5" height="80.0f" width="100.0f">
-        <Component name="Texture" value="src/Assets/textures/Gauntlet.png"/>
+    <Entity name="WeaponOption5" height="80.0f" width="80.0f">
+        <Component name="Texture" value="src/Assets/textures/Bullet.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
         <Component name="Transform" value="275.0f, -100.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>

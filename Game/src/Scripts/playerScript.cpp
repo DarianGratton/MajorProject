@@ -178,7 +178,7 @@ string PlayerScript::GetScriptName(int i)
         case 4:
             return "GrenadeScript";
         case 5:
-            return "GauntletScript";
+            return "GunScript";
         default:
             return "SwordScript";
     }

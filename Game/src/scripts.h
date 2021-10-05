@@ -17,3 +17,4 @@
 #include "WeaponScripts/BowScript.h"
 #include "WeaponScripts/GrenadeScript.h"
 #include "WeaponScripts/GauntletScript.h"
+#include "WeaponScripts/GunScript.h"

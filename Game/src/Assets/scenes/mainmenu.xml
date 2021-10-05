@@ -9,6 +9,7 @@
         <Component name="Transform" value="-180.0f, 75.0f, 0.0f, 0, 0, 0, 1"/>
     </Entity>
     <Entity name="StartGameText">
+        <Component></Component>
         <Component name="TextSprite" value="Start Game, 1.0f, 1.0f, 1.0f, 0, 36"/>
         <Component name="Transform" value="-90.0f, -50.0f, 0.0f, 0, 0, 0, 1"/>
     </Entity>

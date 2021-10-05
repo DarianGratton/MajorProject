@@ -333,7 +333,7 @@ void LoadoutSelectionScript::Update(TimeDelta dt)
             textureComp.get()->SetTexture("src/Assets/textures/Grenade.png");
             break;
         case 5:
-            textureComp.get()->SetTexture("src/Assets/textures/Gauntlet.png");
+            textureComp.get()->SetTexture("src/Assets/textures/Bullet.png");
             break;
         default:
             break;
