@@ -1,2 +1,0 @@
-# MajorProject
-BTech Major Project
