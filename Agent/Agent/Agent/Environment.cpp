@@ -17,7 +17,7 @@ void Environment<T>::SetCurrState(State& newState)
 template<class T>
 void Environment<T>::SetReturnedReward(T newReward)
 {
-	reward.SetReward(newReward);
+	returnedReward.SetReward(newReward);
 }
 
 template<class T>
