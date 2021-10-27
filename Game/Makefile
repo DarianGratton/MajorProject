@@ -20,8 +20,8 @@ TEST_EXECUTABLE := GameTests
 
 build: $(SRC)/*.cpp $(SRC)/*.c $(SRC)/Renderer/*.cpp $(SRC)/Scripts/*.cpp $(SRC)/WeaponScripts/*.cpp $(SRC)/Physics/*.cpp
 	mkdir -p $(BIN)
-	cp $(LIB)/*.dll $(BIN)  
-	$(CXX) $(CXX_FLAGS) $(INCLUDES) -L$(LIB) $^ -o $(BIN)/$(EXECUTABLE) $(LIBRARIES)
+	cp $(LIB)/*.dll $(BIN)
+    $(CXX) $(CXX_FLAGS) $(INCLUDES) -L$(LIB) $^ -o $(BIN)/$(EXECUTABLE) $(LIBRARIES)
 
 clean:
 	rm -rf $(BIN)
