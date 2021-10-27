@@ -64,15 +64,3 @@ public:
 private:
 	std::shared_ptr<PolicyGradientNetwork> model;
 };
-
-int main()
-{
-	PolicyGradientNetwork pgn = PolicyGradientNetwork(1, 1);
-	torch::Tensor tensor = torch::eye(9);
-	cout << tensor << endl;
-
-	Environment<int> env;
-	env.AddActions(9);
-	
-	return 0;
-}
