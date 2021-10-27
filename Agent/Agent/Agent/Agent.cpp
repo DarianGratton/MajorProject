@@ -6,8 +6,6 @@
 #include <torch/torch.h>
 #include <iostream>
 
-#include "Environment.h"
-
 using namespace std;
 
 // TODO: Implement functionality for a basic Policy Gradient network

@@ -6,7 +6,7 @@ cmake_minimum_required (VERSION 3.8)
 find_package(Torch REQUIRED)
 
 # Add source to this project's executable.
-add_executable (Agent "Main.cpp" "Agent.cpp" "Agent.h" "Environment.h" "Environment.cpp" "State.h" "State.cpp" "Reward.h" "Reward.cpp")
+add_executable (Agent "Main.cpp" "Agent.cpp" "Agent.h" "Environment/Environment.h" "Environment/Environment.cpp" "Environment/Reward.h" "Environment/Reward.cpp" "Environment/State.h" "Environment/State.cpp" "Networks/SAC/ReplayMemory.h" "Networks/SAC/SACAgent.h" "Networks/SAC/CriticNetwork.h" "Networks/SAC/ValueNetwork.h" "Networks/SAC/PolicyNetwork.h" "Networks/SAC/CriticNetwork.cpp" "Networks/SAC/PolicyNetwork.cpp" "Networks/SAC/ValueNetwork.cpp" "Networks/SAC/SACAgent.cpp" "Networks/SAC/ReplayMemory.cpp")
 
 # Link libraries
 target_link_libraries(Agent "${TORCH_LIBRARIES}")
