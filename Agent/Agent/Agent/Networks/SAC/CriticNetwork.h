@@ -10,7 +10,7 @@ public:
 	CriticNetwork(float lr, unsigned int nActions, 
 		int64_t inputDims, int64_t layer1Dims, int64_t layer2Dims);
 
-	torch::Tensor Forward();
+	torch::Tensor Forward(at::Tensor state, at::Tensor action);
 
 	void SaveMemory();
 	void LoadMemory();
