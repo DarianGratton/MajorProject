@@ -10,7 +10,7 @@ public:
 	CriticNetwork(float lr, unsigned int nActions, 
 		int64_t inputDims, int64_t layer1Dims, int64_t layer2Dims);
 
-	torch::Tensor Forward(at::Tensor state, at::Tensor action);
+	torch::Tensor Forward(torch::Tensor state, torch::Tensor action);
 
 	void SaveMemory();
 	void LoadMemory();
@@ -19,10 +19,7 @@ private:
 	float learningRate;
 	unsigned int numActions;
 
-	// Network variables
-	int64_t inputDims;
-	int64_t layer1Dims;
-	int64_t layer2Dims;
+	// Network layers
 	torch::nn::Linear layer1 = nullptr;
 	torch::nn::Linear layer2 = nullptr;
 	torch::nn::Linear q = nullptr;
