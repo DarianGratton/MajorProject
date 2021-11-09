@@ -16,16 +16,6 @@ public:
 
 	ReplayMemory(unsigned int memSize, list<float> inputDims, unsigned int nActions);
 
-private:
-	unsigned int memSize;
-	
-	// Memory
-	vector<list<State>> stateMem;       
-	vector<list<State>> newStateMem;    
-	vector<list<unsigned int>> actionMem;
-	vector<long> rewardMem;					// Reward should be a list of reward objects
-	vector<bool> terminalMem;
-
 	// Struct
 	struct MemorySample
 	{
@@ -35,6 +25,16 @@ private:
 		vector<list<State>> newStates;
 		vector<bool> terminals;
 	};
+
+private:
+	unsigned int memSize;
+	
+	// Memory
+	vector<list<State>> stateMem;       
+	vector<list<State>> newStateMem;    
+	vector<list<unsigned int>> actionMem;
+	vector<long> rewardMem;					// Reward should be a list of reward objects
+	vector<bool> terminalMem;
 
 public:
 	void StoreStateTransition(
