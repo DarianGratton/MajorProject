@@ -12,7 +12,7 @@ public:
 		int64_t inputDims, int64_t layer1Dims, int64_t layer2Dims);
 
 	std::pair<torch::Tensor, torch::Tensor> Forward(torch::Tensor state);
-	void CalculateActionProb();
+	void CalculateActionProb(torch::Tensor state, bool reparam = true);
 	
 	void SaveMemory();
 	void LoadMemory();

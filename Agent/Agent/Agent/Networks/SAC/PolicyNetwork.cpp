@@ -29,9 +29,20 @@ std::pair<torch::Tensor, torch::Tensor> PolicyNetwork::Forward(torch::Tensor sta
 	return std::make_pair(muOutput, sigmaOutput);
 }
 
-void PolicyNetwork::CalculateActionProb()
+void PolicyNetwork::CalculateActionProb(torch::Tensor state, bool reparam)
 {
-
+	std::pair<torch::Tensor, torch::Tensor> networkOutput;
+	networkOutput = Forward(state);
+	auto sample = torch::randn({ 1 }) * networkOutput.second + networkOutput.first;
+	
+	//if (reparam)
+	//{
+	//	// RSample
+	//}
+	//else
+	//{
+	//	// Sample
+	//}
 }
 
 void PolicyNetwork::SaveMemory()
