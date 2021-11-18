@@ -9,18 +9,19 @@ using namespace std;
 class TorchNormal
 {
 public:
-	TorchNormal(torch::Tensor loc, torch::Tensor scale);
+	TorchNormal(torch::Tensor mean, torch::Tensor stddev);
 
-	torch::Tensor Sample(int64_t sampleShape);
+	torch::Tensor Sample();
+	torch::Tensor RSample();
+	torch::Tensor LogProb(torch::Tensor value);
 
 private:
-	// Mean of the distribution
-	torch::autograd::variable_list loc;
+	// Mean of the distribution (mu)
+	torch::Tensor mean;
 
-	// Standard deviation
-	torch::autograd::variable_list scale;
+	// Standard deviation (sigma)
+	torch::Tensor stddev;
 
-	// Todo: Comment what this is
-	size_t batchSize;
-	size_t eventSize;
+	// Variance
+	torch::Tensor variance;
 };

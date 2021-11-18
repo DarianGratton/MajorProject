@@ -1,22 +1,25 @@
 #include "TorchNormal.h"
 
-TorchNormal::TorchNormal(torch::Tensor loc, torch::Tensor scale)
+TorchNormal::TorchNormal(torch::Tensor mean, torch::Tensor stddev) :
+	mean(mean), stddev(stddev)
 {
-	// Expands tensors without making copies of the data (Torch Broadcasting)
-	this->loc = torch::broadcast_tensors(loc);
-	this->scale = torch::broadcast_tensors(scale);
-
-	this->batchSize = this->loc.size();
-	this->eventSize = 0;
+	variance = stddev.pow(2); 
 }
 
-// Requires more testing to ensure implementation is right (Review)
-torch::Tensor TorchNormal::Sample(int64_t sampleShape)
+torch::Tensor TorchNormal::Sample()
 {
-	int64_t shape = sampleShape + this->batchSize + this->eventSize;
-	
 	torch::NoGradGuard noGrad;
-	this->loc.resize(shape);
-	this->scale.resize(shape);
-	return torch::normal(this->loc.size(), this->scale.size(), 0);
+	return torch::randn({ 1 }) * stddev + mean;
+}
+
+torch::Tensor TorchNormal::RSample()
+{
+	torch::Tensor eps = torch::empty(mean.sizes(), mean.options());
+	return mean + eps * stddev;
+}
+
+torch::Tensor TorchNormal::LogProb(torch::Tensor value)
+{
+	torch::Tensor logScale = stddev.log();
+	return -(torch::pow((value - mean), 2) / (2 * variance) - logScale - std::log(std::sqrt(2 * M_PI)));
 }
