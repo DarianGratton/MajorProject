@@ -1,5 +1,7 @@
 #include "PolicyNetwork.h"
 
+#include "../../PyTorchExpansion/TorchNormal.h"
+
 PolicyNetwork::PolicyNetwork(float lr, 
 	unsigned int nActions, unsigned int maxActions,
 	int64_t inputDims, int64_t layer1Dims, int64_t layer2Dims) :
@@ -29,20 +31,31 @@ std::pair<torch::Tensor, torch::Tensor> PolicyNetwork::Forward(torch::Tensor sta
 	return std::make_pair(muOutput, sigmaOutput);
 }
 
-void PolicyNetwork::CalculateActionProb(torch::Tensor state, bool reparam)
+std::pair<torch::Tensor, torch::Tensor> PolicyNetwork::CalculateActionProb(torch::Tensor state, bool reparam)
 {
+	// Get network output
 	std::pair<torch::Tensor, torch::Tensor> networkOutput;
 	networkOutput = Forward(state);
-	auto sample = torch::randn({ 1 }) * networkOutput.second + networkOutput.first;
+	torch::Tensor mu = networkOutput.first;
+	torch::Tensor sigma = networkOutput.second;
+
+	// Create object and get sample
+	TorchNormal probabilities(mu, sigma);
+	torch::Tensor actions = (reparam) ? probabilities.RSample() : probabilities.Sample();
 	
-	//if (reparam)
-	//{
-	//	// RSample
-	//}
-	//else
-	//{
-	//	// Sample
-	//}
+	// TODO: Possibly for discrete action spaces only
+	// Create data container
+	std::vector<int> possibleActions(maxNumActions);
+	std::iota(std::begin(possibleActions), std::end(possibleActions), 0);
+	torch::detail::TensorDataContainer data(possibleActions);
+
+	// Calculate action probability
+	torch::Tensor action = torch::tanh(actions) * torch::tensor(data);
+	torch::Tensor logProbs = probabilities.LogProb(actions);
+	logProbs -= torch::log(1 - action.pow(2) + reparamNoise);
+	logProbs = logProbs.sum(1, true);
+
+	return std::make_pair(action, logProbs);
 }
 
 void PolicyNetwork::SaveMemory()
