@@ -9,6 +9,10 @@ EnemyScript::EnemyScript(entityx::Entity* entity) : CScript(entity)
 {
     // Initialize variables
     health = 100;
+    canMove = true;
+    isMovementReduced = false;
+    normalMovementVelocity = 125.0f;
+    reducedMovementVelocity = 50.0f;
 }
 
 void EnemyScript::Start() 
@@ -33,11 +37,58 @@ void EnemyScript::Update(TimeDelta dt)
     if (Game::Instance().IsGamePaused())
         return; 
 
-    // Update enemy position
+    // Movement
     ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
+    MoveCharacter(rigidBody.get()->body);
+}
+
+void EnemyScript::MoveCharacter(b2Body* body)
+{
+    // Movement
+    float desiredVelX = 0;
+    float desiredVelY = 0;
+    float velcityChange = (isMovementReduced ? reducedMovementVelocity : normalMovementVelocity);
+
+    if (canMove)
+    {
+        // Movement UP
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_UP)) 
+        {
+            desiredVelY = velcityChange;
+        }
+
+        // Movement DOWN
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_DOWN)) 
+        {
+            desiredVelY = -velcityChange;
+        }
+        
+        // Movement RIGHT
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_RIGHT)) 
+        {
+            desiredVelX = velcityChange;
+        }
+        
+        // Movement LEFT
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_LEFT)) 
+        {
+            desiredVelX = -velcityChange;
+        }    
+    }
+
+    // Apply forces
+    b2Vec2 enemyVelocity = body->GetLinearVelocity();
+    
+    float velChangeX = desiredVelX - enemyVelocity.x;
+    float velChangeY = desiredVelY - enemyVelocity.y;
+    float impulseX = body->GetMass() * velChangeX;
+    float impulseY = body->GetMass() * velChangeY;
+    body->ApplyLinearImpulse(b2Vec2(impulseX, impulseY), body->GetWorldCenter(), true);
+
+    // Update enemy position
     ComponentHandle<Transform> transform = entity.component<Transform>();
-    transform.get()->xpos = rigidBody.get()->body->GetPosition().x;
-    transform.get()->ypos = rigidBody.get()->body->GetPosition().y;
+    transform.get()->xpos = body->GetPosition().x;
+    transform.get()->ypos = body->GetPosition().y;
 }
 
 void EnemyScript::BeginContact(Entity* entityA, Entity* entityB) 
