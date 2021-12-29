@@ -16,6 +16,7 @@
 #include "../Renderer/Texture.h"
 #include "../Renderer/TextRenderer.h"
 #include "../Components.h"
+#include "../Input.h"
 #include "../Logger.h"
 
 // FreeType
@@ -127,9 +128,26 @@ public:
         });
 
         // Draw physics
-        bool debugPhysics = true;
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_8) 
+            && Input::Instance().IsKeyPressed(GLFW_KEY_9))
+        {   
+            if (!areDebugKeysHeldDown) 
+            {
+                debugPhysics = !debugPhysics;
+                areDebugKeysHeldDown = true;
+            }
+        }
+        else 
+        {
+            areDebugKeysHeldDown = false;
+        }
+        
         if (debugPhysics)
             PhysicsManager::Instance().Draw(proj, view);
 
     }
+
+private:
+    bool debugPhysics = false;
+    bool areDebugKeysHeldDown = true;
 };
