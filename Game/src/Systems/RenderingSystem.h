@@ -113,21 +113,7 @@ public:
             }
         });
 
-        // Render Text
-        es.each<TextSprite, Transform, Active>([this, dt, proj, view](
-            Entity entity, TextSprite &textSprite, Transform &transformComp, Active &active) 
-        {
-            if (active.isActive) 
-            {
-                // TODO: Add as class member, currently the only way to do different font sizes
-                TextRenderer textRenderer("src/Assets/fonts/arial.ttf", textSprite.fontpixelheight);
-                glm::vec2 textPosition = glm::vec2(transformComp.xpos, transformComp.ypos);
-                glm::vec2 textScale = glm::vec2(transformComp.xscl, transformComp.yscl);
-                textRenderer.RenderText(textSprite.text, textPosition, textScale, textSprite.color, proj, view);
-            }   
-        });
-
-        // Draw physics
+         // Draw physics
         if (Input::Instance().IsKeyPressed(GLFW_KEY_8) 
             && Input::Instance().IsKeyPressed(GLFW_KEY_9))
         {   
@@ -145,6 +131,19 @@ public:
         if (debugPhysics)
             PhysicsManager::Instance().Draw(proj, view);
 
+        // Render Text
+        es.each<TextSprite, Transform, Active>([this, dt, proj, view](
+            Entity entity, TextSprite &textSprite, Transform &transformComp, Active &active) 
+        {
+            if (active.isActive) 
+            {
+                // TODO: Add as class member, currently the only way to do different font sizes
+                TextRenderer textRenderer("src/Assets/fonts/arial.ttf", textSprite.fontpixelheight);
+                glm::vec2 textPosition = glm::vec2(transformComp.xpos, transformComp.ypos);
+                glm::vec2 textScale = glm::vec2(transformComp.xscl, transformComp.yscl);
+                textRenderer.RenderText(textSprite.text, textPosition, textScale, textSprite.color, proj, view);
+            }   
+        });
     }
 
 private:

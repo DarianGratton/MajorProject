@@ -82,7 +82,7 @@
     </Entity>
     <Entity name="RestartText">
         <Component name="TextSprite" value="Restart, 1.0f, 1.0f, 1.0f, 0, 24"/>
-        <Component name="Transform" value="-45.0f, 0.0f, 0.0f, 0, 0, 0, 1, 0.1f, 0.1f"/>
+        <Component name="Transform" value="-37.0f, 0.0f, 0.0f, 0, 0, 0, 1, 0.1f, 0.1f"/>
     </Entity>
     <Entity name="OptionArrow" height="2.5f" width="5.0f">
         <Component name="Texture" value="src/Assets/textures/OptionArrow.png"/>

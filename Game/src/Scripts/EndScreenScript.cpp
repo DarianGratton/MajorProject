@@ -123,12 +123,12 @@ void EndScreenScript::Update(TimeDelta dt)
             ComponentHandle<Transform> transform = entity.component<Transform>();
             if (currOption == 0) 
             {
-                transform.get()->ypos -= (5.0f * (numOfOptions - 1));
+                transform.get()->ypos -= (4.5f * (numOfOptions - 1));
                 currOption = numOfOptions - 1;
             } 
             else 
             {
-                transform.get()->ypos += 5.0f;
+                transform.get()->ypos += 4.5f;
                 currOption--;
             }
 
@@ -140,12 +140,12 @@ void EndScreenScript::Update(TimeDelta dt)
             ComponentHandle<Transform> transform = entity.component<Transform>();
             if (currOption == (numOfOptions - 1)) 
             {
-                transform.get()->ypos += (5.0f * (numOfOptions - 1));
+                transform.get()->ypos += (4.5f * (numOfOptions - 1));
                 currOption = 0;
             } 
             else 
             {
-                transform.get()->ypos -= 5.0f;
+                transform.get()->ypos -= 4.5f;
                 currOption++;
             }
 
