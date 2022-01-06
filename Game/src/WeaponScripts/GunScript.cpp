@@ -20,16 +20,28 @@ GunScript::GunScript(Entity* entity, float spriteHeight, float spriteWidth) : We
     timeElapsed = 0.0f;
     directionThrown = NONE;
     flagForDeletion = false;
+    isPlayer = false;
 }
 
 void GunScript::Start() 
 {
+    // Get name of entity for later
+    ComponentHandle<Name> weapon = GetEntity()->component<Name>();
+    string weaponName = weapon->name;
+
+    // Get reference to entity
     ComponentHandle<Name> entityName;
     for (Entity e : ECS::Instance().entities.entities_with_components(entityName)) 
     {
-        entityName = e.component<Name>();    
-        if (entityName.get()->name == "Player")
-            player = e;
+        entityName = e.component<Name>();
+        if (entityName.get()->name == "Player" && weaponName.find("Player") != string::npos)
+        {
+            userEntity = e;
+            isPlayer = true;
+        }
+
+        if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != string::npos)
+            userEntity = e;
     }
 }
 
@@ -133,25 +145,25 @@ void GunScript::SpawnBullet()
     uint16 maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMY;
 
     // Transform
-    Direction playerDirection = GetDirection(&player);
-    ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
-    switch(playerDirection)
+    Direction userDirection = GetDirection(&userEntity);
+    ComponentHandle<Transform> userTransform = userEntity.component<Transform>(); 
+    switch(userDirection)
     {
         case NORTH:
-            bulletEntity.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2);
-            bulletEntity.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 4.0f, 4.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            bulletEntity.assign<Transform>(userTransform.get()->xpos, userTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2);
+            bulletEntity.assign<RigidBody>(userTransform.get()->xpos, userTransform.get()->ypos + spriteOffset, 4.0f, 4.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
             break;
         case SOUTH:
-            bulletEntity.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 0.0f, 0, 0, 0, 1, 2);
-            bulletEntity.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 4.0f, 4.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            bulletEntity.assign<Transform>(userTransform.get()->xpos, userTransform.get()->ypos - spriteOffset, 0.0f, 0, 0, 0, 1, 2);
+            bulletEntity.assign<RigidBody>(userTransform.get()->xpos, userTransform.get()->ypos - spriteOffset, 4.0f, 4.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
             break;
         case EAST:
-            bulletEntity.assign<Transform>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2); 
-            bulletEntity.assign<RigidBody>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 4.0f, 4.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            bulletEntity.assign<Transform>(userTransform.get()->xpos + spriteOffset, userTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2); 
+            bulletEntity.assign<RigidBody>(userTransform.get()->xpos + spriteOffset, userTransform.get()->ypos, 4.0f, 4.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
             break;
         case WEST:
-            bulletEntity.assign<Transform>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2);
-            bulletEntity.assign<RigidBody>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 4.0f, 4.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            bulletEntity.assign<Transform>(userTransform.get()->xpos - spriteOffset, userTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2);
+            bulletEntity.assign<RigidBody>(userTransform.get()->xpos - spriteOffset, userTransform.get()->ypos, 4.0f, 4.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
             break;
         default:
             break;
@@ -166,7 +178,7 @@ void GunScript::SpawnBullet()
     physicsComp.get()->SetUserData(&bulletEntity);
 
     // Update variables
-    directionThrown = playerDirection;
+    directionThrown = userDirection;
 }
 
 // Collision detection

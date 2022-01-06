@@ -19,12 +19,13 @@ public:
     void EndContact(Entity* entityA, Entity* entityB) override;
 
 private:
-    Entity player;
+    Entity userEntity;
     float spriteOffset;
     float projectileVelocity;
     float projectileLifespan;
     float fireRate;
     int arrowNumber;
+    bool isPlayer;
 
     // Projectile data structures
     vector<pair<Entity, Direction>> projectiles;

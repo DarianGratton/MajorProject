@@ -25,12 +25,23 @@ GrenadeScript::GrenadeScript(Entity* entity, float spriteHeight, float spriteWid
 
 void GrenadeScript::Start() 
 {
+    // Get name of entity for later
+    ComponentHandle<Name> weapon = GetEntity()->component<Name>();
+    string weaponName = weapon->name;
+
+    // Get reference to entity
     ComponentHandle<Name> entityName;
     for (Entity e : ECS::Instance().entities.entities_with_components(entityName)) 
     {
-        entityName = e.component<Name>();    
-        if (entityName.get()->name == "Player")
-            player = e;
+        entityName = e.component<Name>();
+        if (entityName.get()->name == "Player" && weaponName.find("Player") != string::npos)
+        {
+            userEntity = e;
+            isPlayer = true;
+        }
+
+        if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != string::npos)
+            userEntity = e;
     }
 }
 
@@ -143,25 +154,25 @@ void GrenadeScript::SpawnGrenade()
     uint16 maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMY;
 
     // Transform
-    Direction playerDirection = GetDirection(&player);
-    ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
-    switch(playerDirection)
+    Direction userDirection = GetDirection(&userEntity);
+    ComponentHandle<Transform> userTransform = userEntity.component<Transform>(); 
+    switch(userDirection)
     {
         case NORTH:
-            grenadeEntity.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2);
-            grenadeEntity.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            grenadeEntity.assign<Transform>(userTransform.get()->xpos, userTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2);
+            grenadeEntity.assign<RigidBody>(userTransform.get()->xpos, userTransform.get()->ypos + spriteOffset, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
             break;
         case SOUTH:
-            grenadeEntity.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 0.0f, 0, 0, 0, 1, 2);
-            grenadeEntity.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            grenadeEntity.assign<Transform>(userTransform.get()->xpos, userTransform.get()->ypos - spriteOffset, 0.0f, 0, 0, 0, 1, 2);
+            grenadeEntity.assign<RigidBody>(userTransform.get()->xpos, userTransform.get()->ypos - spriteOffset, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
             break;
         case EAST:
-            grenadeEntity.assign<Transform>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2); 
-            grenadeEntity.assign<RigidBody>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            grenadeEntity.assign<Transform>(userTransform.get()->xpos + spriteOffset, userTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2); 
+            grenadeEntity.assign<RigidBody>(userTransform.get()->xpos + spriteOffset, userTransform.get()->ypos, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
             break;
         case WEST:
-            grenadeEntity.assign<Transform>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2);
-            grenadeEntity.assign<RigidBody>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            grenadeEntity.assign<Transform>(userTransform.get()->xpos - spriteOffset, userTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2);
+            grenadeEntity.assign<RigidBody>(userTransform.get()->xpos - spriteOffset, userTransform.get()->ypos, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
             break;
         default:
             break;
@@ -176,7 +187,7 @@ void GrenadeScript::SpawnGrenade()
     physicsComp.get()->SetUserData(&grenadeEntity);
 
     // Update variables
-    directionThrown = playerDirection;
+    directionThrown = userDirection;
 }
 
 void GrenadeScript::SpawnExplosion() 

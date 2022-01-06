@@ -15,16 +15,28 @@ BowScript::BowScript(Entity* entity, float spriteHeight, float spriteWidth) : We
     fireRate = 0.0f;
     isActive = false;
     arrowNumber = 0;
+    isPlayer = false;
 }
 
 void BowScript::Start() 
 {
+    // Get name of entity for later
+    ComponentHandle<Name> weapon = GetEntity()->component<Name>();
+    string weaponName = weapon->name;
+
+    // Get reference to entity
     ComponentHandle<Name> entityName;
     for (Entity e : ECS::Instance().entities.entities_with_components(entityName)) 
     {
         entityName = e.component<Name>();
-        if (entityName.get()->name == "Player")
-            player = e;
+        if (entityName.get()->name == "Player" && weaponName.find("Player") != string::npos)
+        {
+            userEntity = e;
+            isPlayer = true;
+        }
+
+        if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != string::npos)
+            userEntity = e;
     }
 }
 
@@ -156,30 +168,30 @@ void BowScript::SpawnArrow()
     uint16 maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMY | PhysicsManager::Instance().ENEMYWEAPON;
 
     // Transform
-    ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
+    ComponentHandle<Transform> userTransform = userEntity.component<Transform>(); 
 
-    Direction playerDirection = GetDirection(&player);
-    switch(playerDirection) 
+    Direction userDirection = GetDirection(&userEntity);
+    switch(userDirection) 
     {
         case NORTH:
             e.assign<TextureComp>("src/Assets/textures/ArrowUp.png", "ArrowUp.png");
-            e.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2);
-            e.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 2.0f, 4.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            e.assign<Transform>(userTransform.get()->xpos, userTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2);
+            e.assign<RigidBody>(userTransform.get()->xpos, userTransform.get()->ypos + spriteOffset, 2.0f, 4.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
             break;
         case SOUTH:
             e.assign<TextureComp>("src/Assets/textures/ArrowDown.png", "ArrowDown.png");
-            e.assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 0.0f, 0, 0, 0, 1, 2);
-            e.assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos - spriteOffset, 2.0f, 4.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            e.assign<Transform>(userTransform.get()->xpos, userTransform.get()->ypos - spriteOffset, 0.0f, 0, 0, 0, 1, 2);
+            e.assign<RigidBody>(userTransform.get()->xpos, userTransform.get()->ypos - spriteOffset, 2.0f, 4.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
             break;
         case EAST:
             e.assign<TextureComp>("src/Assets/textures/ArrowRight.png", "ArrowRight.png");
-            e.assign<Transform>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2); 
-            e.assign<RigidBody>(playerTransform.get()->xpos + spriteOffset, playerTransform.get()->ypos, 4.0f, 2.0f, 1.0, 0.5f, 1, categoryBit, maskBit);
+            e.assign<Transform>(userTransform.get()->xpos + spriteOffset, userTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2); 
+            e.assign<RigidBody>(userTransform.get()->xpos + spriteOffset, userTransform.get()->ypos, 4.0f, 2.0f, 1.0, 0.5f, 1, categoryBit, maskBit);
             break;
         case WEST:
             e.assign<TextureComp>("src/Assets/textures/ArrowLeft.png", "ArrowLeft.png");
-            e.assign<Transform>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 0.0f, 0, 0, 0.0f, 1, 2);
-            e.assign<RigidBody>(playerTransform.get()->xpos - spriteOffset, playerTransform.get()->ypos, 4.0f, 2.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            e.assign<Transform>(userTransform.get()->xpos - spriteOffset, userTransform.get()->ypos, 0.0f, 0, 0, 0.0f, 1, 2);
+            e.assign<RigidBody>(userTransform.get()->xpos - spriteOffset, userTransform.get()->ypos, 4.0f, 2.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
             break;
         default:
             return;
@@ -192,7 +204,7 @@ void BowScript::SpawnArrow()
     physicsComp.get()->SetSensor(true);
 
     // Add entity to list
-    projectiles.push_back(make_pair(ECS::Instance().entities.get(e.id()), playerDirection));
+    projectiles.push_back(make_pair(ECS::Instance().entities.get(e.id()), userDirection));
     projectilesTimeElapsed.push_back(0.0f);
     arrowNumber++;
     if (arrowNumber > 2) 

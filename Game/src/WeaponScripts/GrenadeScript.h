@@ -19,7 +19,7 @@ public:
     void EndContact(Entity* entityA, Entity* entityB) override;
 
 private:
-    Entity player;
+    Entity userEntity;
     Entity grenadeEntity;
     Entity explosionEntity;
     Direction directionThrown;
@@ -30,6 +30,7 @@ private:
     float explosionLifespan;
     float cooldownTimer;
     float timeElapsed;
+    bool isPlayer;
     
     void SpawnGrenade();
     void SpawnExplosion();

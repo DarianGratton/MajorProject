@@ -19,7 +19,7 @@ public:
     void EndContact(Entity* entityA, Entity* entityB) override;
 
 private:
-    Entity player;
+    Entity userEntity;
     Entity bulletEntity;
     Direction directionThrown;
 
@@ -28,6 +28,7 @@ private:
     float cooldownTimer;
     float timeElapsed;
     bool flagForDeletion;
+    bool isPlayer;
     
     void SpawnBullet();
 };
