@@ -48,7 +48,7 @@ protected:
             return NONE;
 
         ComponentHandle<TextureComp> playerTexture = e->component<TextureComp>();
-        if (playerTexture.get()->filename == "PlayerUp.png") 
+        if (playerTexture.get()->filename.find("Up") != string::npos) 
             return NORTH;
 
         if (playerTexture.get()->filename == "PlayerDown.png")

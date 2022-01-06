@@ -18,7 +18,7 @@ public:
     void EndContact(Entity* entityA, Entity* entityB) override;
 
 private:
-    Entity player;
+    Entity userEntity;
 
     float spriteOffset;   // Sword sprite offset from player sprite
     float attackRate;     // Attack rate of the sword

@@ -18,17 +18,28 @@ ShieldScript::ShieldScript(entityx::Entity* entity, float spriteHeight, float sp
     hitVelocity = b2Vec2_zero;
     shieldMaxHealth = 10;
     shieldCurrHealth = shieldMaxHealth;
+    isPlayer = false;
 }
 
 void ShieldScript::Start() 
 {
+    // Get name of entity for later
+    ComponentHandle<Name> weapon = GetEntity()->component<Name>();
+    string weaponName = weapon->name;
+
+    // Get reference to entity
     ComponentHandle<Name> entityName;
     for (Entity e : ECS::Instance().entities.entities_with_components(entityName)) 
     {
         entityName = e.component<Name>();
-        
-        if (entityName.get()->name == "Player")
-            player = e;
+        if (entityName.get()->name == "Player" && weaponName.find("Player") != string::npos)
+        {
+            userEntity = e;
+            isPlayer = true;
+        }
+
+        if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != string::npos)
+            userEntity = e;
     }
 
     CreateEntity();
@@ -52,18 +63,21 @@ void ShieldScript::Update(TimeDelta dt)
     {
         // Move player based on entity body
         ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
-        ComponentHandle<Script> playerScript = player.component<Script>(); 
-        reinterpret_cast<PlayerScript*>(playerScript.get()->script)->MoveCharacter(entityBody.get()->body);
+        ComponentHandle<Script> userScript = userEntity.component<Script>();
+        if (isPlayer) 
+            reinterpret_cast<PlayerScript*>(userScript.get()->script)->MoveCharacter(entityBody.get()->body);
+        else 
+            reinterpret_cast<EnemyScript*>(userScript.get()->script)->MoveCharacter(entityBody.get()->body);
 
         // Update entity transform
         ComponentHandle<Transform> entityTransform = GetEntity()->component<Transform>();
-        ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
-        entityTransform.get()->xpos = playerTransform.get()->xpos;
-        entityTransform.get()->ypos = playerTransform.get()->ypos;
+        ComponentHandle<Transform> userTransform = userEntity.component<Transform>(); 
+        entityTransform.get()->xpos = userTransform.get()->xpos;
+        entityTransform.get()->ypos = userTransform.get()->ypos;
 
-        // Update player body transform (used because of movement logic)
-        ComponentHandle<RigidBody> playerBody = player.component<RigidBody>();
-        playerBody.get()->body->SetTransform(b2Vec2(entityBody.get()->body->GetTransform().p.x, entityBody.get()->body->GetTransform().p.y), 0.0f);
+        // Update user body transform (used because of movement logic)
+        ComponentHandle<RigidBody> userBody = userEntity.component<RigidBody>();
+        userBody.get()->body->SetTransform(b2Vec2(entityBody.get()->body->GetTransform().p.x, entityBody.get()->body->GetTransform().p.y), 0.0f);
     }
 
     ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
@@ -77,14 +91,17 @@ void ShieldScript::Update(TimeDelta dt)
         activeComp.get()->isActive = false;
 
         // Enable player movement
-        ComponentHandle<Script> playerScript = player.component<Script>(); 
-        reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetIsMovementReduced(false);
+        ComponentHandle<Script> userScript = userEntity.component<Script>();
+        if (isPlayer) 
+            reinterpret_cast<PlayerScript*>(userScript.get()->script)->SetIsMovementReduced(false);
+        else
+            reinterpret_cast<EnemyScript*>(userScript.get()->script)->SetIsMovementReduced(false);
 
-        // Enable player body
-        ComponentHandle<Transform> playerTransform = player.component<Transform>();
-        ComponentHandle<RigidBody> playerBody = player.component<RigidBody>(); 
-        playerBody.get()->body->SetTransform(b2Vec2(playerTransform.get()->xpos, playerTransform.get()->ypos), 0.0f);
-        playerBody.get()->body->SetEnabled(true);
+        // Enable user body
+        ComponentHandle<Transform> userTransform = userEntity.component<Transform>();
+        ComponentHandle<RigidBody> userBody = userEntity.component<RigidBody>(); 
+        userBody.get()->body->SetTransform(b2Vec2(userTransform.get()->xpos, userTransform.get()->ypos), 0.0f);
+        userBody.get()->body->SetEnabled(true);
         // playerBody.get()->body->SetLinearVelocity(hitVelocity);
         // hitVelocity = b2Vec2_zero;
     }
@@ -99,21 +116,25 @@ void ShieldScript::UseWeapon()
 
     // Update shield's transform
     ComponentHandle<Transform> entityTransform = GetEntity()->component<Transform>();
-    ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
-    entityTransform.get()->xpos = playerTransform.get()->xpos;
-    entityTransform.get()->ypos = playerTransform.get()->ypos;
+    ComponentHandle<Transform> userTransform = userEntity.component<Transform>(); 
+    entityTransform.get()->xpos = userTransform.get()->xpos;
+    entityTransform.get()->ypos = userTransform.get()->ypos;
 
     // Update body transform
     ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
     entityBody.get()->body->SetTransform(b2Vec2(entityTransform.get()->xpos, entityTransform.get()->ypos), 0.0f);
 
     // Reduce player movement
-    ComponentHandle<Script> playerScript = player.component<Script>(); 
-    reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetIsMovementReduced(true);
+    // TODO
+    ComponentHandle<Script> userScript = userEntity.component<Script>(); 
+    if (isPlayer)
+        reinterpret_cast<PlayerScript*>(userScript.get()->script)->SetIsMovementReduced(true);
+    else
+        reinterpret_cast<EnemyScript*>(userScript.get()->script)->SetIsMovementReduced(true);
 
     // Disable player body
-    ComponentHandle<RigidBody> playerBody = player.component<RigidBody>(); 
-    playerBody.get()->body->SetEnabled(false);
+    ComponentHandle<RigidBody> userBody = userEntity.component<RigidBody>(); 
+    userBody.get()->body->SetEnabled(false);
 
     // Activate entity
     ComponentHandle<Active> activeComp = GetEntity()->component<Active>();
@@ -128,8 +149,8 @@ void ShieldScript::CreateEntity()
     GetEntity()->assign<ShaderComp>("src/Assets/shaders/Basic.shader");
     
     // Transform
-    ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
-    GetEntity()->assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2); 
+    ComponentHandle<Transform> userTransform = userEntity.component<Transform>(); 
+    GetEntity()->assign<Transform>(userTransform.get()->xpos, userTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2); 
 
     GetEntity()->remove<SpriteVertices>();
     std::vector<float> spriteVertices =  {
@@ -144,7 +165,7 @@ void ShieldScript::CreateEntity()
     // TODO: Factor for enemy using weapon
     uint16 categoryBit = PhysicsManager::Instance().PLAYERWEAPON;
     uint16 maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMY | PhysicsManager::Instance().ENEMYWEAPON;
-    GetEntity()->assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos, 5.0f, 5.0f, 1.0, 0.5f, 1, categoryBit, maskBit);
+    GetEntity()->assign<RigidBody>(userTransform.get()->xpos, userTransform.get()->ypos, 5.0f, 5.0f, 1.0, 0.5f, 1, categoryBit, maskBit);
 
     ComponentHandle<RigidBody> physicsComp = GetEntity()->component<RigidBody>();
     physicsComp.get()->body = PhysicsManager::Instance().GetWorld()->CreateBody(&physicsComp.get()->bodyDef);

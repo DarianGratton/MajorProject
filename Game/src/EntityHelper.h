@@ -35,4 +35,5 @@ private:
     void AddTextComponent(Entity* entity, const vector<string>& parameters);
     void AddScriptComponent(Entity* entity, const string& scriptName);
     void AddRigidBodyComponent(Entity* entity, const vector<string>& parameters);
+    void AddTempEnemyWeaponsComponent(Entity* entity, const vector<string>& parameters);
 };

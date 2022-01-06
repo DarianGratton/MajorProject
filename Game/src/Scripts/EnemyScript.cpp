@@ -22,6 +22,12 @@ void EnemyScript::Start()
     {
         if (entityName.get()->name == "EnemyHpText")
             enemyHpText = e;
+
+        if (entityName.get()->name == "EnemyWeapon1")
+            weapon1 = e;
+
+        if (entityName.get()->name == "EnemyWeapon2")
+            weapon2 = e;
     }
 
     // Display Enemy HP
@@ -29,6 +35,21 @@ void EnemyScript::Start()
     {
         ComponentHandle<TextSprite> textComp = enemyHpText.component<TextSprite>();
         textComp.get()->text = "Enemy HP: " + std::to_string(health); 
+    }
+
+    // Note: should be calling start but for some reason it does it for me, something weird with how entityx does for loops.
+    if (weapon1.valid() && !weapon1.has_component<Script>()) 
+    {
+        ComponentHandle<TempEnemyWeapons> weapons = weapon1.component<TempEnemyWeapons>();
+        string scriptName = GetScriptName(weapons.get()->weapon1);
+        weapon1.assign<Script>(scriptName, &weapon1);
+    }
+
+    if (weapon2.valid() && !weapon2.has_component<Script>()) 
+    {
+        ComponentHandle<TempEnemyWeapons> weapons = weapon1.component<TempEnemyWeapons>();
+        string scriptName = GetScriptName(weapons.get()->weapon2);
+        weapon2.assign<Script>(scriptName, &weapon2);
     }
 }
 
@@ -40,6 +61,45 @@ void EnemyScript::Update(TimeDelta dt)
     // Movement
     ComponentHandle<RigidBody> rigidBody = entity.component<RigidBody>();
     MoveCharacter(rigidBody.get()->body);
+
+    // Attack
+    // Use weapon 1
+    if (weapon1.valid()) 
+    {
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_O)) 
+        {
+            ComponentHandle<Script> scriptComp = weapon1.component<Script>();
+            WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
+            if (weaponScript)
+                weaponScript->UseWeapon();
+        } 
+        else 
+        {
+            ComponentHandle<Script> scriptComp = weapon1.component<Script>();
+            WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
+            if (weaponScript) 
+                weaponScript->SetIsActive(false);
+        }
+   
+    }
+
+    // Use weapon 2
+    if (weapon2.valid()) 
+    {
+        if (Input::Instance().IsKeyPressed(GLFW_KEY_P)) {
+            ComponentHandle<Script> scriptComp = weapon2.component<Script>();
+            WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
+            if (weaponScript)
+                weaponScript->UseWeapon();
+        } 
+        else 
+        {
+            ComponentHandle<Script> scriptComp = weapon2.component<Script>();
+            WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
+            if (weaponScript) 
+                weaponScript->SetIsActive(false);         
+        }
+    }
 }
 
 void EnemyScript::MoveCharacter(b2Body* body)
@@ -89,6 +149,25 @@ void EnemyScript::MoveCharacter(b2Body* body)
     ComponentHandle<Transform> transform = entity.component<Transform>();
     transform.get()->xpos = body->GetPosition().x;
     transform.get()->ypos = body->GetPosition().y;
+}
+
+string EnemyScript::GetScriptName(int i) 
+{
+    switch(i) 
+    {
+        case 1:
+            return "SwordScript";
+        case 2:
+            return "ShieldScript";
+        case 3:
+            return "BowScript";
+        case 4:
+            return "GrenadeScript";
+        case 5:
+            return "GunScript";
+        default:
+            return "SwordScript";
+    }
 }
 
 void EnemyScript::BeginContact(Entity* entityA, Entity* entityB) 

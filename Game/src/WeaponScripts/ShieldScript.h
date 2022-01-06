@@ -19,12 +19,13 @@ public:
     void EndContact(Entity* entityA, Entity* entityB) override;
 
 private:
-    Entity player;
+    Entity userEntity;
     b2Vec2 hitVelocity;
     int shieldMaxHealth;
     int shieldCurrHealth;
     float shieldMaxCooldown;
     float shieldCurrCooldown;
+    bool isPlayer;
 
     void CreateEntity();
 };

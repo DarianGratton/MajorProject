@@ -16,3 +16,4 @@
 #include "Components/Name.h"
 #include "Components/Script.h"
 #include "Components/Active.h"
+#include "Components/TempEnemyWeapons.h"

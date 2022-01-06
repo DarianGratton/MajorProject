@@ -51,6 +51,9 @@ void EntityHelper::AddComponent(Entity* entity, string component, string paramet
     
     else if (component == "RigidBody") 
         AddRigidBodyComponent(entity, values);
+
+    else if (component == "TempEnemyWeapons")
+        AddTempEnemyWeaponsComponent(entity, values);
 }
 
 void EntityHelper::AddNameComponent(Entity* entity, const string& name) 
@@ -545,4 +548,16 @@ void EntityHelper::AddRigidBodyComponent(Entity* entity, const vector<string>& p
 
     PhysicsManager::bodyCategory mask3 = PhysicsManager::Instance().IntToCategory(maskBit);
     entity->assign<RigidBody>(xpos, ypos, hx, hy, density, friction, isDynamicBody, category, mask1 | mask2 | mask3);
+}
+
+void EntityHelper::AddTempEnemyWeaponsComponent(Entity* entity, const vector<string>& parameters)
+{
+    unsigned int weapon1, weapon2;
+
+    stringstream str(parameters.at(0));
+    str >> weapon1;
+	str = stringstream(parameters.at(1));
+    str >> weapon2;
+    entity->assign<TempEnemyWeapons>(weapon1, weapon2);
+
 }

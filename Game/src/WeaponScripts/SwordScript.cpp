@@ -20,13 +20,20 @@ SwordScript::SwordScript(Entity* entity, float spriteHeight, float spriteWidth) 
 
 void SwordScript::Start() 
 {
-    // Get reference to player
+    // Get name of entity for later
+    ComponentHandle<Name> weapon = GetEntity()->component<Name>();
+    string weaponName = weapon->name;
+
+    // Get reference to entity
     ComponentHandle<Name> entityName;
     for (Entity e : ECS::Instance().entities.entities_with_components(entityName)) 
     {
         entityName = e.component<Name>();
-        if (entityName.get()->name == "Player")
-            player = e;
+        if (entityName.get()->name == "Player" && weaponName.find("Player") != string::npos)
+            userEntity = e;
+
+        if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != string::npos)
+            userEntity = e;
     }
 
     // Create and setup the sword enitity
@@ -49,9 +56,9 @@ void SwordScript::Update(TimeDelta dt)
         ComponentHandle<Active> activeComp = GetEntity()->component<Active>();
         activeComp.get()->isActive = false;
 
-        // Enable player movement
-        ComponentHandle<Script> playerScript = player.component<Script>(); 
-        reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetCanMove(true);
+        // Enable entity movement
+        ComponentHandle<Script> entityScript = userEntity.component<Script>(); 
+        reinterpret_cast<PlayerScript*>(entityScript.get()->script)->SetCanMove(true);
     }
 }
 
@@ -64,42 +71,42 @@ void SwordScript::UseWeapon()
     attackCooldown = attackRate;
 
     // Update sword's transform
-    ComponentHandle<Transform> entityTransform = GetEntity()->component<Transform>();
-    ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
+    ComponentHandle<Transform> weaponTransform = GetEntity()->component<Transform>();
+    ComponentHandle<Transform> entityTransform = userEntity.component<Transform>(); 
 
     // Determine the direction to use the weapon
-    Direction playerDirection = GetDirection(&player);
-    if (playerDirection == NORTH) 
+    Direction entityDirection = GetDirection(&userEntity);
+    if (entityDirection == NORTH) 
     {
-        entityTransform.get()->xpos = playerTransform.get()->xpos;
-        entityTransform.get()->ypos = playerTransform.get()->ypos + spriteOffset; 
+        weaponTransform.get()->xpos = entityTransform.get()->xpos;
+        weaponTransform.get()->ypos = entityTransform.get()->ypos + spriteOffset; 
     
     }
-    else if (playerDirection == SOUTH) 
+    else if (entityDirection == SOUTH) 
     {
-        entityTransform.get()->xpos = playerTransform.get()->xpos;
-        entityTransform.get()->ypos = playerTransform.get()->ypos - spriteOffset; 
+        weaponTransform.get()->xpos = entityTransform.get()->xpos;
+        weaponTransform.get()->ypos = entityTransform.get()->ypos - spriteOffset; 
     
     }
-    else if (playerDirection == EAST) 
+    else if (entityDirection == EAST) 
     {
-        entityTransform.get()->xpos = playerTransform.get()->xpos + spriteOffset;
-        entityTransform.get()->ypos = playerTransform.get()->ypos; 
+        weaponTransform.get()->xpos = entityTransform.get()->xpos + spriteOffset;
+        weaponTransform.get()->ypos = entityTransform.get()->ypos; 
     
     }
-    else if (playerDirection == WEST) 
+    else if (entityDirection == WEST) 
     {
-        entityTransform.get()->xpos = playerTransform.get()->xpos - spriteOffset;
-        entityTransform.get()->ypos = playerTransform.get()->ypos; 
+        weaponTransform.get()->xpos = entityTransform.get()->xpos - spriteOffset;
+        weaponTransform.get()->ypos = entityTransform.get()->ypos; 
     }
 
     // Update body transform
     ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
-    entityBody.get()->body->SetTransform(b2Vec2(entityTransform.get()->xpos, entityTransform.get()->ypos), 0.0f);
+    entityBody.get()->body->SetTransform(b2Vec2(weaponTransform.get()->xpos, weaponTransform.get()->ypos), 0.0f);
 
-    // Disable player movement
-    ComponentHandle<Script> playerScript = player.component<Script>(); 
-    reinterpret_cast<PlayerScript*>(playerScript.get()->script)->SetCanMove(false);
+    // Disable entity movement
+    ComponentHandle<Script> entityScript = userEntity.component<Script>(); 
+    reinterpret_cast<PlayerScript*>(entityScript.get()->script)->SetCanMove(false);
 
     // Activate entity
     ComponentHandle<Active> activeComp = GetEntity()->component<Active>();
@@ -114,8 +121,8 @@ void SwordScript::CreateEntity()
     GetEntity()->assign<ShaderComp>("src/Assets/shaders/Basic.shader");
     
     // Transform
-    ComponentHandle<Transform> playerTransform = player.component<Transform>(); 
-    GetEntity()->assign<Transform>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2); 
+    ComponentHandle<Transform> entityTransform = userEntity.component<Transform>(); 
+    GetEntity()->assign<Transform>(entityTransform.get()->xpos, entityTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2); 
 
     GetEntity()->remove<SpriteVertices>();
     std::vector<float> spriteVertices = {
@@ -130,7 +137,7 @@ void SwordScript::CreateEntity()
     // TODO: Factor for enemy using weapon
     uint16 categoryBit = PhysicsManager::Instance().PLAYERWEAPON;
     uint16 maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMY;
-    GetEntity()->assign<RigidBody>(playerTransform.get()->xpos, playerTransform.get()->ypos + spriteOffset, 5.0f, 5.0f, 1.0, 0.5f, 1, categoryBit, maskBit);
+    GetEntity()->assign<RigidBody>(entityTransform.get()->xpos, entityTransform.get()->ypos + spriteOffset, 5.0f, 5.0f, 1.0, 0.5f, 1, categoryBit, maskBit);
 
     ComponentHandle<RigidBody> physicsComp = GetEntity()->component<RigidBody>();
     physicsComp.get()->body = PhysicsManager::Instance().GetWorld()->CreateBody(&physicsComp.get()->bodyDef);

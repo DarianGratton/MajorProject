@@ -3,6 +3,8 @@
 #include <box2d/box2d.h>
 #include <entityx/entityx.h>
 
+#include <string>
+
 #include "../CScript.h"
 
 class EnemyScript : public CScript 
@@ -22,9 +24,13 @@ public:
 
 private:
     Entity enemyHpText;
+    Entity weapon1;
+    Entity weapon2;
     bool canMove;
     bool isMovementReduced;
     float normalMovementVelocity;
     float reducedMovementVelocity;
     int health;
+
+    string GetScriptName(int i);
 };
