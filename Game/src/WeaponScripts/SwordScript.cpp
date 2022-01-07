@@ -30,11 +30,15 @@ void SwordScript::Start()
     {
         entityName = e.component<Name>();
         if (entityName.get()->name == "Player" && weaponName.find("Player") != string::npos)
+        {
             userEntity = e;
+            isPlayer = true;
+        }
 
         if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != string::npos)
             userEntity = e;
     }
+
 
     // Create and setup the sword enitity
     CreateEntity();
@@ -58,7 +62,10 @@ void SwordScript::Update(TimeDelta dt)
 
         // Enable entity movement
         ComponentHandle<Script> entityScript = userEntity.component<Script>(); 
-        reinterpret_cast<PlayerScript*>(entityScript.get()->script)->SetCanMove(true);
+        if (isPlayer)
+            reinterpret_cast<PlayerScript*>(entityScript.get()->script)->SetCanMove(true);
+        else
+            reinterpret_cast<EnemyScript*>(entityScript.get()->script)->SetCanMove(true);
     }
 }
 
@@ -106,7 +113,10 @@ void SwordScript::UseWeapon()
 
     // Disable entity movement
     ComponentHandle<Script> entityScript = userEntity.component<Script>(); 
-    reinterpret_cast<PlayerScript*>(entityScript.get()->script)->SetCanMove(false);
+    if (isPlayer)
+            reinterpret_cast<PlayerScript*>(entityScript.get()->script)->SetCanMove(false);
+        else
+            reinterpret_cast<EnemyScript*>(entityScript.get()->script)->SetCanMove(false);
 
     // Activate entity
     ComponentHandle<Active> activeComp = GetEntity()->component<Active>();
@@ -134,9 +144,18 @@ void SwordScript::CreateEntity()
     GetEntity()->assign<SpriteVertices>(spriteVertices);
 
     // RigidBody
-    // TODO: Factor for enemy using weapon
-    uint16 categoryBit = PhysicsManager::Instance().PLAYERWEAPON;
-    uint16 maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMY;
+    uint16 categoryBit;
+    uint16 maskBit;
+    if (isPlayer)
+    {
+        categoryBit = PhysicsManager::Instance().PLAYERWEAPON;
+        maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMY;
+    }
+    else
+    {
+        categoryBit = PhysicsManager::Instance().ENEMYWEAPON;
+        maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().PLAYER;
+    }
     GetEntity()->assign<RigidBody>(entityTransform.get()->xpos, entityTransform.get()->ypos + spriteOffset, 5.0f, 5.0f, 1.0, 0.5f, 1, categoryBit, maskBit);
 
     ComponentHandle<RigidBody> physicsComp = GetEntity()->component<RigidBody>();

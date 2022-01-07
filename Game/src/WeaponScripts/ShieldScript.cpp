@@ -162,9 +162,18 @@ void ShieldScript::CreateEntity()
     GetEntity()->assign<SpriteVertices>(spriteVertices);
 
     // RigidBody
-    // TODO: Factor for enemy using weapon
-    uint16 categoryBit = PhysicsManager::Instance().PLAYERWEAPON;
-    uint16 maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMY | PhysicsManager::Instance().ENEMYWEAPON;
+    uint16 categoryBit;
+    uint16 maskBit;
+    if (isPlayer)
+    {
+        categoryBit = PhysicsManager::Instance().PLAYERWEAPON;
+        maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMY | PhysicsManager::Instance().ENEMYWEAPON;
+    }
+    else
+    {
+        categoryBit = PhysicsManager::Instance().ENEMYWEAPON;
+        maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().PLAYER | PhysicsManager::Instance().PLAYERWEAPON;
+    }
     GetEntity()->assign<RigidBody>(userTransform.get()->xpos, userTransform.get()->ypos, 5.0f, 5.0f, 1.0, 0.5f, 1, categoryBit, maskBit);
 
     ComponentHandle<RigidBody> physicsComp = GetEntity()->component<RigidBody>();

@@ -23,6 +23,7 @@ private:
     float spriteOffset;   // Sword sprite offset from player sprite
     float attackRate;     // Attack rate of the sword
     float attackCooldown; // Attack cooldown of the sword
+    bool isPlayer;
 
     void CreateEntity();
 };

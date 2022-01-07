@@ -138,11 +138,20 @@ void GunScript::SpawnBullet()
     bulletEntity.assign<SpriteVertices>(spriteVertices);
 
     bulletEntity.assign<Name>("WeaponBullet");
-    
-    // TODO: Factor for enemy using weapon
+
     // Rigidbody bits
-    uint16 categoryBit = PhysicsManager::Instance().PLAYERWEAPON;
-    uint16 maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMY;
+    uint16 categoryBit;
+    uint16 maskBit;
+    if (isPlayer)
+    {
+        categoryBit = PhysicsManager::Instance().PLAYERWEAPON;
+        maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMY;
+    }
+    else
+    {
+        categoryBit = PhysicsManager::Instance().ENEMYWEAPON;
+        maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().PLAYER;
+    }
 
     // Transform
     Direction userDirection = GetDirection(&userEntity);
