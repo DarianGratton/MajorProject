@@ -115,24 +115,36 @@ void EnemyScript::MoveCharacter(b2Body* body)
         if (Input::Instance().IsKeyPressed(GLFW_KEY_UP)) 
         {
             desiredVelY = velcityChange;
+
+            ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
+            textureComp.get()->SetTexture("src/Assets/textures/EnemyUp.png");
         }
 
         // Movement DOWN
         if (Input::Instance().IsKeyPressed(GLFW_KEY_DOWN)) 
         {
             desiredVelY = -velcityChange;
+
+            ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
+            textureComp.get()->SetTexture("src/Assets/textures/EnemyDown.png");
         }
         
         // Movement RIGHT
         if (Input::Instance().IsKeyPressed(GLFW_KEY_RIGHT)) 
         {
             desiredVelX = velcityChange;
+
+            ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
+            textureComp.get()->SetTexture("src/Assets/textures/EnemyRight.png");
         }
         
         // Movement LEFT
         if (Input::Instance().IsKeyPressed(GLFW_KEY_LEFT)) 
         {
             desiredVelX = -velcityChange;
+
+            ComponentHandle<TextureComp> textureComp = entity.component<TextureComp>();
+            textureComp.get()->SetTexture("src/Assets/textures/EnemyLeft.png");
         }    
     }
 

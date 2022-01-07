@@ -51,13 +51,13 @@ protected:
         if (playerTexture.get()->filename.find("Up") != string::npos) 
             return NORTH;
 
-        if (playerTexture.get()->filename == "PlayerDown.png")
+        if (playerTexture.get()->filename.find("Down") != string::npos)
             return SOUTH;
 
-        if (playerTexture.get()->filename == "PlayerRight.png")
+        if (playerTexture.get()->filename.find("Right") != string::npos)
             return EAST;
 
-        if (playerTexture.get()->filename == "PlayerLeft.png")
+        if (playerTexture.get()->filename.find("Left") != string::npos)
             return WEST;
 
         // No direction found

@@ -51,7 +51,7 @@
         <!-- Components to be determined at runtime --> 
     </Entity>
     <Entity name="Enemy" height="10.0f" width="10.0f">
-        <Component name="Texture" value="src/Assets/textures/EnemyKnightUp.png"/>
+        <Component name="Texture" value="src/Assets/textures/EnemyDown.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
         <Component name="Transform" value="0.0f, 20.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
