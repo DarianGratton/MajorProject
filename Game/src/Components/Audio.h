@@ -17,6 +17,7 @@ struct Audio
         sound = new Sound(filename, ifLoop);
         sound->SetUpSound();
         sound->Loop(ifLoop);
+        isPlaying = false;
 	}
 
     ~Audio() 
@@ -30,4 +31,5 @@ struct Audio
     string tag;
     float volume = 1;
     bool playOnStart;
+    bool isPlaying;
 };

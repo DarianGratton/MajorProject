@@ -15,15 +15,12 @@ public:
     {
         es.each<Audio>([this, dt](Entity entity, Audio &audioComp) 
         {
-            if (audioComp.playOnStart && !temp) 
+            if (audioComp.playOnStart && !audioComp.isPlaying) 
             {
-                temp = true;
                 audioComp.sound->Play();
+                audioComp.isPlaying = true;
             }
             audioComp.sound->SetVolume(audioComp.volume);
         });
     }
-
-private:
-    bool temp;
 };

@@ -325,23 +325,23 @@ void EntityHelper::AddAudioComponent(Entity* entity, const vector<string>& param
         return;
     }
 
-    bool isPlayOnLoad;
+    bool isPlayOnStart;
     stringstream str(parameters.at(1));
     if (str.str() == "true" || str.str() == "false") 
     {
-        LOG_ERROR("Scene parsing - AddAudioSource Error: boolean 1 was found to be true/false - use 1/0 instead.");
+        LOG_ERROR("Scene parsing - AddAudioSource Error: boolean 1 was found to be true/false - use 1 or 0 instead.");
         return;
     } 
     else if (str.str() != "0" && str.str() != "1") 
     {
-        LOG_ERROR("Scene parsing - AddAudioSource Error: boolean 1 incorrect value - use 1/0.");
+        LOG_ERROR("Scene parsing - AddAudioSource Error: boolean 1 incorrect value - use 1 or 0.");
         return;
     }
-    str >> isPlayOnLoad;
+    str >> isPlayOnStart;
 
     if (parameters.size() == 2) 
     {
-        entity->assign<Audio>(parameters.at(0), isPlayOnLoad);
+        entity->assign<Audio>(parameters.at(0), isPlayOnStart);
         return;
     }
 
@@ -359,7 +359,7 @@ void EntityHelper::AddAudioComponent(Entity* entity, const vector<string>& param
     }
     str >> isLoop;
 
-    entity->assign<Audio>(parameters.at(0).c_str(), isPlayOnLoad, isLoop);
+    entity->assign<Audio>(parameters.at(0).c_str(), isPlayOnStart, isLoop);
 }
 
 void EntityHelper::AddTextComponent(Entity* entity, const vector<string>& parameters) 
