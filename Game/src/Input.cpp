@@ -101,7 +101,7 @@ float Input::GetCursorPosition(bool isX)
     {
         return mousePosX;
     } 
-    else if (isX) 
+    else
     {
         return mousePosY;
     }

@@ -8,5 +8,5 @@ using namespace std;
 
 TEST (BeginContact, NoUserDataA)
 {
-    b2Contact test = new b2Contact();
+    
 }

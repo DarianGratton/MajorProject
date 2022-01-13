@@ -1,3 +1,5 @@
+#include "InputTests.h"
+
 #include <gtest/gtest.h>
 
 using namespace testing;
@@ -105,7 +107,8 @@ public:
     
 };
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv) 
+{
     // Initialize
     ::testing::InitGoogleTest(&argc, argv);
     

@@ -12,7 +12,7 @@ EXECUTABLE	:= Game
 
 TESTS		:= tests
 TEST_BIN	:= bin_tests
-TEST_SRC	:= $(filter-out $(SRC)/main.cpp, $(wildcard $(SRC)/*.cpp))
+TEST_SRC	:= $(filter-out $(SRC)/Main.cpp, $(wildcard $(SRC)/*.cpp))
 
 TEST_LIBRARIES 	:= -lgtest
 
@@ -29,7 +29,7 @@ clean:
 run:
 	$(BIN)/$(EXECUTABLE)
 
-buildtests: $(TEST_SRC) $(TESTS)/*.cpp $(SRC)/*.c 
+buildtests: $(TEST_SRC) $(TESTS)/*.cpp $(SRC)/*.c $(SRC)/Renderer/*.cpp $(SRC)/Scripts/*.cpp $(SRC)/WeaponScripts/*.cpp $(SRC)/Physics/*.cpp
 	mkdir -p $(TEST_BIN)
 	cp $(LIB)/*.dll $(TEST_BIN)  
 	$(CXX) $(CXX_FLAGS) $(INCLUDES) -L$(LIB) $^ -o $(TEST_BIN)/$(TEST_EXECUTABLE) $(LIBRARIES) $(TEST_LIBRARIES) 
