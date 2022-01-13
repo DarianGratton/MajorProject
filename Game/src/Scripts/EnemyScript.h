@@ -17,6 +17,7 @@ public:
     void BeginContact(Entity* entityA, Entity* entityB) override;
     void EndContact(Entity* entityA, Entity* entityB) override;
     void MoveCharacter(b2Body* body);
+    void DamageCharacter(int damage);
 
     inline void SetCanMove(bool _canMove) { canMove = _canMove; }
     inline void SetIsMovementReduced(bool movementReduced) { isMovementReduced = movementReduced; }

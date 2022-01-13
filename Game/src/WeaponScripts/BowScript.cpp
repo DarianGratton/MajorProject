@@ -16,6 +16,7 @@ BowScript::BowScript(Entity* entity, float spriteHeight, float spriteWidth) : We
     isActive = false;
     arrowNumber = 0;
     isPlayer = false;
+    canDamageShield = false;
 }
 
 void BowScript::Start() 
@@ -131,14 +132,35 @@ void BowScript::Update(TimeDelta dt)
     // Remove the timeElapsed if any projectiles were deleted
     if (deletedProjectile)
         projectilesTimeElapsed.erase(projectilesTimeElapsed.begin());
+
+    // Player movement
+    if (isActive)
+    {
+         // Slow player movement
+        ComponentHandle<Script> userScript = userEntity.component<Script>();
+        if (isPlayer) 
+            reinterpret_cast<PlayerScript*>(userScript.get()->script)->SetIsMovementReduced(true);
+        else
+            reinterpret_cast<EnemyScript*>(userScript.get()->script)->SetIsMovementReduced(true);
+    }
+    else
+    {
+         // Enable player movement
+        ComponentHandle<Script> userScript = userEntity.component<Script>();
+        if (isPlayer) 
+            reinterpret_cast<PlayerScript*>(userScript.get()->script)->SetIsMovementReduced(false);
+        else
+            reinterpret_cast<EnemyScript*>(userScript.get()->script)->SetIsMovementReduced(false);
+    }
 }
 
 void BowScript::UseWeapon() 
 {
+    isActive = true;
     if (fireRate > 0 || projectiles.size() >= 3)
         return;
 
-    fireRate = 2.0f;
+    fireRate = 1.5f;
     SpawnArrow();
 }
 

@@ -60,7 +60,7 @@
     </Entity>
     <Entity name="EnemyWeapon1" height="15.0f" width="15.0f">
         <!-- Components to be determined at runtime -->
-        <Component name="TempEnemyWeapons" value="4, 5"/>
+        <Component name="TempEnemyWeapons" value="3, 5"/>
     </Entity>
     <Entity name="EnemyWeapon2" height="10.0f" width="10.0f">
         <!-- Components to be determined at runtime --> 

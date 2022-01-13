@@ -15,7 +15,7 @@ GunScript::GunScript(Entity* entity, float spriteHeight, float spriteWidth) : We
 
     // Member variables
     spriteOffset = 10.0f;
-    projectileVelocity = 115.0f;
+    projectileVelocity = 75.0f;
     cooldownTimer = 0.0f;
     timeElapsed = 0.0f;
     directionThrown = NONE;
@@ -111,7 +111,7 @@ void GunScript::Update(TimeDelta dt)
 
 void GunScript::UseWeapon() 
 {
-    if (cooldownTimer > 0 || isActive)
+    if (cooldownTimer > 0 || bulletEntity.valid())
         return;
         
     cooldownTimer = 1.0f;
@@ -195,8 +195,11 @@ void GunScript::BeginContact(Entity* entityA, Entity* entityB)
 { 
     ComponentHandle<Name> entityNameA = entityA->component<Name>();
     ComponentHandle<Name> entityNameB = entityB->component<Name>();
-    if (entityNameB.get()->name.find("Enemy") != string::npos ||
-        entityNameB.get()->name.find("Wall") != string::npos) 
+    if (entityNameB.get()->name.find("Player") != string::npos ||
+        entityNameB.get()->name.find("Enemy") != string::npos ||
+        entityNameB.get()->name.find("Bullet") != string::npos ||
+        entityNameB.get()->name.find("Shield") != string::npos ||
+        entityNameB.get()->name.find("Wall") != string::npos )  
     {
         flagForDeletion = true;
         timeElapsed = 0.0f;

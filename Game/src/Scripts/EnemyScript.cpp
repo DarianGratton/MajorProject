@@ -163,6 +163,16 @@ void EnemyScript::MoveCharacter(b2Body* body)
     transform.get()->ypos = body->GetPosition().y;
 }
 
+void EnemyScript::DamageCharacter(int damage)
+{
+    // Update HP
+    health -= damage;
+
+    // Display updated Player HP
+    ComponentHandle<TextSprite> textComp = enemyHpText.component<TextSprite>();
+    textComp.get()->text = "Enemy HP: " + to_string(health); 
+}
+
 string EnemyScript::GetScriptName(int i) 
 {
     switch(i) 
@@ -190,11 +200,7 @@ void EnemyScript::BeginContact(Entity* entityA, Entity* entityB)
         // Update enemy hp
         ComponentHandle<Script> weaponScript = entityB->component<Script>();
         int damage = reinterpret_cast<WeaponScript*>(weaponScript.get()->script)->GetDamage();
-        health -= damage;
-
-        // Display Enemy HP
-        ComponentHandle<TextSprite> textComp = enemyHpText.component<TextSprite>();
-        textComp.get()->text = "Enemy HP: " + std::to_string(health); 
+        DamageCharacter(damage);
     }
 }
 

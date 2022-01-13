@@ -19,6 +19,7 @@ ShieldScript::ShieldScript(entityx::Entity* entity, float spriteHeight, float sp
     shieldMaxHealth = 10;
     shieldCurrHealth = shieldMaxHealth;
     isPlayer = false;
+    onCooldown = false;
 }
 
 void ShieldScript::Start() 
@@ -52,11 +53,15 @@ void ShieldScript::Update(TimeDelta dt)
     if (cooldown <= 0) 
     {
         shieldCurrCooldown = 0;
+
+        if (onCooldown)
+            shieldCurrHealth = shieldMaxHealth;
+
+        onCooldown = false;
     } 
     else 
     {
         shieldCurrCooldown = cooldown;
-        return;
     }
 
     if (isActive)
@@ -81,7 +86,7 @@ void ShieldScript::Update(TimeDelta dt)
     }
 
     ComponentHandle<RigidBody> entityBody = GetEntity()->component<RigidBody>();
-    if (!isActive && entityBody.get()->body->IsEnabled()) 
+    if (!isActive && (entityBody.get()->body->IsEnabled() || onCooldown)) 
     {
         // Disable collision
         entityBody.get()->body->SetEnabled(false);
@@ -102,14 +107,12 @@ void ShieldScript::Update(TimeDelta dt)
         ComponentHandle<RigidBody> userBody = userEntity.component<RigidBody>(); 
         userBody.get()->body->SetTransform(b2Vec2(userTransform.get()->xpos, userTransform.get()->ypos), 0.0f);
         userBody.get()->body->SetEnabled(true);
-        // playerBody.get()->body->SetLinearVelocity(hitVelocity);
-        // hitVelocity = b2Vec2_zero;
     }
 }
 
 void ShieldScript::UseWeapon() 
 {
-    if (isActive)
+    if (isActive || onCooldown)
         return;
 
     isActive = true; 
@@ -166,12 +169,12 @@ void ShieldScript::CreateEntity()
     uint16 maskBit;
     if (isPlayer)
     {
-        categoryBit = PhysicsManager::Instance().PLAYERWEAPON;
+        categoryBit = PhysicsManager::Instance().PLAYER;
         maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMY | PhysicsManager::Instance().ENEMYWEAPON;
     }
     else
     {
-        categoryBit = PhysicsManager::Instance().ENEMYWEAPON;
+        categoryBit = PhysicsManager::Instance().ENEMY;
         maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().PLAYER | PhysicsManager::Instance().PLAYERWEAPON;
     }
     GetEntity()->assign<RigidBody>(userTransform.get()->xpos, userTransform.get()->ypos, 5.0f, 5.0f, 1.0, 0.5f, 1, categoryBit, maskBit);
@@ -191,24 +194,22 @@ void ShieldScript::CreateEntity()
 void ShieldScript::BeginContact(Entity* entityA, Entity* entityB) 
 {
     ComponentHandle<Name> nameComp = entityB->component<Name>();
-    if (nameComp.get()->name.find("Weapon") != std::string::npos) 
+    if (nameComp.get()->name.find("Weapon") != string::npos) 
     {
-        ComponentHandle<RigidBody> shieldBody = entityA->component<RigidBody>();
-        hitVelocity = shieldBody.get()->body->GetLinearVelocity();
-
         ComponentHandle<Script> weaponScript = entityB->component<Script>();
-        
         if (!reinterpret_cast<WeaponScript*>(weaponScript.get()->script)->CanDamageShield())
             return; 
 
         int damage = reinterpret_cast<WeaponScript*>(weaponScript.get()->script)->GetDamage();
         shieldCurrHealth -= damage;
 
-        if (shieldCurrHealth < 0)
+        // Disable shield
+        if (shieldCurrHealth <= 0)
         {
             shieldCurrCooldown = shieldMaxCooldown;
             shieldCurrHealth = shieldMaxHealth;
-            isActive = false;       
+            isActive = false;
+            onCooldown = true;
         }
     }
 }

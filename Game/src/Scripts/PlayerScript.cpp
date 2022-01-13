@@ -165,6 +165,16 @@ void PlayerScript::MoveCharacter(b2Body* body)
     transform.get()->ypos = body->GetPosition().y;
 }
 
+void PlayerScript::DamageCharacter(int damage)
+{
+    // Update HP
+    health -= damage;
+
+    // Display updated Player HP
+    ComponentHandle<TextSprite> textComp = playerHpText.component<TextSprite>();
+    textComp.get()->text = "Player HP: " + to_string(health); 
+}
+
 string PlayerScript::GetScriptName(int i) 
 {
     switch(i) 
@@ -192,11 +202,7 @@ void PlayerScript::BeginContact(Entity* entityA, Entity* entityB)
         // Update player hp
         ComponentHandle<Script> weaponScript = entityB->component<Script>();
         int damage = reinterpret_cast<WeaponScript*>(weaponScript.get()->script)->GetDamage();
-        health -= damage;
-
-        // Display updated Player HP
-        ComponentHandle<TextSprite> textComp = playerHpText.component<TextSprite>();
-        textComp.get()->text = "Player HP: " + to_string(health); 
+        DamageCharacter(damage);
     }
 }
 

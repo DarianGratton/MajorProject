@@ -26,6 +26,7 @@ private:
     float shieldMaxCooldown;
     float shieldCurrCooldown;
     bool isPlayer;
+    bool onCooldown;
 
     void CreateEntity();
 };

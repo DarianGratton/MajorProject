@@ -21,6 +21,7 @@ GrenadeScript::GrenadeScript(Entity* entity, float spriteHeight, float spriteWid
     cooldownTimer = 0.0f;
     timeElapsed = 0.0f;
     directionThrown = NONE;
+    isPlayer = false;
 }
 
 void GrenadeScript::Start() 
@@ -43,6 +44,8 @@ void GrenadeScript::Start()
         if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != string::npos)
             userEntity = e;
     }
+
+    LOG_TRACE(isPlayer);
 }
 
 void GrenadeScript::Update(TimeDelta dt) 
@@ -133,6 +136,7 @@ void GrenadeScript::SpawnGrenade()
 {
     // Set up entity components
     grenadeEntity = ECS::Instance().entities.create();
+    LOG_TRACE(isPlayer);
 
     grenadeEntity.assign<TextureComp>("src/Assets/textures/Grenade.png", "Grenade.png");
     grenadeEntity.assign<ShaderComp>("src/Assets/shaders/Basic.shader");
@@ -154,12 +158,12 @@ void GrenadeScript::SpawnGrenade()
     if (isPlayer)
     {
         categoryBit = PhysicsManager::Instance().PLAYERWEAPON;
-        maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMY;
+        maskBit = PhysicsManager::Instance().BOUNDARY;
     }
     else
     {
         categoryBit = PhysicsManager::Instance().ENEMYWEAPON;
-        maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().PLAYER;
+        maskBit = PhysicsManager::Instance().BOUNDARY;
     }
 
     // Transform
@@ -223,16 +227,8 @@ void GrenadeScript::SpawnExplosion()
     // Rigidbody bits
     uint16 categoryBit;
     uint16 maskBit;
-    if (isPlayer)
-    {
-        categoryBit = PhysicsManager::Instance().PLAYERWEAPON;
-        maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMY | PhysicsManager::Instance().PLAYER;
-    }
-    else
-    {
-        categoryBit = PhysicsManager::Instance().ENEMYWEAPON;
-        maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().PLAYER | PhysicsManager::Instance().ENEMY;
-    }
+    categoryBit = PhysicsManager::Instance().ENEMYWEAPON | PhysicsManager::Instance().PLAYERWEAPON;
+    maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().PLAYER | PhysicsManager::Instance().ENEMY;
 
     // Transform
     ComponentHandle<Transform> grenadeTransform = grenadeEntity.component<Transform>(); 
