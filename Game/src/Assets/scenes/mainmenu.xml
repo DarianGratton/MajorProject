@@ -5,8 +5,8 @@
         <Component name="Transform" value="0.0f, 0.0f, 0.0f, 0, 0, 0, 1, 2"/>
     </Entity>
     <Entity name="TitleText">
-        <Component name="TextSprite" value="Game Title, 1.0f, 1.0f, 1.0f, 0, 72"/>
-        <Component name="Transform" value="-180.0f, 75.0f, 0.0f, 0, 0, 0, 1"/>
+        <Component name="TextSprite" value="The Charlatan`s Arena, 1.0f, 1.0f, 1.0f, 0, 56"/>
+        <Component name="Transform" value="-275.0f, 75.0f, 0.0f, 0, 0, 0, 1"/>
     </Entity>
     <Entity name="StartGameText">
         <Component></Component>
