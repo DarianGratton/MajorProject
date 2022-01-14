@@ -1,4 +1,6 @@
 #include "InputTests.h"
+#include "PhysicsTests.h"
+#include "SceneTests.h"
 
 #include <gtest/gtest.h>
 

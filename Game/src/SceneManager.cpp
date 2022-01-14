@@ -36,7 +36,10 @@ bool SceneManager::LoadScene(std::string sceneName)
         }
 
         // Load scene
-        scene->Load();
+        if (!scene->Load())
+        {
+            return 0;
+        }
         ECS::Instance().events.emit<SceneLoad>(scene->GetName(), &ECS::Instance().entities);
         Game::Instance().UnpauseGame();
         isSceneLoaded = true;
