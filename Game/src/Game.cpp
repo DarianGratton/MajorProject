@@ -2,8 +2,8 @@
 
 #include "Logger.h"
 #include "ECS.h"
-#include "input.h"
-#include "sceneManager.h"
+#include "Input.h"
+#include "SceneManager.h"
 
 // GLFW: Whenever the window size changed (by OS or user resize) this callback function executes
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height)

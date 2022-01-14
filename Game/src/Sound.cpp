@@ -8,7 +8,7 @@ void Sound::SetUpSound()
 
     if (!(sound = BASS_StreamCreateFile(false, fullpath.c_str(), 0, 0, BASS_SAMPLE_MONO))) 
     {
-        string errortext = "Load error: " + BASS_ErrorGetCode();
+        string errortext = "Load error: " + to_string(BASS_ErrorGetCode());
         LOG_ERROR(errortext);
     }
 
@@ -23,7 +23,7 @@ void Sound::Play()
 {
     if (!BASS_ChannelPlay(sound, FALSE)) 
     {
-        string errortext = "Load error: " + BASS_ErrorGetCode();
+        string errortext = "Load error: " + to_string(BASS_ErrorGetCode());
         LOG_ERROR(errortext);
     }
 }
@@ -32,7 +32,7 @@ void Sound::Pause()
 {
     if (!BASS_ChannelPause(sound)) 
     {
-        string errortext = "Load error: " + BASS_ErrorGetCode();
+        string errortext = "Load error: " + to_string(BASS_ErrorGetCode());
         LOG_ERROR(errortext);
     }
 }
@@ -41,7 +41,7 @@ void Sound::Stop()
 {
     if (!BASS_ChannelStop(sound)) 
     {
-        string errortext = "Load error: " + BASS_ErrorGetCode();
+        string errortext = "Load error: " + to_string(BASS_ErrorGetCode());
         LOG_ERROR(errortext);
     }
 }
@@ -52,7 +52,7 @@ void Sound::Loop(bool loop)
 
     if (BASS_ChannelFlags(sound, BASS_SAMPLE_LOOP, BASS_SAMPLE_LOOP) == -1) 
     {
-        string errortext = "Load error: " + BASS_ErrorGetCode();
+        string errortext = "Load error: " + to_string(BASS_ErrorGetCode());
         LOG_ERROR(errortext);
     }
 }

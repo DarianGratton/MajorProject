@@ -31,7 +31,11 @@ TextRenderer::TextRenderer(const char * fontpath, unsigned int fontsize)
         return;
     }
 
-    error = FT_Set_Pixel_Sizes(face, 0, fontsize);  
+    error = FT_Set_Pixel_Sizes(face, 0, fontsize);
+    if (error)
+    {
+        LOG_ERROR("FreeType pixel size could not be changed");
+    }
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable byte-alignment restriction
 
@@ -89,6 +93,10 @@ TextRenderer::~TextRenderer()
 void TextRenderer::SetFontSize(unsigned int pixelwidth, unsigned int pixelheight) 
 {
     FT_Error error = FT_Set_Pixel_Sizes(face, pixelwidth, pixelheight);
+    if (error)
+    {
+        LOG_ERROR("FreeType pixel size could not be changed");
+    }
 }
 
 void TextRenderer::RenderText(string text, glm::vec2 position, glm::vec2 scale, glm::vec3 color, glm::mat4 proj, glm::mat4 view) 

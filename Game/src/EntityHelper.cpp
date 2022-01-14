@@ -22,10 +22,7 @@ void EntityHelper::AddComponent(Entity* entity, string component, string paramet
     }
     values.push_back(parameters);
 
-    if (component == "name") 
-        AddNameComponent(entity, values[0]);
-    
-    else if (component == "Camera")
+    if (component == "Camera")
         AddCameraComponent(entity, values);
     
     else if (component == "Transform") 
@@ -54,11 +51,6 @@ void EntityHelper::AddComponent(Entity* entity, string component, string paramet
 
     else if (component == "TempEnemyWeapons")
         AddTempEnemyWeaponsComponent(entity, values);
-}
-
-void EntityHelper::AddNameComponent(Entity* entity, const string& name) 
-{
-    entity->assign<Name>(name);
 }
 
 // TODO: Possibly clean up this function it's probably effiecent but not very clean

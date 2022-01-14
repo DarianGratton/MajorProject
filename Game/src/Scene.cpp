@@ -39,7 +39,8 @@ bool Scene::Load()
         Entity e = ECS::Instance().entities.create();
 
         // Get entity attrbutes
-        float width, height;
+        float width = 0;
+        float height = 0;
         const XMLAttribute* attr = entity->ToElement()->FirstAttribute();
         while (attr != NULL) 
         {

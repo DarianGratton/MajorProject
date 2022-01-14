@@ -43,9 +43,10 @@ void PhysicsManager::CreateWorld(float gravX, float gravY)
 
 PhysicsManager::bodyCategory PhysicsManager::IntToCategory(int i) 
 {
-    // TODO: Test if previous method worked
+    // TODO: Might mess up physics so leaving unchanged for now
     // return static_cast<PhysicsManager::bodyCategory>(i);
-    switch(i) {
+    switch(i) 
+    {
         case 1:
             return BOUNDARY;
         case 2:

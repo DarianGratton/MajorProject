@@ -27,6 +27,7 @@ ShaderProgramSource Shader::ParseShader(const string& filepath)
     //Checks if file can be read
     if(stream.fail()) 
     {
+        // TODO: Replace as strerror is not thread safe
         LOG_ERROR(strerror(errno));
     }
 

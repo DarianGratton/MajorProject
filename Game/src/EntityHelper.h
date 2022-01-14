@@ -26,7 +26,6 @@ private:
     EntityHelper() {}
 
     // Different components;
-    void AddNameComponent(Entity* entity, const string& name);
     void AddCameraComponent(Entity* entity, const vector<string>& parameters);
     void AddShaderComponent(Entity* entity, const string& filepath);
     void AddTextureComponent(Entity* entity, const string& filepath);
