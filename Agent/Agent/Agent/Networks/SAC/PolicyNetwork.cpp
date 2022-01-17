@@ -52,7 +52,7 @@ std::pair<torch::Tensor, torch::Tensor> PolicyNetwork::CalculateActionProb(torch
 	// Calculate action probability
 	torch::Tensor action = torch::tanh(actions) * torch::tensor(data);
 	torch::Tensor logProbs = probabilities.LogProb(actions);
-	logProbs -= torch::log(1 - action.pow(2) + reparamNoise);
+	logProbs -= torch::log(1 - action.pow(2) + reparamNoise); // How the paper handles the scaling of the action
 	logProbs = logProbs.sum(1, true);
 
 	return std::make_pair(action, logProbs);

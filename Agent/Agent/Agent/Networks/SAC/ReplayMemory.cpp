@@ -3,7 +3,7 @@
 #include <iostream>
 #include <random>
 
-ReplayMemory::ReplayMemory(unsigned int memSize, list<float> inputDims, unsigned int nActions) : memSize(memSize)
+ReplayMemory::ReplayMemory(unsigned int memSize, unsigned int nActions) : memSize(memSize)
 {
 	if (memSize == 0)
 	{

@@ -14,7 +14,7 @@ class ReplayMemory
 {
 public:
 
-	ReplayMemory(unsigned int memSize, list<float> inputDims, unsigned int nActions);
+	ReplayMemory(unsigned int memSize, unsigned int nActions);
 
 	// Struct
 	struct MemorySample
@@ -25,6 +25,9 @@ public:
 		vector<list<State>> newStates;
 		vector<bool> terminals;
 	};
+
+	// Casting might cause overflow so it suggests just using the size_t
+	inline size_t GetCurrentMemsize() { return stateMem.size(); };
 
 private:
 	unsigned int memSize;
