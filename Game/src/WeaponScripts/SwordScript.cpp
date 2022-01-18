@@ -14,7 +14,7 @@ SwordScript::SwordScript(Entity* entity, float spriteHeight, float spriteWidth) 
 
     // Member variables
     spriteOffset = 10.5f;
-    attackRate = 0.3f;
+    attackRate = 0.1f;
     attackCooldown = 0.0f;
 }
 

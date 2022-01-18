@@ -95,4 +95,8 @@
         <Component name="Transform" value="275.0f, -100.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
+    <Entity name="HeaderSubtitleText">
+        <Component name="TextSprite" value="(Pick 2 Weapons), 1.0f, 1.0f, 1.0f, 0, 24"/>
+        <Component name="Transform" value="-75.0f, 230.0f, 0.0f, 0, 0, 0, 1"/>
+    </Entity>
 </root>

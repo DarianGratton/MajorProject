@@ -21,6 +21,8 @@ GrenadeScript::GrenadeScript(Entity* entity, float spriteHeight, float spriteWid
     cooldownTimer = 0.0f;
     timeElapsed = 0.0f;
     directionThrown = NONE;
+    grenadeMaxHealth = 10.0f;
+    grenadeCurrHealth = grenadeMaxHealth;
     isPlayer = false;
 }
 
@@ -44,8 +46,6 @@ void GrenadeScript::Start()
         if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != string::npos)
             userEntity = e;
     }
-
-    LOG_TRACE(isPlayer);
 }
 
 void GrenadeScript::Update(TimeDelta dt) 
@@ -136,7 +136,6 @@ void GrenadeScript::SpawnGrenade()
 {
     // Set up entity components
     grenadeEntity = ECS::Instance().entities.create();
-    LOG_TRACE(isPlayer);
 
     grenadeEntity.assign<TextureComp>("src/Assets/textures/Grenade.png", "Grenade.png");
     grenadeEntity.assign<ShaderComp>("src/Assets/shaders/Basic.shader");
@@ -157,13 +156,13 @@ void GrenadeScript::SpawnGrenade()
     uint16 maskBit;
     if (isPlayer)
     {
-        categoryBit = PhysicsManager::Instance().PLAYERWEAPON;
-        maskBit = PhysicsManager::Instance().BOUNDARY;
+        categoryBit = PhysicsManager::Instance().PLAYER;
+        maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().ENEMYWEAPON;
     }
     else
     {
-        categoryBit = PhysicsManager::Instance().ENEMYWEAPON;
-        maskBit = PhysicsManager::Instance().BOUNDARY;
+        categoryBit = PhysicsManager::Instance().ENEMY;
+        maskBit = PhysicsManager::Instance().BOUNDARY | PhysicsManager::Instance().PLAYERWEAPON;
     }
 
     // Transform
@@ -173,19 +172,19 @@ void GrenadeScript::SpawnGrenade()
     {
         case NORTH:
             grenadeEntity.assign<Transform>(userTransform.get()->xpos, userTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2);
-            grenadeEntity.assign<RigidBody>(userTransform.get()->xpos, userTransform.get()->ypos + spriteOffset, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            grenadeEntity.assign<RigidBody>(userTransform.get()->xpos, userTransform.get()->ypos + spriteOffset, 3.0f, 3.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
             break;
         case SOUTH:
             grenadeEntity.assign<Transform>(userTransform.get()->xpos, userTransform.get()->ypos - spriteOffset, 0.0f, 0, 0, 0, 1, 2);
-            grenadeEntity.assign<RigidBody>(userTransform.get()->xpos, userTransform.get()->ypos - spriteOffset, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            grenadeEntity.assign<RigidBody>(userTransform.get()->xpos, userTransform.get()->ypos - spriteOffset, 3.0f, 3.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
             break;
         case EAST:
             grenadeEntity.assign<Transform>(userTransform.get()->xpos + spriteOffset, userTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2); 
-            grenadeEntity.assign<RigidBody>(userTransform.get()->xpos + spriteOffset, userTransform.get()->ypos, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            grenadeEntity.assign<RigidBody>(userTransform.get()->xpos + spriteOffset, userTransform.get()->ypos, 3.0f, 3.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
             break;
         case WEST:
             grenadeEntity.assign<Transform>(userTransform.get()->xpos - spriteOffset, userTransform.get()->ypos, 0.0f, 0, 0, 0, 1, 2);
-            grenadeEntity.assign<RigidBody>(userTransform.get()->xpos - spriteOffset, userTransform.get()->ypos, 1.0f, 1.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
+            grenadeEntity.assign<RigidBody>(userTransform.get()->xpos - spriteOffset, userTransform.get()->ypos, 3.0f, 3.0f, 1.0, 0.5f, 1, categoryBit, maskBit); 
             break;
         default:
             break;
@@ -248,8 +247,31 @@ void GrenadeScript::BeginContact(Entity* entityA, Entity* entityB)
 { 
     ComponentHandle<Name> entityNameA = entityA->component<Name>();
     ComponentHandle<Name> entityNameB = entityB->component<Name>();
-    if (entityNameA.get()->name.find("Explosion") == string::npos &&
-        entityNameB.get()->name.find("Wall") != string::npos) 
+    bool shouldBounce = false;
+    // Check if explode
+    if (entityNameA.get()->name.find("Grenade") != string::npos &&
+        entityNameB.get()->name.find("Weapon") != string::npos)
+    {
+        ComponentHandle<Script> weaponScript = entityB->component<Script>();
+        int damage = reinterpret_cast<WeaponScript*>(weaponScript.get()->script)->GetDamage();
+        grenadeCurrHealth -= damage;
+
+        // Explode grenade
+        if (grenadeCurrHealth <= 0)
+        {
+            timeElapsed = projectileLifespan;
+        } 
+        else
+        {
+            shouldBounce = true;
+        }
+        grenadeCurrHealth = grenadeMaxHealth;
+    }
+
+    // Bounce
+    if (shouldBounce ||
+        (entityNameA.get()->name.find("Explosion") == string::npos &&
+        entityNameB.get()->name.find("Wall") != string::npos)) 
     {
         switch(directionThrown)
         {

@@ -30,6 +30,8 @@ private:
     float explosionLifespan;
     float cooldownTimer;
     float timeElapsed;
+    float grenadeCurrHealth;
+    float grenadeMaxHealth;
     bool isPlayer;
     
     void SpawnGrenade();
