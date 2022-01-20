@@ -2,21 +2,26 @@
 
 #include "../../PyTorchExpansion/TorchNormal.h"
 
-PolicyNetwork::PolicyNetwork(float lr, 
+PolicyNetworkImpl::PolicyNetworkImpl(float lr,
 	unsigned int nActions, unsigned int maxActions,
 	int64_t inputDims, int64_t layer1Dims, int64_t layer2Dims) :
-	learningRate(lr), numActions(nActions), maxNumActions(maxActions)
+	learningRate(lr), numActions(nActions), maxNumActions(maxActions),
+	layer1(torch::nn::Linear(inputDims, layer1Dims)),
+	layer2(torch::nn::Linear(layer1Dims, layer2Dims)),
+	mu(torch::nn::Linear(layer2Dims, nActions)),
+	sigma(torch::nn::Linear(layer2Dims, nActions))
 {
-	// Set up network
-	layer1 = torch::nn::Linear(inputDims, layer1Dims);
-	layer2 = torch::nn::Linear(layer1Dims, layer2Dims);
-	mu = torch::nn::Linear(layer2Dims, numActions);
-	sigma = torch::nn::Linear(layer2Dims, numActions);
+	// Register modules (Needed for parameters())
+	register_module("layer1", layer1);
+	register_module("layer2", layer2);
+	register_module("mu", mu);
+	register_module("sigma", sigma);
 	
+	// Create optimizer
 	optimizer = new torch::optim::Adam(parameters(), learningRate);
 }
 
-std::pair<torch::Tensor, torch::Tensor> PolicyNetwork::Forward(torch::Tensor state)
+std::pair<torch::Tensor, torch::Tensor> PolicyNetworkImpl::Forward(torch::Tensor state)
 {
 	torch::Tensor prob = layer1(state);
 	prob = torch::nn::functional::relu(prob);
@@ -31,7 +36,7 @@ std::pair<torch::Tensor, torch::Tensor> PolicyNetwork::Forward(torch::Tensor sta
 	return std::make_pair(muOutput, sigmaOutput);
 }
 
-std::pair<torch::Tensor, torch::Tensor> PolicyNetwork::CalculateActionProb(torch::Tensor state, bool reparam)
+std::pair<torch::Tensor, torch::Tensor> PolicyNetworkImpl::CalculateActionProb(torch::Tensor state, bool reparam)
 {
 	// Get network output
 	std::pair<torch::Tensor, torch::Tensor> networkOutput;
@@ -56,14 +61,4 @@ std::pair<torch::Tensor, torch::Tensor> PolicyNetwork::CalculateActionProb(torch
 	logProbs = logProbs.sum(1, true);
 
 	return std::make_pair(action, logProbs);
-}
-
-void PolicyNetwork::SaveMemory()
-{
-
-}
-
-void PolicyNetwork::LoadMemory()
-{
-
 }

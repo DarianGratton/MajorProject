@@ -1,18 +1,15 @@
 #include <torch/torch.h>
 #include <iostream>
+#include <sstream>
 
 #include "Environment/Environment.h"
 #include "Agent.h"
 
 using namespace std;
 
+// Used for testing
 int main()
 {
-	torch::Tensor tensor = torch::eye(9);
-	cout << tensor << endl;
-
-	Environment<int> env;
-	env.AddActions(9);
 
 	return 0;
 }

@@ -2,17 +2,17 @@
 
 #include <torch/torch.h>
 
+#include <sstream>
+
 // TODO: Implement functionality for a basic Value Network
-class ValueNetwork : torch::nn::Module 
+class ValueNetworkImpl : public torch::nn::Module
 {
 public:
-
-	ValueNetwork(float lr, int64_t inputDims, int64_t layer1Dims, int64_t layer2Dims);
+	ValueNetworkImpl(float lr, int64_t inputDims, int64_t layer1Dims, int64_t layer2Dims);
 
 	torch::Tensor Forward(torch::Tensor state);
 
-	void SaveMemory();
-	void LoadMemory();
+	inline std::stringstream& GetCheckpoint() { return checkpoint; }
 
 private:
 	float learningRate;
@@ -22,4 +22,8 @@ private:
 	torch::nn::Linear layer2 = nullptr;
 	torch::nn::Linear value = nullptr;
 	torch::optim::Adam* optimizer;
+
+	// Checkpoints
+	std::stringstream checkpoint;
 };
+TORCH_MODULE(ValueNetwork);

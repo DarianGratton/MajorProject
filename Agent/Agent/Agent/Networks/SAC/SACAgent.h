@@ -10,6 +10,7 @@
 #include <torch/torch.h>
 
 #include <memory>
+#include <sstream>
 
 using namespace std;
 
@@ -48,9 +49,9 @@ private:
 
 	// Memory and Network objects
 	unique_ptr<ReplayMemory>  memory;
-	unique_ptr<PolicyNetwork> policy;
-	unique_ptr<CriticNetwork> critic1;
-	unique_ptr<CriticNetwork> critic2;
-	unique_ptr<ValueNetwork>  value;
-	unique_ptr<ValueNetwork>  targetValue;
+	PolicyNetwork* policy;
+	CriticNetwork* critic1;
+	CriticNetwork* critic2;
+	ValueNetwork* value;
+	ValueNetwork* targetValue;
 };

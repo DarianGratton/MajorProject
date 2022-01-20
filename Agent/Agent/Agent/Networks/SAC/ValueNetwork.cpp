@@ -1,18 +1,22 @@
 #include "ValueNetwork.h"
 
-ValueNetwork::ValueNetwork(float lr, 
+ValueNetworkImpl::ValueNetworkImpl(float lr,
 	int64_t inputDims, int64_t layer1Dims, int64_t layer2Dims) :
-	learningRate(lr)
+	learningRate(lr),
+	layer1(torch::nn::Linear(inputDims, layer1Dims)),
+	layer2(torch::nn::Linear(layer1Dims, layer2Dims)),
+	value(torch::nn::Linear(layer2Dims, 1))
 {
-	// Create layers
-	layer1 = torch::nn::Linear(inputDims, layer1Dims);
-	layer2 = torch::nn::Linear(layer1Dims, layer2Dims);
-	value = torch::nn::Linear(layer2Dims, 1); // 1 Scalar output
+	// Register modules (Needed for parameters())
+	register_module("layer1", layer1);
+	register_module("layer2", layer2);
+	register_module("value", value);
 
+	// Create optimizer
 	optimizer = new torch::optim::Adam(parameters(), learningRate);
 }
 
-torch::Tensor ValueNetwork::Forward(torch::Tensor state)
+torch::Tensor ValueNetworkImpl::Forward(torch::Tensor state)
 {
 	torch::Tensor stateValue = layer1(state);
 	stateValue = torch::nn::functional::relu(stateValue);
@@ -20,14 +24,4 @@ torch::Tensor ValueNetwork::Forward(torch::Tensor state)
 	stateValue = torch::nn::functional::relu(stateValue);
 
 	return value(stateValue);
-}
-
-void ValueNetwork::SaveMemory()
-{
-
-}
-
-void ValueNetwork::LoadMemory()
-{
-
 }

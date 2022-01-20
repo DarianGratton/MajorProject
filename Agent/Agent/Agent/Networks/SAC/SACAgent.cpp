@@ -10,17 +10,17 @@ SACAgent::SACAgent(float lr1, float lr2,
 {
 	// To add checkpoint stuff
 	memory		= unique_ptr<ReplayMemory>(new ReplayMemory(memSize, nActions));
-	policy		= unique_ptr<PolicyNetwork>(new PolicyNetwork(lr1, nActions, maxActions, inputDims, layer1Dims, layer2Dims));
-	critic1		= unique_ptr<CriticNetwork>(new CriticNetwork(lr2, nActions, inputDims, layer1Dims, layer2Dims));
-	critic2		= unique_ptr<CriticNetwork>(new CriticNetwork(lr2, nActions, inputDims, layer1Dims, layer2Dims));
-	value		= unique_ptr<ValueNetwork>(new ValueNetwork(lr2, inputDims, layer1Dims, layer2Dims));
-	targetValue = unique_ptr<ValueNetwork>(new ValueNetwork(lr2, inputDims, layer1Dims, layer2Dims));
+	policy		= new PolicyNetwork(lr1, nActions, maxActions, inputDims, layer1Dims, layer2Dims);
+	critic1		= new CriticNetwork(lr2, nActions, inputDims, layer1Dims, layer2Dims);
+	critic2		= new CriticNetwork(lr2, nActions, inputDims, layer1Dims, layer2Dims);
+	value		= new ValueNetwork(lr2, inputDims, layer1Dims, layer2Dims);
+	targetValue = new ValueNetwork(lr2, inputDims, layer1Dims, layer2Dims);
 }
 
 unsigned int SACAgent::ChooseAction(State observation)
 {
 	torch::Tensor state = observation.ToTensor();
-	pair<torch::Tensor, torch::Tensor> actions = policy->CalculateActionProb(state, false);
+	pair<torch::Tensor, torch::Tensor> actions = policy->get()->CalculateActionProb(state, false);
 
 	return *(actions.first.cpu().detach().data<int>());
 }
@@ -42,7 +42,23 @@ void SACAgent::Learn()
 
 void SACAgent::SaveModel()
 {
+	// PolicyNetwork Checkpoint
+	policy->get()->GetCheckpoint().clear();
+	torch::save(*policy, policy->get()->GetCheckpoint());
 
+	// CriticNetwork Checkpoint
+	critic1->get()->GetCheckpoint().clear();
+	torch::save(*critic1, critic1->get()->GetCheckpoint());
+
+	critic2->get()->GetCheckpoint().clear();
+	torch::save(*critic2, critic2->get()->GetCheckpoint());
+
+	// ValueNetwork Checkpoint
+	value->get()->GetCheckpoint().clear();
+	torch::save(*value, value->get()->GetCheckpoint());
+
+	targetValue->get()->GetCheckpoint().clear();
+	torch::save(*targetValue, targetValue->get()->GetCheckpoint());
 }
 
 void SACAgent::LoadModel()
