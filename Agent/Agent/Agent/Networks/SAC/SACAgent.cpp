@@ -63,6 +63,15 @@ void SACAgent::SaveModel()
 
 void SACAgent::LoadModel()
 {
+	// PolicyNetwork Load Checkpoint
+	torch::load(*policy, policy->get()->GetCheckpoint());
 
+	// CriticNetwork Load Checkpoint
+	torch::load(*critic1, critic1->get()->GetCheckpoint());
+	torch::load(*critic2, critic2->get()->GetCheckpoint());
+
+	// ValueNetwork Load Checkpoint
+	torch::load(*value, value->get()->GetCheckpoint());
+	torch::load(*targetValue, targetValue->get()->GetCheckpoint());
 }
 
