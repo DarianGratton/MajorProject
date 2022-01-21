@@ -25,14 +25,34 @@ unsigned int SACAgent::ChooseAction(State observation)
 	return *(actions.first.cpu().detach().data<int>());
 }
 
-void SACAgent::UpdateMemory()
+void SACAgent::UpdateMemory(
+	list<State> state,
+	list<unsigned int> action,
+	long reward,
+	list<State> newState,
+	bool terminal)
 {
-
+	memory->StoreStateTransition(state, action, reward, newState, terminal);
 }
 
-void SACAgent::UpdateNetworkParameters()
+void SACAgent::UpdateNetworkParameters(float T /* tau */)
 {
+	// Get parameters and convert them into maps
+	vector<pair<string, torch::Tensor>> targetValueParams = targetValue->get()->named_parameters().pairs();
+	vector<pair<string, torch::Tensor>> valueParams = value->get()->named_parameters().pairs();
 
+	map<string, torch::Tensor> targetValueParamsMap((targetValueParams.begin()), targetValueParams.end());
+	map<string, torch::Tensor> valueParamsMap((valueParams.begin()), valueParams.end());;
+
+	// Update Network Parameters
+	// TODO: Is untested, need to test
+	int i = 0;
+	for (pair<string, torch::Tensor> name : valueParamsMap)
+	{
+		targetValue->get()->parameters()[i].data() = T * valueParamsMap.at(name.first).clone() *
+											    (1 - T) * targetValueParamsMap.at(name.first).clone();
+		i++;
+	}
 }
 
 void SACAgent::Learn()
@@ -43,21 +63,21 @@ void SACAgent::Learn()
 void SACAgent::SaveModel()
 {
 	// PolicyNetwork Checkpoint
-	policy->get()->GetCheckpoint().clear();
+	policy->get()->GetCheckpoint().str(string());
 	torch::save(*policy, policy->get()->GetCheckpoint());
 
 	// CriticNetwork Checkpoint
-	critic1->get()->GetCheckpoint().clear();
+	critic1->get()->GetCheckpoint().str(string());
 	torch::save(*critic1, critic1->get()->GetCheckpoint());
 
-	critic2->get()->GetCheckpoint().clear();
+	critic2->get()->GetCheckpoint().str(string());
 	torch::save(*critic2, critic2->get()->GetCheckpoint());
 
 	// ValueNetwork Checkpoint
-	value->get()->GetCheckpoint().clear();
+	value->get()->GetCheckpoint().str(string());
 	torch::save(*value, value->get()->GetCheckpoint());
 
-	targetValue->get()->GetCheckpoint().clear();
+	targetValue->get()->GetCheckpoint().str(string());
 	torch::save(*targetValue, targetValue->get()->GetCheckpoint());
 }
 

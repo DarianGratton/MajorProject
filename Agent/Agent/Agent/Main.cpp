@@ -10,6 +10,6 @@ using namespace std;
 // Used for testing
 int main()
 {
-
+	
 	return 0;
 }

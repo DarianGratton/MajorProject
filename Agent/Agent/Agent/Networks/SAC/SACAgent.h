@@ -27,8 +27,15 @@ public:
 
 	// Subject to change
 	unsigned int ChooseAction(State observation);
-	void UpdateMemory();
-	void UpdateNetworkParameters();
+	
+	void UpdateMemory(
+		list<State> state,
+		list<unsigned int> action,
+		long reward,
+		list<State> newState,
+		bool terminal);
+
+	void UpdateNetworkParameters(float T);
 	void Learn();
 
 	void SaveModel();
