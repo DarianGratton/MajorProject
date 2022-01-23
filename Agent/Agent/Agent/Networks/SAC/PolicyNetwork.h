@@ -16,6 +16,7 @@ public:
 	std::pair<torch::Tensor, torch::Tensor> CalculateActionProb(torch::Tensor state, bool reparam = true);
 	
 	inline std::stringstream& GetCheckpoint() { return checkpoint; }
+	inline torch::optim::Adam* GetOptimizer() { return optimizer; }
 
 private:
 	const float reparamNoise = 1e-6;

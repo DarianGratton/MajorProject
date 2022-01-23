@@ -69,28 +69,57 @@ void SACAgent::Learn()
 
 	// Calculate the value of the states and new states based on the
 	// value and target value networks
-	// Notes:
-	// - .view(-1) just means it collaspe along the batch dim due to loss
-	// - should test .view(-1) to see what it is doing as well as to see how to recreate it if needed 
-	// - where new state is terminal we want to set the new state to 0.0\
-
+	torch::Tensor stateValue = value->get()->Forward(memorySample.states).view(-1);
+	torch::Tensor stateTargetValue = targetValue->get()->Forward(memorySample.newStates).view(-1);
+	stateTargetValue[memorySample.terminals] = 0.0f;
 
 	// Get actions and log probabilites for the states according to the 
 	// new policy 
-	// Notes:
-	// - T.min() improves stability of learning
-	// - Do this for value network and the policy network
+	pair<torch::Tensor, torch::Tensor> actionProb = policy->get()->CalculateActionProb(memorySample.states, false);
+	torch::Tensor logProb = actionProb.second.view(-1);
+	torch::Tensor newPolicy1 = critic1->get()->Forward(memorySample.states, actionProb.first);
+	torch::Tensor newPolicy2 = critic2->get()->Forward(memorySample.states, actionProb.first);
+	torch::Tensor criticValue = torch::min(newPolicy1, newPolicy2);
+	criticValue = criticValue.view(-1);
 	
+	// Value loss
+	value->get()->GetOptimizer()->zero_grad();
+	torch::Tensor valueTarget = criticValue - actionProb.second;
+	torch::Tensor valueLoss = 0.5f * torch::nn::functional::mse_loss(stateValue, valueTarget);
+	valueLoss.backward({}, true);
+	value->get()->GetOptimizer()->step();
 
-	// Calculate loss and back propagate
-	// Notes:
-	// - Retain graph as pytorch will by default discard the graph calculation,
-	//   this will help us keep track of coupling between losses
-	// - Do this for value network and the policy network
-	
+	// Get actions and log probabilites for the states according to the 
+	// new policy 
+	actionProb = policy->get()->CalculateActionProb(memorySample.states, true);
+	logProb = actionProb.second.view(-1);
+	newPolicy1 = critic1->get()->Forward(memorySample.states, actionProb.first);
+	newPolicy2 = critic2->get()->Forward(memorySample.states, actionProb.first);
+	criticValue = torch::minimum(newPolicy1, newPolicy2);
+	criticValue = criticValue.view(-1);
+
+	// Policy loss
+	torch::Tensor policyLoss = actionProb.second - criticValue;
+	policyLoss = torch::mean(policyLoss);
+	policy->get()->GetOptimizer()->zero_grad();
+	policyLoss.backward({}, true);
+	policy->get()->GetOptimizer()->step();
+
 	// Critic loss
+	critic1->get()->GetOptimizer()->zero_grad();
+	critic2->get()->GetOptimizer()->zero_grad();
+	torch::Tensor qHat = rewardScale * memorySample.rewards + gamma * stateTargetValue;
+	torch::Tensor oldPolicy1 = critic1->get()->Forward(memorySample.states, memorySample.actions).view(-1);
+	torch::Tensor oldPolicy2 = critic2->get()->Forward(memorySample.states, memorySample.actions).view(-1);
+	torch::Tensor critic1Loss = 0.5 * torch::nn::functional::mse_loss(oldPolicy1, qHat);
+	torch::Tensor critic2Loss = 0.5 * torch::nn::functional::mse_loss(oldPolicy2, qHat);
+	torch::Tensor criticLoss = critic1Loss + critic2Loss;
+	criticLoss.backward();
+	critic1->get()->GetOptimizer()->step();
+	critic2->get()->GetOptimizer()->step();
 
 	// Update network parameters
+	UpdateNetworkParameters(tau);
 }
 
 void SACAgent::SaveModel()

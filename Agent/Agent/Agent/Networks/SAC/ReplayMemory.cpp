@@ -33,7 +33,6 @@ void ReplayMemory::StoreStateTransition(
 	bool terminal)
 {
 	// Error checking
-	// TODO: Check for possible conversion error
 	if (state.Size() != stateSize)
 	{
 		cerr << "Error: State is of different size than when it was initialized" << endl;
@@ -47,7 +46,6 @@ void ReplayMemory::StoreStateTransition(
 	}
 
 	// Insert elements
-	// TODO: Check for possible conversion error
 	stateMem.slice(0, memCounter, memCounter + 1) = torch::from_blob(state.ToVector().data(), { stateSize });
 	newStateMem.slice(0, memCounter, memCounter + 1) = torch::from_blob(newState.ToVector().data(), { stateSize });
 	actionMem[memCounter].data() = action;

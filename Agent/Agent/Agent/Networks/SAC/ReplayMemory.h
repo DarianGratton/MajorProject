@@ -9,11 +9,9 @@
 
 using namespace std;
 
-// TODO: Implement functionality for a basic SACAgent
 class ReplayMemory
 {
 public:
-
 	ReplayMemory(unsigned int memSize, unsigned int stateSize, unsigned int nActions);
 
 	// Struct
@@ -25,6 +23,18 @@ public:
 		torch::Tensor newStates;
 		torch::Tensor terminals;
 	};
+
+	void StoreStateTransition(
+		State state,
+		float action,
+		float reward,
+		State newState,
+		bool terminal);
+
+	MemorySample SampleMemory(unsigned int batchSize);
+
+	void SaveMemory();
+	void LoadMemory();
 
 	inline unsigned int GetCurrentMemsize() { return memCounter; };
 
@@ -39,17 +49,4 @@ private:
 	torch::Tensor actionMem;    // Stores Integers
 	torch::Tensor rewardMem;	// Reward should be a list of reward objects
 	torch::Tensor terminalMem;  // Stores Booleans
-
-public:
-	void StoreStateTransition(
-		State state,
-		float action,
-		float reward,
-		State newState,
-		bool terminal);
-
-	MemorySample SampleMemory(unsigned int batchSize);
-
-	void SaveMemory();
-	void LoadMemory();
 };

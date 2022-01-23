@@ -15,6 +15,7 @@ public:
 	torch::Tensor Forward(torch::Tensor state, torch::Tensor action);
 
 	inline std::stringstream& GetCheckpoint() { return checkpoint; }
+	inline torch::optim::Adam* GetOptimizer() { return optimizer; }
 
 private:
 	float learningRate;

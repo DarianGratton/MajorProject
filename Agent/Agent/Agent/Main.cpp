@@ -31,13 +31,5 @@ int main()
 	//cout << "After saving again: " << endl;
 	//cout << stream.str() << endl << endl;
 
-	std::vector<int> v = { 1, 0, 1 };
-	auto opts = torch::TensorOptions().dtype(torch::kInt32);
-	torch::Tensor tensor = torch::from_blob(v.data(), { static_cast<int>(v.size()) }, opts).to(torch::kFloat32);
-	cout << tensor.dtype() << endl;
-
-	cout << tensor << endl;
-	cout << *v.data() << endl;
-
 	return 0;
 }
