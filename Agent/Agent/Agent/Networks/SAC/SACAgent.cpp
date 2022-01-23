@@ -9,12 +9,15 @@ SACAgent::SACAgent(float lr1, float lr2,
 	tau(tau), batchSize(batchSize), rewardScale(rewardScale)
 {
 	// To add checkpoint stuff
-	memory		= unique_ptr<ReplayMemory>(new ReplayMemory(memSize, nActions));
+	memory		= unique_ptr<ReplayMemory>(new ReplayMemory(memSize, inputDims, nActions));
 	policy		= new PolicyNetwork(lr1, nActions, maxActions, inputDims, layer1Dims, layer2Dims);
 	critic1		= new CriticNetwork(lr2, nActions, inputDims, layer1Dims, layer2Dims);
 	critic2		= new CriticNetwork(lr2, nActions, inputDims, layer1Dims, layer2Dims);
 	value		= new ValueNetwork(lr2, inputDims, layer1Dims, layer2Dims);
 	targetValue = new ValueNetwork(lr2, inputDims, layer1Dims, layer2Dims);
+
+	// Initialize network parameters
+	UpdateNetworkParameters(1);
 }
 
 unsigned int SACAgent::ChooseAction(State observation)
@@ -26,10 +29,10 @@ unsigned int SACAgent::ChooseAction(State observation)
 }
 
 void SACAgent::UpdateMemory(
-	list<State> state,
-	list<unsigned int> action,
-	long reward,
-	list<State> newState,
+	State state,
+	float action,
+	float reward,
+	State newState,
 	bool terminal)
 {
 	memory->StoreStateTransition(state, action, reward, newState, terminal);
@@ -57,7 +60,37 @@ void SACAgent::UpdateNetworkParameters(float T /* tau */)
 
 void SACAgent::Learn()
 {
+	// See if there is enough memory to sample
+	if (memory->GetCurrentMemsize() < batchSize)
+		return;
 
+	// Sample buffer
+	ReplayMemory::MemorySample memorySample = memory->SampleMemory(batchSize);
+
+	// Calculate the value of the states and new states based on the
+	// value and target value networks
+	// Notes:
+	// - .view(-1) just means it collaspe along the batch dim due to loss
+	// - should test .view(-1) to see what it is doing as well as to see how to recreate it if needed 
+	// - where new state is terminal we want to set the new state to 0.0\
+
+
+	// Get actions and log probabilites for the states according to the 
+	// new policy 
+	// Notes:
+	// - T.min() improves stability of learning
+	// - Do this for value network and the policy network
+	
+
+	// Calculate loss and back propagate
+	// Notes:
+	// - Retain graph as pytorch will by default discard the graph calculation,
+	//   this will help us keep track of coupling between losses
+	// - Do this for value network and the policy network
+	
+	// Critic loss
+
+	// Update network parameters
 }
 
 void SACAgent::SaveModel()

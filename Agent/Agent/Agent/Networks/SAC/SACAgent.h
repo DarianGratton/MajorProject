@@ -29,10 +29,10 @@ public:
 	unsigned int ChooseAction(State observation);
 	
 	void UpdateMemory(
-		list<State> state,
-		list<unsigned int> action,
-		long reward,
-		list<State> newState,
+		State state,
+		float action,
+		float reward,
+		State newState,
 		bool terminal);
 
 	void UpdateNetworkParameters(float T);

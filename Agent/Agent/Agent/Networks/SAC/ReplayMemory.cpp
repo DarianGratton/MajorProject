@@ -3,58 +3,85 @@
 #include <iostream>
 #include <random>
 
-ReplayMemory::ReplayMemory(unsigned int memSize, unsigned int nActions) : memSize(memSize)
+ReplayMemory::ReplayMemory(
+	unsigned int memSize, unsigned int stateSize, unsigned int nActions) 
+	: memSize(memSize), stateSize(stateSize)
 {
+	// Error checking memory size
 	if (memSize == 0)
 	{
 		cerr << "Error: memSize should not be 0, defaulting to 1" << endl;
 		memSize = 1;
 	}
+
+	// Initializing memory
+	stateMem	= torch::zeros({ memSize, stateSize }, torch::TensorOptions().dtype(torch::kFloat32));
+	newStateMem = torch::zeros({ memSize, stateSize }, torch::TensorOptions().dtype(torch::kFloat32));
+	actionMem	= torch::zeros(memSize, torch::TensorOptions().dtype(torch::kFloat32));
+	rewardMem	= torch::zeros(memSize, torch::TensorOptions().dtype(torch::kFloat32));
+	terminalMem = torch::zeros(memSize, torch::TensorOptions().dtype(torch::kBool));
+
+	// Initializing variables
+	memCounter = 0;
 }
 
 void ReplayMemory::StoreStateTransition(
-	list<State> state,
-	list<unsigned int> action,
-	long reward,
-	list<State> newState,
+	State state,
+	float action,
+	float reward,
+	State newState,
 	bool terminal)
 {
-	// If memory is full then remove first element
-	if (stateMem.size() >= memSize)
+	// Error checking
+	// TODO: Check for possible conversion error
+	if (state.Size() != stateSize)
 	{
-		stateMem.erase(stateMem.begin());
-		actionMem.erase(actionMem.begin());
-		rewardMem.erase(rewardMem.begin());
-		newStateMem.erase(newStateMem.begin());
-		terminalMem.erase(terminalMem.begin());
+		cerr << "Error: State is of different size than when it was initialized" << endl;
+		return;
+	}
+
+	// If memory is full then reset memory counter
+	if (memCounter >= memSize)
+	{
+		memCounter = 0;
 	}
 
 	// Insert elements
-	stateMem.push_back(state);
-	actionMem.push_back(action);
-	rewardMem.push_back(reward);
-	newStateMem.push_back(newState);
-	terminalMem.push_back(terminal);
+	// TODO: Check for possible conversion error
+	stateMem.slice(0, memCounter, memCounter + 1) = torch::from_blob(state.ToVector().data(), { stateSize });
+	newStateMem.slice(0, memCounter, memCounter + 1) = torch::from_blob(newState.ToVector().data(), { stateSize });
+	actionMem[memCounter].data() = action;
+	rewardMem[memCounter].data() = reward;
+	terminalMem[memCounter].data() = terminal;
+
+	// Increment counter
+	memCounter++;
 }
 
 ReplayMemory::MemorySample ReplayMemory::SampleMemory(unsigned int batchSize)
 {
 	// Generate random sample
-	unsigned int memCount = static_cast<unsigned int>(stateMem.size());
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_int_distribution<> distrib(0, memCount - 1);
+	std::uniform_int_distribution<> distrib(0, memCounter);
+
+	// Initialize sample
+	MemorySample sample;
+	sample.states = torch::zeros({ batchSize, stateSize }, torch::TensorOptions().dtype(torch::kFloat32));
+	sample.newStates = torch::zeros({ batchSize, stateSize }, torch::TensorOptions().dtype(torch::kFloat32));
+	sample.actions = torch::zeros(batchSize, torch::TensorOptions().dtype(torch::kFloat32));
+	sample.rewards = torch::zeros(batchSize, torch::TensorOptions().dtype(torch::kFloat32));
+	sample.terminals = torch::zeros(batchSize, torch::TensorOptions().dtype(torch::kBool));
 
 	// Get random sample
-	MemorySample sample;
-	for (int i = 0; i <= batchSize; ++i)
+	for (int i = 0; i < batchSize; ++i)
 	{
 		int batch = distrib(gen);
-		sample.states.push_back(stateMem.at(batch));
-		sample.newStates.push_back(newStateMem.at(batch));
-		sample.actions.push_back(actionMem.at(batch));
-		sample.rewards.push_back(rewardMem.at(batch));
-		sample.terminals.push_back(terminalMem.at(batch));
+		sample.states[i].data() = stateMem[i];
+		sample.newStates[i].data() = newStateMem[i];
+		sample.actions[i].data() = actionMem[i];
+		sample.rewards[i].data() = rewardMem[i];
+		sample.terminals[i].data() = terminalMem[i];
 	}
 
 	// Return object
@@ -63,10 +90,21 @@ ReplayMemory::MemorySample ReplayMemory::SampleMemory(unsigned int batchSize)
 
 void ReplayMemory::SaveMemory()
 {
-
+	torch::save(stateMem, "SACMemory/states.pt");
+	torch::save(newStateMem, "SACMemory/newStates.pt");
+	torch::save(actionMem, "SACMemory/actions.pt");
+	torch::save(rewardMem, "SACMemory/rewards.pt");
+	torch::save(terminalMem, "SACMemory/terminals.pt");
 }
 
 void ReplayMemory::LoadMemory()
 {
+	torch::load(stateMem, "SACMemory/states.pt");
+	torch::load(newStateMem, "SACMemory/newStates.pt");
+	torch::load(actionMem, "SACMemory/actions.pt");
+	torch::load(rewardMem, "SACMemory/rewards.pt");
+	torch::load(terminalMem, "SACMemory/terminals.pt");
 
+	// TODO: Shouldn't be a issue for now but should fix
+	memCounter = 0;
 }

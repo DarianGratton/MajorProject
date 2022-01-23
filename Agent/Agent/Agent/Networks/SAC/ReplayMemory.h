@@ -1,8 +1,8 @@
 #pragma once
 
-#include <list>
-#include <vector>
 #include <torch/torch.h>
+
+#include <vector>
 
 #include "../../Environment/Reward.h"
 #include "../../Environment/State.h"
@@ -14,37 +14,38 @@ class ReplayMemory
 {
 public:
 
-	ReplayMemory(unsigned int memSize, unsigned int nActions);
+	ReplayMemory(unsigned int memSize, unsigned int stateSize, unsigned int nActions);
 
 	// Struct
 	struct MemorySample
 	{
-		vector<list<State>> states;
-		vector<list<unsigned int>> actions;
-		vector<long> rewards;
-		vector<list<State>> newStates;
-		vector<bool> terminals;
+		torch::Tensor states;
+		torch::Tensor actions;
+		torch::Tensor rewards;
+		torch::Tensor newStates;
+		torch::Tensor terminals;
 	};
 
-	// Casting might cause overflow so it suggests just using the size_t
-	inline size_t GetCurrentMemsize() { return stateMem.size(); };
+	inline unsigned int GetCurrentMemsize() { return memCounter; };
 
 private:
 	unsigned int memSize;
+	unsigned int memCounter;
+	unsigned int stateSize;
 	
 	// Memory
-	vector<list<State>> stateMem;       
-	vector<list<State>> newStateMem;    
-	vector<list<unsigned int>> actionMem;
-	vector<long> rewardMem;					// Reward should be a list of reward objects
-	vector<bool> terminalMem;
+	torch::Tensor stateMem;     // Stores State Objects
+	torch::Tensor newStateMem;  // Stores State Objects
+	torch::Tensor actionMem;    // Stores Integers
+	torch::Tensor rewardMem;	// Reward should be a list of reward objects
+	torch::Tensor terminalMem;  // Stores Booleans
 
 public:
 	void StoreStateTransition(
-		list<State> state,
-		list<unsigned int> action,
-		long reward,
-		list<State> newState,
+		State state,
+		float action,
+		float reward,
+		State newState,
 		bool terminal);
 
 	MemorySample SampleMemory(unsigned int batchSize);
