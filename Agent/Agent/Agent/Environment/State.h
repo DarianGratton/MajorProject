@@ -20,7 +20,7 @@ public:
 	/// Constructor that creates an state object with already defined deltas.
 	/// </summary>
 	/// <param name="deltas"></param>
-	State(map<string, float> deltas);
+	State(unordered_map<string, float> deltas);
 
 	/// <summary>
 	///	Copy constructor that constructs an copy of another state object.
@@ -62,6 +62,7 @@ public:
 
 	/// <summary>
 	/// Helper function for return the state's delta as an readable string. Useful for debugging.
+	/// TODO: Figure out number formatting
 	/// </summary>
 	/// <returns>An formatted string.</returns>
 	string ToString() const;
@@ -88,12 +89,12 @@ public:
 	/// Gets an copy of delta's data structure.
 	/// </summary>
 	/// <returns>The deltas.</returns>
-	inline map<string, float> GetDeltas() { return deltas; }
+	inline unordered_map<string, float> GetDeltas() { return deltas; }
 
 private:
 	/// <summary>
 	/// An map that stores the state's deltas. Uses an string (the name of delta) for the key.
 	/// Example delta: PlayerHp, 40 
 	/// </summary>
-	map<string, float> deltas;
+	unordered_map<string, float> deltas;
 };

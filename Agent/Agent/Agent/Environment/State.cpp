@@ -9,7 +9,7 @@ State::State()
 
 }
 
-State::State(map<string, float> deltas) : deltas(deltas)
+State::State(unordered_map<string, float> deltas) : deltas(deltas)
 {
 
 }
@@ -61,12 +61,18 @@ vector<float> State::ToVector() const
 
 torch::Tensor State::ToTensor() const
 {
-	// Copy deltas to vector
-	vector<float> values = ToVector();
-
-	// Create and return the Tensor
-	// TODO: Test
-	int64_t vec_size = values.size();
+	// Create tensor
+	int64_t vec_size = ToVector().size();
 	torch::TensorOptions opts = torch::TensorOptions().dtype(torch::kFloat32);
-	return torch::from_blob(values.data(), { vec_size }, opts).clone();
+	torch::Tensor tensor = torch::zeros({ 1, vec_size }, opts);
+	
+	// Store values
+	int i = 0;
+	for (pair<string, float> delta : deltas)
+	{
+		tensor[0][i].data() = delta.second;
+		i++;
+	}
+
+	return tensor.clone();
 }

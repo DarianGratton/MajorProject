@@ -20,12 +20,15 @@ SACAgent::SACAgent(float lr1, float lr2,
 	UpdateNetworkParameters(1);
 }
 
-unsigned int SACAgent::ChooseAction(State observation)
+float SACAgent::ChooseAction(State observation)
 {
-	torch::Tensor state = observation.ToTensor();
-	pair<torch::Tensor, torch::Tensor> actions = policy->get()->CalculateActionProb(state, false);
+	// torch::Tensor state = observation.ToTensor();
+	// pair<torch::Tensor, torch::Tensor> actions = policy->get()->CalculateActionProb(state, false);
 
-	return *(actions.first.cpu().detach().data<int>());
+	pair<torch::Tensor, torch::Tensor> actions =
+		make_pair<torch::Tensor, torch::Tensor>(torch::tensor({ {-0.1143} }), torch::Tensor());
+
+	return *(actions.first.cpu().detach().data<float>());
 }
 
 void SACAgent::UpdateMemory(
@@ -40,21 +43,26 @@ void SACAgent::UpdateMemory(
 
 void SACAgent::UpdateNetworkParameters(float T /* tau */)
 {
-	// Get parameters and convert them into maps
-	vector<pair<string, torch::Tensor>> targetValueParams = targetValue->get()->named_parameters().pairs();
-	vector<pair<string, torch::Tensor>> valueParams = value->get()->named_parameters().pairs();
-
-	map<string, torch::Tensor> targetValueParamsMap((targetValueParams.begin()), targetValueParams.end());
-	map<string, torch::Tensor> valueParamsMap((valueParams.begin()), valueParams.end());;
-
-	// Update Network Parameters
-	// TODO: Is untested, need to test
-	int i = 0;
-	for (pair<string, torch::Tensor> name : valueParamsMap)
+	try
 	{
-		targetValue->get()->parameters()[i].data() = T * valueParamsMap.at(name.first).clone() *
-											    (1 - T) * targetValueParamsMap.at(name.first).clone();
-		i++;
+		// Get parameters and convert them into maps
+		vector<pair<string, torch::Tensor>> targetValueParams = targetValue->get()->named_parameters().pairs();
+		vector<pair<string, torch::Tensor>> valueParams = value->get()->named_parameters().pairs();
+
+		map<string, torch::Tensor> targetValueParamsMap((targetValueParams.begin()), targetValueParams.end());
+		map<string, torch::Tensor> valueParamsMap((valueParams.begin()), valueParams.end());;
+
+		// Update Network Parameters
+		for (pair<string, torch::Tensor> name : valueParamsMap)
+		{
+			targetValue->get()->named_parameters()[name.first].data() = 
+				T * valueParamsMap.at(name.first).clone() *
+				(1 - T) * targetValueParamsMap.at(name.first).clone();
+		}
+	}
+	catch (const c10::Error& e)
+	{
+		std::cout << e.msg() << std::endl;
 	}
 }
 

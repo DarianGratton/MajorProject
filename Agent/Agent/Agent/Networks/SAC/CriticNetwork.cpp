@@ -15,6 +15,7 @@ CriticNetworkImpl::CriticNetworkImpl(
 
 	// Create optimizer
 	optimizer = new torch::optim::Adam(parameters(), learningRate);
+	to(torch::kCPU);
 }
 
 torch::Tensor CriticNetworkImpl::Forward(torch::Tensor state, torch::Tensor action)

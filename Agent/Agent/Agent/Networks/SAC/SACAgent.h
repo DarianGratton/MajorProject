@@ -26,7 +26,7 @@ public:
 		unsigned int batchSize, int rewardScale);
 
 	// Subject to change
-	unsigned int ChooseAction(State observation);
+	float ChooseAction(State observation);
 	
 	void UpdateMemory(
 		State state,

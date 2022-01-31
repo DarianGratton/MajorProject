@@ -14,6 +14,7 @@ ValueNetworkImpl::ValueNetworkImpl(float lr,
 
 	// Create optimizer
 	optimizer = new torch::optim::Adam(parameters(), learningRate);
+	to(torch::kCPU);
 }
 
 torch::Tensor ValueNetworkImpl::Forward(torch::Tensor state)

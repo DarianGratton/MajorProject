@@ -8,8 +8,8 @@
 class PolicyNetworkImpl : public torch::nn::Module 
 {
 public:
-	PolicyNetworkImpl(float lr,
-		unsigned int nActions, unsigned int maxActions,
+	PolicyNetworkImpl(float lr, 
+		unsigned int nActions, unsigned int maxNumActions,
 		int64_t inputDims, int64_t layer1Dims, int64_t layer2Dims);
 
 	std::pair<torch::Tensor, torch::Tensor> Forward(torch::Tensor state);
@@ -21,8 +21,8 @@ public:
 private:
 	const float reparamNoise = 1e-6;
 	float learningRate;
-	unsigned int maxNumActions;
 	unsigned int numActions;
+	unsigned int maxNumActions;
 
 	// Network layers
 	torch::nn::Linear layer1 = nullptr;

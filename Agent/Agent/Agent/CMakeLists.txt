@@ -4,12 +4,16 @@
 cmake_minimum_required (VERSION 3.8)
 
 find_package(Torch REQUIRED)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 
 # Add source to this project's executable.
 add_executable (Agent "Main.cpp" "Agent.cpp" "Agent.h" "Environment/Environment.h" "Environment/Environment.cpp" "Environment/Reward.h" "Environment/Reward.cpp" "Environment/State.h" "Environment/State.cpp" "Networks/SAC/ReplayMemory.h" "Networks/SAC/SACAgent.h" "Networks/SAC/CriticNetwork.h" "Networks/SAC/ValueNetwork.h" "Networks/SAC/PolicyNetwork.h" "Networks/SAC/CriticNetwork.cpp" "Networks/SAC/PolicyNetwork.cpp" "Networks/SAC/ValueNetwork.cpp" "Networks/SAC/SACAgent.cpp" "Networks/SAC/ReplayMemory.cpp" "PyTorchExpansion/TorchNormal.cpp" "PyTorchExpansion/TorchNormal.h")
 
 # Link libraries
 target_link_libraries(Agent "${TORCH_LIBRARIES}")
+
+# Set properties
+set_property(TARGET Agent PROPERTY CXX_STANDARD 14)
 
 # The following code block is suggested to be used on Windows.
 # According to https://github.com/pytorch/pytorch/issues/25457,

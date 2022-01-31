@@ -14,12 +14,12 @@ torch::Tensor TorchNormal::Sample()
 
 torch::Tensor TorchNormal::RSample()
 {
-	torch::Tensor eps = torch::empty(mean.sizes(), mean.options());
+	torch::Tensor eps = torch::empty(mean.sizes(), mean.options()).normal_();
 	return mean + eps * stddev;
 }
 
 torch::Tensor TorchNormal::LogProb(torch::Tensor value)
 {
 	torch::Tensor logScale = stddev.log();
-	return -(torch::pow((value - mean), 2) / (2 * variance) - logScale - std::log(std::sqrt(2 * M_PI)));
+	return -torch::pow((value - mean), 2) / (2 * variance) - logScale - std::log(std::sqrt(2 * M_PI));
 }
