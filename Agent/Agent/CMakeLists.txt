@@ -5,5 +5,10 @@ cmake_minimum_required (VERSION 3.8)
 
 project ("Agent")
 
+# Setup include directory
+set(INCLUDE_DIR "${${PROJECT_NAME}_SOURCE_DIR}/includes")
+message(STATUS "Using include directory: ${INCLUDE_DIR}")
+include_directories(${INCLUDE_DIR})
+
 # Include sub-projects.
 add_subdirectory ("Agent")
