@@ -1,16 +1,40 @@
 ﻿# CMakeList.txt : CMake project for Agent, include source and define
 # project specific logic here.
 #
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.14)
 
 find_package(Torch REQUIRED)
 
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
-set(EIGEN_INCLUDE_DIR "${${PROJECT_NAME}_SOURCE_DIR}")
-message(STATUS "Using directory Eigen: ${EIGEN_INCLUDE_DIR}")
 
 # Add source to this project's executable.
-add_executable (Agent "Main.cpp" "Agent.cpp" "Agent.h" "Environment/Environment.h" "Environment/Environment.cpp" "Environment/Reward.h" "Environment/Reward.cpp" "Environment/State.h" "Environment/State.cpp" "Networks/SAC/ReplayMemory.h" "Networks/SAC/SACAgent.h" "Networks/SAC/CriticNetwork.h" "Networks/SAC/ValueNetwork.h" "Networks/SAC/PolicyNetwork.h" "Networks/SAC/CriticNetwork.cpp" "Networks/SAC/PolicyNetwork.cpp" "Networks/SAC/ValueNetwork.cpp" "Networks/SAC/SACAgent.cpp" "Networks/SAC/ReplayMemory.cpp" "PyTorchExpansion/TorchNormal.cpp" "PyTorchExpansion/TorchNormal.h" "Networks/TestEnvironment/TestEnvironment.h" "Networks/TestEnvironment/TestEnvironment.cpp")
+add_executable (
+    Agent 
+    "Main.cpp" 
+    "Agent.cpp" 
+    "Agent.h" 
+    "Environment/Environment.h" 
+    "Environment/Environment.cpp" 
+    "Environment/Reward.h" 
+    "Environment/Reward.cpp" 
+    "Environment/State.h" 
+    "Environment/State.cpp" 
+    "Networks/SAC/ReplayMemory.h" 
+    "Networks/SAC/SACAgent.h" 
+    "Networks/SAC/CriticNetwork.h" 
+    "Networks/SAC/ValueNetwork.h" 
+    "Networks/SAC/PolicyNetwork.h" 
+    "Networks/SAC/CriticNetwork.cpp" 
+    "Networks/SAC/PolicyNetwork.cpp" 
+    "Networks/SAC/ValueNetwork.cpp" 
+    "Networks/SAC/SACAgent.cpp" 
+    "Networks/SAC/ReplayMemory.cpp" 
+    "PyTorchExpansion/TorchNormal.cpp" 
+    "PyTorchExpansion/TorchNormal.h" 
+    "Networks/TestEnvironment/TestEnvironment.h" 
+    "Networks/TestEnvironment/TestEnvironment.cpp"
+)
 
 # Link libraries
 target_link_libraries(Agent "${TORCH_LIBRARIES}")
@@ -29,3 +53,48 @@ if (MSVC)
                      ${TORCH_DLLS}
                      $<TARGET_FILE_DIR:Agent>)
 endif (MSVC)
+
+# Google Test
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
+)
+
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+enable_testing()
+
+add_executable (
+    AgentTests 
+    "UnitTests/Test.cpp"
+    "Agent.cpp" 
+    "Agent.h" 
+    "Environment/Environment.h" 
+    "Environment/Environment.cpp" 
+    "Environment/Reward.h" 
+    "Environment/Reward.cpp" 
+    "Environment/State.h" 
+    "Environment/State.cpp" 
+    "Networks/SAC/ReplayMemory.h" 
+    "Networks/SAC/SACAgent.h" 
+    "Networks/SAC/CriticNetwork.h" 
+    "Networks/SAC/ValueNetwork.h" 
+    "Networks/SAC/PolicyNetwork.h" 
+    "Networks/SAC/CriticNetwork.cpp" 
+    "Networks/SAC/PolicyNetwork.cpp" 
+    "Networks/SAC/ValueNetwork.cpp" 
+    "Networks/SAC/SACAgent.cpp" 
+    "Networks/SAC/ReplayMemory.cpp" 
+    "PyTorchExpansion/TorchNormal.cpp" 
+    "PyTorchExpansion/TorchNormal.h" 
+    "Networks/TestEnvironment/TestEnvironment.h" 
+    "Networks/TestEnvironment/TestEnvironment.cpp"
+)
+
+target_link_libraries(AgentTests gtest_main)
+target_link_libraries(AgentTests "${TORCH_LIBRARIES}")
+
+include(GoogleTest)
+gtest_discover_tests(AgentTests)
