@@ -14,6 +14,11 @@ State::State(unordered_map<string, float> deltas) : deltas(deltas)
 
 }
 
+State::State(torch::Tensor tensor)
+{
+	
+}
+
 void State::AddDelta(pair<string, float> delta)
 {
 	deltas.insert(delta);
@@ -38,7 +43,7 @@ string State::ToString() const
 {
 	// Create string
 	stringstream str;
-	str << "\nState's deltas: \n";
+	str << "State's deltas: \n";
 	for (pair<string, float> delta : deltas)
 	{
 		str << delta.first << ": " << to_string(delta.second) << "\n";

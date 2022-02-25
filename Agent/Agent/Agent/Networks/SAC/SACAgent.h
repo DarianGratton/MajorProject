@@ -26,11 +26,12 @@ public:
 		unsigned int batchSize, int rewardScale);
 
 	// Subject to change
-	float ChooseAction(State observation);
+	// TODO: need copy constructor
+	torch::Tensor ChooseAction(State& observation);
 	
 	void UpdateMemory(
 		State state,
-		float action,
+		vector<float> actions,
 		float reward,
 		State newState,
 		bool terminal);
@@ -56,9 +57,9 @@ private:
 
 	// Memory and Network objects
 	unique_ptr<ReplayMemory>  memory;
-	PolicyNetwork* policy;
-	CriticNetwork* critic1;
-	CriticNetwork* critic2;
-	ValueNetwork* value;
-	ValueNetwork* targetValue;
+	PolicyNetwork policy = nullptr;
+	CriticNetwork critic1 = nullptr;
+	CriticNetwork critic2 = nullptr;
+	ValueNetwork value = nullptr;
+	ValueNetwork targetValue = nullptr;
 };

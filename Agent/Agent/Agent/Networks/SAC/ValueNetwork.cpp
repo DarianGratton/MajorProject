@@ -1,5 +1,7 @@
 #include "ValueNetwork.h"
 
+#include <iostream>
+
 ValueNetworkImpl::ValueNetworkImpl(float lr,
 	int64_t inputDims, int64_t layer1Dims, int64_t layer2Dims) :
 	learningRate(lr),
@@ -24,5 +26,7 @@ torch::Tensor ValueNetworkImpl::Forward(torch::Tensor state)
 	stateValue = layer2(stateValue);
 	stateValue = torch::nn::functional::relu(stateValue);
 
-	return value(stateValue);
+	torch::Tensor v = value(stateValue);
+
+	return v;
 }

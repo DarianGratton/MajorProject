@@ -26,7 +26,7 @@ public:
 
 	void StoreStateTransition(
 		State state,
-		float action,
+		vector<float> actions,
 		float reward,
 		State newState,
 		bool terminal);
@@ -42,6 +42,7 @@ private:
 	unsigned int memSize;
 	unsigned int memCounter;
 	unsigned int stateSize;
+	unsigned int nActions;
 	
 	// Memory
 	torch::Tensor stateMem;     // Stores State Objects

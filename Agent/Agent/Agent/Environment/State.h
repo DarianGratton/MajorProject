@@ -23,18 +23,27 @@ public:
 	State(unordered_map<string, float> deltas);
 
 	/// <summary>
+	/// Constructor that creates an state object with already defined tensor.
+	/// </summary>
+	/// <param name="tensor"></param>
+	State(torch::Tensor tensor);
+
+	/// <summary>
 	///	Copy constructor that constructs an copy of another state object.
 	/// </summary>
 	/// <param name="">Another state object to copy.</param>
-	State(const State&) {}
+	State(const State& state1) { deltas = state1.deltas; }
 
 	/// <summary>
 	/// Assignment operator for copying another state object.
 	/// </summary>
 	/// <param name="reward">Another state object to copy.</param>
 	/// <returns></returns>
-	State& operator=(const State& state) { return *this; }
-
+	State& operator=(const State& state1) 
+	{ 
+		deltas = state1.deltas;
+		return *this; 
+	}
 
 	/// <summary>
 	/// Add new delta to the exist list of deltas.

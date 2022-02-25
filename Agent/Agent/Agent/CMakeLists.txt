@@ -34,6 +34,8 @@ add_executable (
     "PyTorchExpansion/TorchNormal.h" 
     "Networks/TestEnvironment/TestEnvironment.h" 
     "Networks/TestEnvironment/TestEnvironment.cpp"
+    "Networks/TestEnvironment/AgentTest.h"
+    "Networks/TestEnvironment/AgentTest.cpp"
 )
 
 # Link libraries

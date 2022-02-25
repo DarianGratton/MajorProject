@@ -5,7 +5,7 @@
 
 ReplayMemory::ReplayMemory(
 	unsigned int memSize, unsigned int stateSize, unsigned int nActions) 
-	: memSize(memSize), stateSize(stateSize)
+	: memSize(memSize), stateSize(stateSize), nActions(nActions)
 {
 	// Error checking memory size
 	if (memSize == 0)
@@ -17,7 +17,7 @@ ReplayMemory::ReplayMemory(
 	// Initializing memory
 	stateMem	= torch::zeros({ memSize, stateSize }, torch::TensorOptions().dtype(torch::kFloat32));
 	newStateMem = torch::zeros({ memSize, stateSize }, torch::TensorOptions().dtype(torch::kFloat32));
-	actionMem	= torch::zeros(memSize, torch::TensorOptions().dtype(torch::kFloat32));
+	actionMem	= torch::zeros({ memSize, nActions }, torch::TensorOptions().dtype(torch::kFloat32));
 	rewardMem	= torch::zeros(memSize, torch::TensorOptions().dtype(torch::kFloat32));
 	terminalMem = torch::zeros(memSize, torch::TensorOptions().dtype(torch::kBool));
 
@@ -27,7 +27,7 @@ ReplayMemory::ReplayMemory(
 
 void ReplayMemory::StoreStateTransition(
 	State state,
-	float action,
+	vector<float> actions,
 	float reward,
 	State newState,
 	bool terminal)
@@ -35,7 +35,7 @@ void ReplayMemory::StoreStateTransition(
 	// Error checking
 	if (state.Size() != stateSize)
 	{
-		cerr << "Error: State is of different size than when it was initialized" << endl;
+		cerr << "ReplayMemory Error: State is of different size than when it was initialized, State size is: " << state.Size() << endl;
 		return;
 	}
 
@@ -46,9 +46,12 @@ void ReplayMemory::StoreStateTransition(
 	}
 
 	// Insert elements
-	stateMem.slice(0, memCounter, memCounter + 1) = torch::from_blob(state.ToVector().data(), { stateSize });
-	newStateMem.slice(0, memCounter, memCounter + 1) = torch::from_blob(newState.ToVector().data(), { stateSize });
-	actionMem[memCounter].data() = action;
+	stateMem.slice(0, memCounter, memCounter + 1) = torch::from_blob(state.ToVector().data(), { 1, stateSize });
+	newStateMem.slice(0, memCounter, memCounter + 1) = torch::from_blob(newState.ToVector().data(), { 1, stateSize });
+	
+	for (int i = 0; i < actions.size(); i++)
+		actionMem[memCounter][i].data() = actions.at(i);
+
 	rewardMem[memCounter].data() = reward;
 	terminalMem[memCounter].data() = terminal;
 
@@ -67,7 +70,7 @@ ReplayMemory::MemorySample ReplayMemory::SampleMemory(unsigned int batchSize)
 	MemorySample sample;
 	sample.states = torch::zeros({ batchSize, stateSize }, torch::TensorOptions().dtype(torch::kFloat32));
 	sample.newStates = torch::zeros({ batchSize, stateSize }, torch::TensorOptions().dtype(torch::kFloat32));
-	sample.actions = torch::zeros(batchSize, torch::TensorOptions().dtype(torch::kFloat32));
+	sample.actions = torch::zeros({ batchSize, nActions }, torch::TensorOptions().dtype(torch::kFloat32));
 	sample.rewards = torch::zeros(batchSize, torch::TensorOptions().dtype(torch::kFloat32));
 	sample.terminals = torch::zeros(batchSize, torch::TensorOptions().dtype(torch::kBool));
 

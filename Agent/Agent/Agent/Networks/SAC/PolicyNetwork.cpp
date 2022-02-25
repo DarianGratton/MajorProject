@@ -71,7 +71,7 @@ std::pair<torch::Tensor, torch::Tensor> PolicyNetworkImpl::CalculateActionProb(t
 		torch::Tensor logProbs = probabilities.LogProb(actions);
 		logProbs -= torch::log(1 - action.pow(2) + reparamNoise); // How the paper handles the scaling of the action
 		logProbs *= torch::tensor(data);
-		logProbs = logProbs.sum(0, true);
+		logProbs = logProbs.sum(1, true);
 	
 		return std::make_pair(action, logProbs);
 	}
