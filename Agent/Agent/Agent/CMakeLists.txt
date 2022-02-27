@@ -36,7 +36,7 @@ add_executable (
     "Networks/TestEnvironment/TestEnvironment.cpp"
     "Networks/TestEnvironment/AgentTest.h"
     "Networks/TestEnvironment/AgentTest.cpp"
-)
+ "PyTorchExpansion/TorchDistribution.h" "PyTorchExpansion/TorchDistribution.cpp")
 
 # Link libraries
 target_link_libraries(Agent "${TORCH_LIBRARIES}")
@@ -93,7 +93,7 @@ add_executable (
     "PyTorchExpansion/TorchNormal.h" 
     "Networks/TestEnvironment/TestEnvironment.h" 
     "Networks/TestEnvironment/TestEnvironment.cpp"
-)
+ "PyTorchExpansion/TorchDistribution.h" "PyTorchExpansion/TorchDistribution.cpp")
 
 target_link_libraries(AgentTests gtest_main)
 target_link_libraries(AgentTests "${TORCH_LIBRARIES}")

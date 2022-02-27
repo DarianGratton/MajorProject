@@ -36,6 +36,7 @@ std::pair<torch::Tensor, torch::Tensor> PolicyNetworkImpl::Forward(torch::Tensor
 		torch::Tensor sigmaOutput = sigma(prob);
 
 		sigmaOutput = torch::clamp(sigmaOutput, c10::Scalar(reparamNoise), c10::Scalar(1));
+
 		return std::make_pair(muOutput, sigmaOutput);
 	}
 	catch (const c10::Error& e)
@@ -62,15 +63,16 @@ std::pair<torch::Tensor, torch::Tensor> PolicyNetworkImpl::CalculateActionProb(t
 
 		// TODO: Possibly for discrete action spaces only
 		// Create data container
-		std::vector<int> possibleActions(maxNumActions);
-		std::iota(std::begin(possibleActions), std::end(possibleActions), 1);
+		std::vector<int> possibleActions(maxNumActions, 1);
 		torch::detail::TensorDataContainer data(possibleActions);
 
+		// TODO: Should work, unknown if there is currently a problem. Possible spot to return to if fails.
 		// Calculate action probability
 		torch::Tensor action = torch::tanh(actions);
+
 		torch::Tensor logProbs = probabilities.LogProb(actions);
 		logProbs -= torch::log(1 - action.pow(2) + reparamNoise); // How the paper handles the scaling of the action
-		logProbs *= torch::tensor(data);
+		logProbs *= torch::tensor(data, torch::kF32);
 		logProbs = logProbs.sum(1, true);
 	
 		return std::make_pair(action, logProbs);

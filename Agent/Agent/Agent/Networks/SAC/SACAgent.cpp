@@ -114,30 +114,23 @@ void SACAgent::Learn()
 	torch::Tensor stateTargetValue = targetValue.get()->Forward(memorySample.newStates).view(-1);
 	stateTargetValue *= (~memorySample.terminals.clone()); // Dumb way of changing all values that are true to 0
 
-	// ^ Tested       Untested (Below) //
-
 	// Get actions and log probabilites for the states according to the 
 	// new policy 
 	pair<torch::Tensor, torch::Tensor> actionProb = policy.get()->CalculateActionProb(memorySample.states, false);
-	
-	cout << actionProb.first << endl;
-	cout << actionProb.second << endl;
-
-	exit(0);
-	
 	torch::Tensor logProb = actionProb.second.view(-1);
 	torch::Tensor newPolicy1 = critic1.get()->Forward(memorySample.states, actionProb.first);
 	torch::Tensor newPolicy2 = critic2.get()->Forward(memorySample.states, actionProb.first);
-
-	torch::Tensor criticValue = torch::min(newPolicy1, newPolicy2);
+	torch::Tensor criticValue = torch::min(newPolicy1, newPolicy2);	
 	criticValue = criticValue.view(-1);
-	
+
 	// Value loss
 	value.get()->GetOptimizer()->zero_grad();
 	torch::Tensor valueTarget = criticValue - logProb;
 	torch::Tensor valueLoss = 0.5f * torch::nn::functional::mse_loss(stateValue, valueTarget);
 	valueLoss.backward({}, true);
 	value.get()->GetOptimizer()->step();
+
+	// ^ Tested       Untested (Below) //
 
 	// Get actions and log probabilites for the states according to the 
 	// new policy 

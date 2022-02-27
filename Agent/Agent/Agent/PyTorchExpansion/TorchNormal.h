@@ -1,12 +1,12 @@
 #pragma once
 
-#include <vector>
+#include "TorchDistribution.h"
 
 #include <torch/torch.h>
 
 using namespace std;
 
-class TorchNormal
+class TorchNormal : public TorchDistribution
 {
 public:
 	TorchNormal(torch::Tensor mean, torch::Tensor stddev);

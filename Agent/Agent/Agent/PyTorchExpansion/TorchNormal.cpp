@@ -1,15 +1,20 @@
 #include "TorchNormal.h"
 
+#include <c10/util/ArrayRef.h>
+
 TorchNormal::TorchNormal(torch::Tensor mean, torch::Tensor stddev) :
 	mean(mean), stddev(stddev)
 {
 	variance = stddev.pow(2); 
+	batch_shape = mean.sizes().vec();
+	event_shape = {};
 }
 
 torch::Tensor TorchNormal::Sample()
 {
+	vector<int64_t> shape = extended_shape({});
 	torch::NoGradGuard noGrad;
-	return torch::randn({ 1 }) * stddev + mean;
+	return at::normal(mean.expand(shape), stddev.expand(shape));
 }
 
 torch::Tensor TorchNormal::RSample()

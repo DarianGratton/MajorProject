@@ -1,5 +1,7 @@
 #include "CriticNetwork.h"
 
+#include <iostream>
+
 CriticNetworkImpl::CriticNetworkImpl(
 	float lr, unsigned int nActions,
 	int64_t inputDims, int64_t layer1Dims, int64_t layer2Dims) :
@@ -25,5 +27,7 @@ torch::Tensor CriticNetworkImpl::Forward(torch::Tensor state, torch::Tensor acti
 	actionValue = layer2(actionValue);
 	actionValue = torch::nn::functional::relu(actionValue);
 	
-	return q(actionValue);
+	torch::Tensor qValue = q(actionValue);
+
+	return qValue;
 }
