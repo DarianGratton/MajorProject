@@ -62,4 +62,8 @@ private:
 	CriticNetwork critic2 = nullptr;
 	ValueNetwork value = nullptr;
 	ValueNetwork targetValue = nullptr;
+
+	// Probably shouldn't be here but they are helper functions for saving and loading the models
+	void SaveToFile(string filename, stringstream& checkpoint);
+	void LoadFromFile(string filename, stringstream& checkpoint);
 };

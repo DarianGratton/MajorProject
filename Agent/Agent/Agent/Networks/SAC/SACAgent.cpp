@@ -2,6 +2,8 @@
 
 #include <typeinfo>
 #include <iostream>
+#include <ostream>
+#include <istream>
 
 SACAgent::SACAgent(float lr1, float lr2, 
 	unsigned int nActions, unsigned int maxActions,
@@ -55,7 +57,6 @@ void SACAgent::UpdateMemory(
 	memory->StoreStateTransition(state, actions, reward, newState, terminal);
 }
 
-// TODO: This is broken
 void SACAgent::UpdateNetworkParameters(float T /* tau */)
 {
 	try
@@ -84,29 +85,11 @@ void SACAgent::UpdateNetworkParameters(float T /* tau */)
 void SACAgent::Learn()
 {
 	// See if there is enough memory to sample
-	// if (memory->GetCurrentMemsize() < batchSize)
-	//	return;
+	if (memory->GetCurrentMemsize() < batchSize)
+		return;
 
 	// Sample buffer
 	ReplayMemory::MemorySample memorySample = memory->SampleMemory(batchSize);
-
-	memorySample.rewards = torch::tensor({ 1, 1, 1, 1, 1 }, torch::kF32);
-	memorySample.terminals = torch::tensor({ false, false, true, false, false }, torch::kBool);
-	memorySample.newStates = torch::tensor({
-		{-8.9976e-04, -5.2816e-03, 9.9888e-01, -4.7340e-02, -6.3622e-02},
-		{-5.7198e-04, -1.8270e-02, 9.9895e-01, -4.5812e-02, -6.3999e-03},
-		{-8.9976e-04, -5.2816e-03, 9.9888e-01, -4.7340e-02, -6.3622e-02},
-		{-8.1262e-04, -1.4584e-02, 9.9893e-01, -4.6291e-02, -2.9054e-02},
-		{-8.9976e-04, -5.2816e-03, 9.9888e-01, -4.7340e-02, -6.3622e-02} },
-		torch::kF32);
-	memorySample.states = torch::tensor({
-		{-8.1262e-04, -1.4584e-02, 9.9893e-01, -4.6291e-02, -2.9054e-02},
-		{-2.7052e-04, -1.1070e-02, 9.9895e-01, -4.5707e-02, -6.5699e-03},
-		{-8.1262e-04, -1.4584e-02, 9.9893e-01, -4.6291e-02, -2.9054e-02},
-		{-5.7198e-04, -1.8270e-02, 9.9895e-01, -4.5812e-02, -6.3999e-03},
-		{-8.1262e-04, -1.4584e-02, 9.9893e-01, -4.6291e-02, -2.9054e-02} },
-		torch::kF32);
-	memorySample.actions = torch::tensor({ {0.0557}, {-0.0675}, {0.0557}, {0.0138}, {0.0557} }, torch::kF32);
 
 	// Calculate the value of the states and new states based on the
 	// value and target value networks
@@ -130,8 +113,6 @@ void SACAgent::Learn()
 	valueLoss.backward({}, true);
 	value.get()->GetOptimizer()->step();
 
-	// ^ Tested       Untested (Below) //
-
 	// Get actions and log probabilites for the states according to the 
 	// new policy 
 	actionProb = policy.get()->CalculateActionProb(memorySample.states, true);
@@ -141,8 +122,6 @@ void SACAgent::Learn()
 	criticValue = torch::min(newPolicy1, newPolicy2);
 	criticValue = criticValue.view(-1);
 
-	// cout << criticValue << endl;
-
 	// Policy loss
 	torch::Tensor policyLoss = logProb - criticValue;
 	policyLoss = torch::mean(policyLoss);
@@ -150,27 +129,22 @@ void SACAgent::Learn()
 	policyLoss.backward({}, true);
 	policy.get()->GetOptimizer()->step();
 
-	// cout << policyLoss << endl;
-
 	// Critic loss
 	critic1.get()->GetOptimizer()->zero_grad();
 	critic2.get()->GetOptimizer()->zero_grad();
 	torch::Tensor qHat = rewardScale * memorySample.rewards + gamma * stateTargetValue;
 	torch::Tensor oldPolicy1 = critic1.get()->Forward(memorySample.states, memorySample.actions).view(-1);
 	torch::Tensor oldPolicy2 = critic2.get()->Forward(memorySample.states, memorySample.actions).view(-1);
-	torch::Tensor critic1Loss = 0.5 * torch::nn::functional::mse_loss(oldPolicy1, qHat);
-	torch::Tensor critic2Loss = 0.5 * torch::nn::functional::mse_loss(oldPolicy2, qHat);
+	torch::Tensor critic1Loss = 0.5f * torch::nn::functional::mse_loss(oldPolicy1, qHat);
+	torch::Tensor critic2Loss = 0.5f * torch::nn::functional::mse_loss(oldPolicy2, qHat);
+	
 	torch::Tensor criticLoss = critic1Loss + critic2Loss;
-
-	// cout << criticLoss << endl;
-
 	criticLoss.backward();
 	critic1.get()->GetOptimizer()->step();
 	critic2.get()->GetOptimizer()->step();
 
 	// Update network parameters
 	UpdateNetworkParameters(tau);
-
 }
 
 void SACAgent::SaveModel()
@@ -178,33 +152,63 @@ void SACAgent::SaveModel()
 	// PolicyNetwork Checkpoint
 	policy.get()->GetCheckpoint().str(string());
 	torch::save(policy, policy.get()->GetCheckpoint());
+	SaveToFile("Policy.txt", policy.get()->GetCheckpoint());
 
 	// CriticNetwork Checkpoint
 	critic1.get()->GetCheckpoint().str(string());
 	torch::save(critic1, critic1.get()->GetCheckpoint());
+	SaveToFile("Critic1.txt", critic1.get()->GetCheckpoint());
 
 	critic2.get()->GetCheckpoint().str(string());
 	torch::save(critic2, critic2.get()->GetCheckpoint());
+	SaveToFile("Critic2.txt", critic2.get()->GetCheckpoint());
 
 	// ValueNetwork Checkpoint
 	value.get()->GetCheckpoint().str(string());
 	torch::save(value, value.get()->GetCheckpoint());
+	SaveToFile("Value.txt", value.get()->GetCheckpoint());
 
 	targetValue.get()->GetCheckpoint().str(string());
 	torch::save(targetValue, targetValue.get()->GetCheckpoint());
+	SaveToFile("TargetValue.txt", targetValue.get()->GetCheckpoint());
 }
 
 void SACAgent::LoadModel()
 {
 	// PolicyNetwork Load Checkpoint
+	LoadFromFile("Policy.txt", policy.get()->GetCheckpoint());
 	torch::load(policy, policy.get()->GetCheckpoint());
 
 	// CriticNetwork Load Checkpoint
+	LoadFromFile("Critic1.txt", critic1.get()->GetCheckpoint());
 	torch::load(critic1, critic1.get()->GetCheckpoint());
+	LoadFromFile("Critic2.txt", critic2.get()->GetCheckpoint());
 	torch::load(critic2, critic2.get()->GetCheckpoint());
 
 	// ValueNetwork Load Checkpoint
+	LoadFromFile("Value.txt", value.get()->GetCheckpoint());
 	torch::load(value, value.get()->GetCheckpoint());
+	LoadFromFile("TargetValue.txt", targetValue.get()->GetCheckpoint());
 	torch::load(targetValue, targetValue.get()->GetCheckpoint());
 }
 
+void SACAgent::SaveToFile(string filename, stringstream& checkpoint)
+{
+	// Save buffer
+	ofstream outFile;
+	outFile.open(filename, ios::binary | ios::trunc);
+	outFile << checkpoint.rdbuf();
+	outFile.close();
+}
+
+void SACAgent::LoadFromFile(string filename, stringstream& checkpoint)
+{
+	// Clear the stream
+	checkpoint.str(string());
+
+	// Load buffer
+	ifstream inFile;
+	inFile.open(filename, ios::binary);
+	checkpoint << inFile.rdbuf();
+	inFile.close();
+}

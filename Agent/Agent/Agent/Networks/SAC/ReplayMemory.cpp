@@ -1,5 +1,7 @@
 #include "ReplayMemory.h"
 
+#include "RandomIterator.h"
+
 #include <iostream>
 #include <random>
 
@@ -23,6 +25,7 @@ ReplayMemory::ReplayMemory(
 
 	// Initializing variables
 	memCounter = 0;
+	currMemStored = 0;
 }
 
 void ReplayMemory::StoreStateTransition(
@@ -57,14 +60,15 @@ void ReplayMemory::StoreStateTransition(
 
 	// Increment counter
 	memCounter++;
+
+	if (currMemStored != memSize)
+		currMemStored++;
 }
 
 ReplayMemory::MemorySample ReplayMemory::SampleMemory(unsigned int batchSize)
 {
 	// Generate random sample
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<> distrib(0, memCounter);
+	RandomIterator iterator(batchSize, 0, currMemStored - 1);
 
 	// Initialize sample
 	MemorySample sample;
@@ -77,12 +81,12 @@ ReplayMemory::MemorySample ReplayMemory::SampleMemory(unsigned int batchSize)
 	// Get random sample
 	for (int i = 0; i < batchSize; ++i)
 	{
-		int batch = distrib(gen);
-		sample.states[i].data() = stateMem[i];
-		sample.newStates[i].data() = newStateMem[i];
-		sample.actions[i].data() = actionMem[i];
-		sample.rewards[i].data() = rewardMem[i];
-		sample.terminals[i].data() = terminalMem[i];
+		int batch = iterator.next() - 1;
+		sample.states[i].data() = stateMem[batch];
+		sample.newStates[i].data() = newStateMem[batch];
+		sample.actions[i].data() = actionMem[batch];
+		sample.rewards[i].data() = rewardMem[batch];
+		sample.terminals[i].data() = terminalMem[batch];
 	}
 
 	// Return object

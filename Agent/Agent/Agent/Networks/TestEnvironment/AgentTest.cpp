@@ -29,11 +29,11 @@ void AgentTest::Train()
     TestEnvironment env(x, y);
 
     // Model.
-    float lr1 = 0.0003f;
-    float lr2 = 0.0003f;
+    float lr1 = 1e-3f;
+    float lr2 = 1e-3f;
     unsigned int nActions = 2;
     unsigned int maxActions = 2; 
-    int64_t inputDims = 2;
+    int64_t inputDims = 4;
     int64_t layer1Dims = 256;
     int64_t layer2Dims = 256;
     unsigned int memSize = 1000000;
@@ -47,8 +47,8 @@ void AgentTest::Train()
         memSize, gamma, tau, batchSize, rewardScale);
 
     // Training loop.
-    unsigned int nGames = 250;
-    unsigned int n_steps = 4096 ;
+    unsigned int nGames = 5000;
+    unsigned int n_steps = 4096;
 
     // Output.
     std::ofstream out;
@@ -65,6 +65,7 @@ void AgentTest::Train()
     float bestAvgReward = -100000; 
     float avgReward = 0;
     vector<float> rewardHistory;
+    int winCount = 0;
 
     // REVIEW: From here down
     for (unsigned int episode = 1; episode <= nGames; episode++)
@@ -74,13 +75,16 @@ void AgentTest::Train()
         // State of Env.
         State observation;
         torch::Tensor state = env.State();
-        observation.AddDelta(pair<string, float>("X", state[0][0].item<float>()));
-        observation.AddDelta(pair<string, float>("Y", state[0][1].item<float>()));
+        observation.AddDelta(pair<string, float>("GoalX", x));
+        observation.AddDelta(pair<string, float>("GoalY", y));
+        observation.AddDelta(pair<string, float>("PosX", state[0][0].item<float>()));
+        observation.AddDelta(pair<string, float>("PosY", state[0][1].item<float>()));
 
         bool isGameEnded = false;
         float reward = 0;
 
-        for (unsigned int i = 0; i < n_steps; i++)
+        unsigned int i = 0;
+        for (i = 1; i <= n_steps; i++)
         {
             // Play
             torch::Tensor action = agent.ChooseAction(observation);
@@ -91,45 +95,66 @@ void AgentTest::Train()
             // Get parameters
             State newObservation;
             torch::Tensor newState = std::get<0>(sd);
+            newObservation.AddDelta(pair<string, float>("GoalX", x));
+            newObservation.AddDelta(pair<string, float>("GoalY", y));
             newObservation.AddDelta(pair<string, float>("X", newState[0][0].item<float>()));
             newObservation.AddDelta(pair<string, float>("Y", newState[0][1].item<float>()));
 
             std::vector<float> actions = { xAct, yAct };
             float newReward = env.Reward(std::get<1>(sd))[0].item<float>();
-            bool terminal = std::get<2>(sd)[0].item<float>();
+            bool terminal = (std::get<1>(sd) == TestEnvironment::STATUS::WON) ? true : false;
 
             // Update Agent
             reward += newReward;
             out << episode << ", " << env.pos(0) << ", " << env.pos(1) << ", " << env.goal(0) << ", " << env.goal(1) << ", " << std::get<1>(sd) << "\n";
             
             agent.UpdateMemory(observation, actions, newReward, newObservation, terminal);
-            agent.Learn();
+
+            // Reduce the amount of training done, decreases runtime.
+            if ((i % batchSize) == 0)
+            {
+                agent.Learn();
+            }
+            
             observation = newObservation;
 
             // Check game status
-            if (terminal)
+            if (std::get<2>(sd)[0].item<float>())
+            {
+                if (terminal)
+                    winCount++;
+                
                 break;
+            }
         }
 
         // Reset game
-        float xNew = float(dist(re));
-        float yNew = float(dist(re));
-        env.SetGoal(xNew, yNew);
+        x = float(dist(re));
+        y = float(dist(re));
+        env.SetGoal(x, y);
         env.Reset();
         out << episode << ", " << env.pos(0) << ", " << env.pos(1) << ", " << env.goal(0) << ", " << env.goal(1) << ", " << env.RESETTING << "\n";
 
         // Get rewards
         rewardHistory.push_back(reward);
-        avgReward = accumulate(rewardHistory.begin(), rewardHistory.end(), 0.0) / rewardHistory.size();
+
+        if (rewardHistory.size() >= 100)
+            avgReward = accumulate(rewardHistory.end() - 100, rewardHistory.end(), 0.0) / 100;
+        else
+            avgReward = accumulate(rewardHistory.begin(), rewardHistory.end(), 0.0) / rewardHistory.size();
+        
+        cout << "Step count: " << i << endl;
+        printf("Game's Won %u/%u\n", winCount, nGames);
         cout << "Reward: " << reward << endl;
         cout << "AvgReward: " << avgReward << endl;
-        cout << "BestAvgReward: " << bestAvgReward << endl << endl;
 
-        if (avgReward > bestAvgReward)
+        if (avgReward > bestAvgReward && rewardHistory.size() >= 100)
         {
             bestAvgReward = avgReward;
             agent.SaveModel();
         }
+
+        cout << "BestAvgReward: " << bestAvgReward << endl << endl;
     }
 
     out.close();

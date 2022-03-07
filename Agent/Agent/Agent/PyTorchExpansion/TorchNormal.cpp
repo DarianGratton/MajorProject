@@ -17,6 +17,7 @@ torch::Tensor TorchNormal::Sample()
 	return at::normal(mean.expand(shape), stddev.expand(shape));
 }
 
+// Note: Should work based on testing, unknown if there is currently a problem. Possible spot to return to if agent fails.
 torch::Tensor TorchNormal::RSample()
 {
 	torch::Tensor eps = torch::empty(mean.sizes(), mean.options()).normal_();

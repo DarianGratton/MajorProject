@@ -40,6 +40,7 @@ public:
 
 private:
 	unsigned int memSize;
+	unsigned int currMemStored;
 	unsigned int memCounter;
 	unsigned int stateSize;
 	unsigned int nActions;

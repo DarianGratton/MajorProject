@@ -66,7 +66,7 @@ std::pair<torch::Tensor, torch::Tensor> PolicyNetworkImpl::CalculateActionProb(t
 		std::vector<int> possibleActions(maxNumActions, 1);
 		torch::detail::TensorDataContainer data(possibleActions);
 
-		// TODO: Should work, unknown if there is currently a problem. Possible spot to return to if fails.
+		// Note: Should work based on testing, unknown if there is currently a problem. Possible spot to return to if agent fails.
 		// Calculate action probability
 		torch::Tensor action = torch::tanh(actions);
 
