@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../SAC/SACAgent.h"
+
 class AgentTest
 {
 public:
@@ -8,4 +10,6 @@ public:
 	void Train();
 	void Test();
 
+private:
+	SACAgent* agent;
 };

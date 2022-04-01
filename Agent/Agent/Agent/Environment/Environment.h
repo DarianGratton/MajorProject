@@ -6,6 +6,7 @@
 #include "Reward.h"
 
 using namespace std;
+using namespace RLGameAgent;
 
 // TODO: Template is a work around for Reward type and variable, should figure out better way
 // - Overloaded functions might work with multiple reward variables

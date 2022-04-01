@@ -35,18 +35,24 @@ std::pair<torch::Tensor, torch::Tensor> PolicyNetworkImpl::Forward(torch::Tensor
 		torch::Tensor muOutput = mu(prob);
 		torch::Tensor sigmaOutput = sigma(prob);
 
+		cout << "State: " << endl;
+		cout << state << endl;
+		cout << "Sigma before clamp: " << endl;
+		cout << sigmaOutput << endl;
+
 		sigmaOutput = torch::clamp(sigmaOutput, c10::Scalar(reparamNoise), c10::Scalar(1));
 
 		return std::make_pair(muOutput, sigmaOutput);
 	}
 	catch (const c10::Error& e)
 	{
-		std::cout << e.msg() << std::endl;
+		std::cout << "PolicyNetwork::Forward: " << e.what() << std::endl;
 	}
 
 	return std::make_pair(torch::Tensor(), torch::Tensor());
 }
 
+// TODO: Account for nan.
 std::pair<torch::Tensor, torch::Tensor> PolicyNetworkImpl::CalculateActionProb(torch::Tensor state, bool reparam)
 {
 	try
@@ -58,28 +64,38 @@ std::pair<torch::Tensor, torch::Tensor> PolicyNetworkImpl::CalculateActionProb(t
 		torch::Tensor sigmaOutput = networkOutput.second;
 
 		// Create object and get sample
+		cout << sigmaOutput << endl;
 		TorchNormal probabilities(muOutput, sigmaOutput);
 		torch::Tensor actions = (reparam) ? probabilities.RSample() : probabilities.Sample();
 
 		// TODO: Possibly for discrete action spaces only
 		// Create data container
-		std::vector<int> possibleActions(maxNumActions, 1);
+		std::vector<int> possibleActions(maxNumActions, 50000);
 		torch::detail::TensorDataContainer data(possibleActions);
 
 		// Note: Should work based on testing, unknown if there is currently a problem. Possible spot to return to if agent fails.
 		// Calculate action probability
-		torch::Tensor action = torch::tanh(actions);
+		//torch::Tensor action = torch::tanh(actions);
+		//torch::Tensor dataTensor = torch::tensor(data, torch::kF32).to(torch::kCPU);
+
+		//torch::Tensor logProbs = probabilities.LogProb(actions);
+		//logProbs -= torch::log(1 - action.pow(2) + reparamNoise); // How the paper handles the scaling of the action
+		//logProbs *= dataTensor.clone();
+		//logProbs = logProbs.sum(1, true);
+
+		//action *= dataTensor.clone();
+
+		torch::Tensor action = torch::tanh(actions) * torch::tensor(data, torch::kF32);
 
 		torch::Tensor logProbs = probabilities.LogProb(actions);
 		logProbs -= torch::log(1 - action.pow(2) + reparamNoise); // How the paper handles the scaling of the action
-		logProbs *= torch::tensor(data, torch::kF32);
 		logProbs = logProbs.sum(1, true);
 	
 		return std::make_pair(action, logProbs);
 	}
 	catch (const c10::Error& e)
 	{
-		std::cerr << "CalculateActionProb error: " << e.msg() << std::endl;
-		return std::make_pair(torch::Tensor(), torch::Tensor());
+		std::cerr << "PolicyNetwork::CalculateActionProb error: " << e.what() << std::endl;
+		exit(0); // TODO: Should probably have a way to safely end the program.
 	}
 }

@@ -8,102 +8,103 @@
 
 using namespace std;
 
-/// TODO: Copy Constuctor
-class State {
-public:
-	/// <summary>
-	/// Default constructor that constructs an state object with no deltas.
-	/// </summary>
-	State();
+namespace RLGameAgent 
+{
 
-	/// <summary>
-	/// Constructor that creates an state object with already defined deltas.
-	/// </summary>
-	/// <param name="deltas"></param>
-	State(unordered_map<string, float> deltas);
+	/*
+	  State
+	
+	  A class that defines what constitutes a state in the environment. Contains a
+	  map that stores deltas that can include variables such as player position,
+	  enemy position, weapon position, etc. Also contains functions for manipulating 
+	  said state.
+	  
+	  Author: Darian G.
+	*/
+	class State 
+	{
+	public:
+		
+		/* Default Constructor */
+		State();
 
-	/// <summary>
-	/// Constructor that creates an state object with already defined tensor.
-	/// </summary>
-	/// <param name="tensor"></param>
-	State(torch::Tensor tensor);
+		/* 
+		  Constructor for taking a pre-defined set of deltas. 
+		  params: 
+				- deltas: A map of deltas to set the state to
+		*/
+		State(unordered_map<string, float> deltas);
 
-	/// <summary>
-	///	Copy constructor that constructs an copy of another state object.
-	/// </summary>
-	/// <param name="">Another state object to copy.</param>
-	State(const State& state1) { deltas = state1.deltas; }
+		/* Copy Constructor */
+		State(const State& state1) { deltas = state1.deltas; }
 
-	/// <summary>
-	/// Assignment operator for copying another state object.
-	/// </summary>
-	/// <param name="reward">Another state object to copy.</param>
-	/// <returns></returns>
-	State& operator=(const State& state1) 
-	{ 
-		deltas = state1.deltas;
-		return *this; 
-	}
+		/* Assignment Operator */
+		State& operator=(const State& state1);
 
-	/// <summary>
-	/// Add new delta to the exist list of deltas.
-	/// </summary>
-	/// <param name="delta">The delta to be added.</param>
-	void AddDelta(pair<string, float> delta);
+		/*
+		  Adds a new delta to the list of existing list of deltas.
+		  params:
+				- delta: A new delta to add.
+		*/
+		void AddDelta(pair<string, float> delta);
 
-	/// <summary>
-	/// Removes an delta that exists in the list of deltas.
-	/// </summary>
-	/// <param name="deltaName">The delta to remove.</param>
-	void RemoveDelta(string deltaName);
+		/*
+		  Removes an existing delta.
+		  params:
+				- deltaName: The name of the delta to be removed.
+		*/
+		void RemoveDelta(string deltaName);
 
-	/// <summary>
-	/// Updates the value of an delta that exists in the list of deltas.
-	/// </summary>
-	/// <param name="deltaName">The delta to change.</param>
-	/// <param name="newDelta">The new value to change the delta to.</param>
-	void UpdateDelta(string deltaName, float newDelta);
+		/*
+		  Updates an existing delta to a new value.
+		  params:
+				- deltaName: The name of the delta to update.
+				- newDelta: The value of the new delta.
 
-	/// <summary>
-	/// Resets the state by removing all the stored deltas.
-	/// </summary>
-	void Reset();
+		  TODO: Should probably have some error handling if deltaName does not exist.
+		*/
+		void UpdateDelta(string deltaName, float newDelta);
 
-	/// <summary>
-	/// Helper function for return the state's delta as an readable string. Useful for debugging.
-	/// TODO: Figure out number formatting
-	/// </summary>
-	/// <returns>An formatted string.</returns>
-	string ToString() const;
+		/* 
+		  Resets the state by removing all the stored deltas. 
+		*/
+		void Reset();
 
-	/// <summary>
-	/// Helper function for getting the state's deltas as an vector object.
-	/// </summary>
-	/// <returns></returns>
-	vector<float> ToVector() const;
+		/* Returns the size of the state. */
+		inline int64_t Size() { return deltas.size(); }
 
-	/// <summary>
-	/// Helper function for getting the state's deltas as an tensor object.
-	/// </summary>
-	/// <returns>An tensor object of the state's deltas.</returns>
-	torch::Tensor ToTensor() const;
+		/* Returns a copy of the state's deltas. */
+		inline unordered_map<string, float> GetDeltas() { return deltas; }
 
-	/// <summary>
-	/// Gets the size of the state (number of deltas).
-	/// </summary>
-	/// <returns>The size of the state.</returns>
-	inline int64_t Size() { return ToVector().size(); }
+		/* Helper function for changing the state to a std::vector object. */
+		vector<float> ToVector() const;
 
-	/// <summary>
-	/// Gets an copy of delta's data structure.
-	/// </summary>
-	/// <returns>The deltas.</returns>
-	inline unordered_map<string, float> GetDeltas() { return deltas; }
+		/* 
+		  Helper function for changing the state to a torch::Tensor object. 
+		  Returned dimension of { 1, state.size() }. 
+		*/
+		torch::Tensor ToTensor() const;
 
-private:
-	/// <summary>
-	/// An map that stores the state's deltas. Uses an string (the name of delta) for the key.
-	/// Example delta: PlayerHp, 40 
-	/// </summary>
-	unordered_map<string, float> deltas;
-};
+		/* 
+		  Converts the state into a readable string. 
+		  TODO: String formatting.
+		*/
+		string ToString() const;
+
+		/* Insertion Operator. */
+		friend ostream& operator<<(ostream& os, const State& state);
+
+	private:
+
+		/* 
+		  An map that stores the state's deltas. Uses an string (name of delta) for the key.
+
+		  Example Deltas:
+			- X: 90.0
+			- Y: -120.0
+			- Z: 5.0
+		*/
+		unordered_map<string, float> deltas;
+	};
+
+}

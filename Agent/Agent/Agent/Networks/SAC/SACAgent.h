@@ -13,8 +13,11 @@
 #include <sstream>
 
 using namespace std;
+using namespace RLGameAgent;
 
-// TODO: Implement functionality for a basic SACAgent
+/// <summary>
+/// 
+/// </summary>
 class SACAgent 
 {
 public:

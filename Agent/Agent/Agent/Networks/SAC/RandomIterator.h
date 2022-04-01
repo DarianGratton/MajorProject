@@ -5,11 +5,17 @@
 #include <iostream>
 #include <stdexcept>
 
-/* RandomIterator - (c) Tyler Burdsall 2018
- *
- * A C++ class that can generate random, unique, and evenly-distributed
- * numbers with O(1) memory space.
- */
+
+/// <summary>
+/// 
+/// RandomIterator
+/// 
+/// A C++ class that can generate random, unique, and evenly-distributed
+/// numbers with O(1) memory space.
+/// 
+/// (c) Tyler Burdsall 2018
+/// 
+/// </summary>
 class RandomIterator
 {
 public:

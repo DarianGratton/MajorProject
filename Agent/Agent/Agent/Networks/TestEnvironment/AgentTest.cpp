@@ -9,11 +9,29 @@
 #include <numeric>
 
 #include "TestEnvironment.h"
-#include "../SAC/SACAgent.h"
 #include "../../Environment/State.h"
+
+using namespace RLGameAgent;
 
 AgentTest::AgentTest()
 {
+    // Model.
+    float lr1 = 1e-3f;
+    float lr2 = 1e-3f;
+    unsigned int nActions = 2;
+    unsigned int maxActions = 2;
+    int64_t inputDims = 4;
+    int64_t layer1Dims = 16;
+    int64_t layer2Dims = 32;
+    unsigned int memSize = 1000000;
+    float gamma = 0.99f;
+    float tau = 0.005f;
+    unsigned int batchSize = 1024;
+    int rewardScale = 2;
+
+    agent = new SACAgent(lr1, lr2, nActions, maxActions,
+        inputDims, layer1Dims, layer2Dims,
+        memSize, gamma, tau, batchSize, rewardScale);
 }
 
 void AgentTest::Train()
@@ -29,26 +47,27 @@ void AgentTest::Train()
     TestEnvironment env(x, y);
 
     // Model.
-    float lr1 = 1e-3f;
+   /* float lr1 = 1e-3f;
     float lr2 = 1e-3f;
     unsigned int nActions = 2;
     unsigned int maxActions = 2; 
     int64_t inputDims = 4;
-    int64_t layer1Dims = 256;
-    int64_t layer2Dims = 256;
+    int64_t layer1Dims = 16;
+    int64_t layer2Dims = 32;
     unsigned int memSize = 1000000;
     float gamma = 0.99f;
     float tau = 0.005f;
-    unsigned int batchSize = 256;
+    unsigned int batchSize = 1024;
     int rewardScale = 2;
 
     SACAgent agent(lr1, lr2, nActions, maxActions,
         inputDims, layer1Dims, layer2Dims,
-        memSize, gamma, tau, batchSize, rewardScale);
+        memSize, gamma, tau, batchSize, rewardScale);*/
+    // TODO: He normalizes the network, unknown if relevent
 
     // Training loop.
-    unsigned int nGames = 5000;
-    unsigned int n_steps = 4096;
+    unsigned int nGames = 10000;
+    unsigned int n_steps = 2048;
 
     // Output.
     std::ofstream out;
@@ -80,14 +99,19 @@ void AgentTest::Train()
         observation.AddDelta(pair<string, float>("PosX", state[0][0].item<float>()));
         observation.AddDelta(pair<string, float>("PosY", state[0][1].item<float>()));
 
-        bool isGameEnded = false;
         float reward = 0;
 
         unsigned int i = 0;
         for (i = 1; i <= n_steps; i++)
         {
             // Play
-            torch::Tensor action = agent.ChooseAction(observation);
+            torch::Tensor action = agent->ChooseAction(observation);
+
+            
+            /*cout << "Action: " << endl;
+            cout << action << endl;*/
+            
+
             float xAct = action[0].item<float>();
             float yAct = action[1].item<float>();
             auto sd = env.Act(xAct, yAct); // std::tuple<state, status, terminal>
@@ -102,31 +126,29 @@ void AgentTest::Train()
 
             std::vector<float> actions = { xAct, yAct };
             float newReward = env.Reward(std::get<1>(sd))[0].item<float>();
-            bool terminal = (std::get<1>(sd) == TestEnvironment::STATUS::WON) ? true : false;
+            // bool terminal = (std::get<1>(sd) == TestEnvironment::STATUS::WON) ? true : false;
+            bool terminal = std::get<2>(sd)[0].item<float>();
 
             // Update Agent
             reward += newReward;
             out << episode << ", " << env.pos(0) << ", " << env.pos(1) << ", " << env.goal(0) << ", " << env.goal(1) << ", " << std::get<1>(sd) << "\n";
             
-            agent.UpdateMemory(observation, actions, newReward, newObservation, terminal);
-
-            // Reduce the amount of training done, decreases runtime.
-            if ((i % batchSize) == 0)
-            {
-                agent.Learn();
-            }
-            
+            agent->UpdateMemory(observation, actions, newReward, newObservation, terminal);
+            agent->Learn();
             observation = newObservation;
 
             // Check game status
             if (std::get<2>(sd)[0].item<float>())
             {
-                if (terminal)
+                if (std::get<1>(sd) == TestEnvironment::STATUS::WON)
                     winCount++;
                 
                 break;
             }
         }
+
+        // Update agent
+        // agent->Learn();
 
         // Reset game
         x = float(dist(re));
@@ -148,10 +170,10 @@ void AgentTest::Train()
         cout << "Reward: " << reward << endl;
         cout << "AvgReward: " << avgReward << endl;
 
-        if (avgReward > bestAvgReward && rewardHistory.size() >= 100)
+        if ((avgReward > bestAvgReward && rewardHistory.size() >= 100) || episode % 10000 == 0)
         {
             bestAvgReward = avgReward;
-            agent.SaveModel();
+            agent->SaveModel();
         }
 
         cout << "BestAvgReward: " << bestAvgReward << endl << endl;
@@ -173,11 +195,11 @@ void AgentTest::Test()
     TestEnvironment env(x, y);
 
     // Model.
-    float lr1 = 0.0003f;
-    float lr2 = 0.0003f;
+    /*float lr1 = 1e-3f;
+    float lr2 = 1e-3f;
     unsigned int nActions = 2;
     unsigned int maxActions = 2;
-    int64_t inputDims = 2;
+    int64_t inputDims = 4;
     int64_t layer1Dims = 256;
     int64_t layer2Dims = 256;
     unsigned int memSize = 1000000;
@@ -188,11 +210,14 @@ void AgentTest::Test()
 
     SACAgent agent(lr1, lr2, nActions, maxActions,
         inputDims, layer1Dims, layer2Dims,
-        memSize, gamma, tau, batchSize, rewardScale);
-    agent.LoadModel();
+        memSize, gamma, tau, batchSize, rewardScale);*/
+
+    // Load Model
+    // agent.LoadModel();
 
     // Training loop.
-    unsigned int nSteps = 10000;
+    unsigned int nGames = 10000;
+    unsigned int nSteps = 2048;
 
     // Output.
     std::ofstream out;
@@ -202,31 +227,65 @@ void AgentTest::Test()
     out << 1 << ", " << env.pos(0) << ", " << env.pos(1) << ", " << env.goal(0) << ", " << env.goal(1) << ", " << env.RESETTING << "\n";
 
     // Counter.
-    unsigned int counter = 0;
+    unsigned int winCount = 0;
 
-    for (unsigned int i = 0; i < nSteps; i++)
+    for (unsigned int episode = 1; episode <= nGames; episode++)
     {
+        printf("Game %u/%u\n", episode, nGames);
+
         // State of Env.
         State observation;
         torch::Tensor state = env.State();
-        observation.AddDelta(pair<string, float>("X", state[0][0].item<float>()));
-        observation.AddDelta(pair<string, float>("Y", state[0][1].item<float>()));
+        observation.AddDelta(pair<string, float>("GoalX", x));
+        observation.AddDelta(pair<string, float>("GoalY", y));
+        observation.AddDelta(pair<string, float>("PosX", state[0][0].item<float>()));
+        observation.AddDelta(pair<string, float>("PosY", state[0][1].item<float>()));
 
-        // Play
-        torch::Tensor action = agent.ChooseAction(observation);
-        float xAct = action[0].item<float>();
-        float yAct = action[1].item<float>();
-        auto sd = env.Act(xAct, yAct); // std::tuple<state, status, terminal>
+        float reward = 0;
 
-        // Get parameters
-        bool terminal = std::get<2>(sd)[0].item<float>();
+        for (unsigned int i = 0; i < nSteps; i++)
+        {
+            // Play
+            torch::Tensor action = agent->ChooseAction(observation);
+            float xAct = action[0].item<float>();
+            float yAct = action[1].item<float>();
+            auto sd = env.Act(xAct, yAct); // std::tuple<state, status, terminal>
 
-        // Update Agent
-        out << 1 << ", " << env.pos(0) << ", " << env.pos(1) << ", " << env.goal(0) << ", " << env.goal(1) << ", " << std::get<1>(sd) << "\n";
+            // Get parameters
+            State newObservation;
+            torch::Tensor newState = std::get<0>(sd);
+            newObservation.AddDelta(pair<string, float>("GoalX", x));
+            newObservation.AddDelta(pair<string, float>("GoalY", y));
+            newObservation.AddDelta(pair<string, float>("X", newState[0][0].item<float>()));
+            newObservation.AddDelta(pair<string, float>("Y", newState[0][1].item<float>()));
 
-        // Check game status
-        if (terminal)
-            break;
+            float newReward = env.Reward(std::get<1>(sd))[0].item<float>();
+            bool terminal = (std::get<1>(sd) == TestEnvironment::STATUS::WON) ? true : false;
+
+            // Update Agent
+            reward += newReward;
+            out << 1 << ", " << env.pos(0) << ", " << env.pos(1) << ", " << env.goal(0) << ", " << env.goal(1) << ", " << std::get<1>(sd) << "\n";
+
+            // Check game status
+            if (std::get<2>(sd)[0].item<float>())
+            {
+                if (terminal)
+                    winCount++;
+
+                break;
+            }
+        }
+
+        // Reset game
+        x = float(dist(re));
+        y = float(dist(re));
+        env.SetGoal(x, y);
+        env.Reset();
+        out << episode << ", " << env.pos(0) << ", " << env.pos(1) << ", " << env.goal(0) << ", " << env.goal(1) << ", " << env.RESETTING << "\n";
+
+        // Print results
+        printf("Game's Won %u/%u\n", winCount, nGames);
+        cout << endl;
     }
 
     out.close();

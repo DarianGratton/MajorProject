@@ -95,11 +95,11 @@ ReplayMemory::MemorySample ReplayMemory::SampleMemory(unsigned int batchSize)
 
 void ReplayMemory::SaveMemory()
 {
-	torch::save(stateMem, "SACMemory/states.pt");
-	torch::save(newStateMem, "SACMemory/newStates.pt");
-	torch::save(actionMem, "SACMemory/actions.pt");
-	torch::save(rewardMem, "SACMemory/rewards.pt");
-	torch::save(terminalMem, "SACMemory/terminals.pt");
+	torch::save(stateMem, "states.pt");
+	torch::save(newStateMem, "newStates.pt");
+	torch::save(actionMem, "actions.pt");
+	torch::save(rewardMem, "rewards.pt");
+	torch::save(terminalMem, "terminals.pt");
 }
 
 void ReplayMemory::LoadMemory()
@@ -110,6 +110,5 @@ void ReplayMemory::LoadMemory()
 	torch::load(rewardMem, "SACMemory/rewards.pt");
 	torch::load(terminalMem, "SACMemory/terminals.pt");
 
-	// TODO: Shouldn't be a issue for now but should fix
 	memCounter = 0;
 }

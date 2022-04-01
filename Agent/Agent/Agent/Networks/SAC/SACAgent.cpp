@@ -91,57 +91,70 @@ void SACAgent::Learn()
 	// Sample buffer
 	ReplayMemory::MemorySample memorySample = memory->SampleMemory(batchSize);
 
-	// Calculate the value of the states and new states based on the
-	// value and target value networks
-	torch::Tensor stateValue = value.get()->Forward(memorySample.states).view(-1);
-	torch::Tensor stateTargetValue = targetValue.get()->Forward(memorySample.newStates).view(-1);
-	stateTargetValue *= (~memorySample.terminals.clone()); // Dumb way of changing all values that are true to 0
+	cout << "Running Learn: " << endl;
+	try 
+	{
+		// Calculate the value of the states and new states based on the
+		// value and target value networks
+		torch::Tensor stateValue = value.get()->Forward(memorySample.states).view(-1);
+		torch::Tensor stateTargetValue = targetValue.get()->Forward(memorySample.newStates).view(-1);
+		stateTargetValue *= (~memorySample.terminals.clone()); // Dumb way of changing all values that are true to 0
 
-	// Get actions and log probabilites for the states according to the 
-	// new policy 
-	pair<torch::Tensor, torch::Tensor> actionProb = policy.get()->CalculateActionProb(memorySample.states, false);
-	torch::Tensor logProb = actionProb.second.view(-1);
-	torch::Tensor newPolicy1 = critic1.get()->Forward(memorySample.states, actionProb.first);
-	torch::Tensor newPolicy2 = critic2.get()->Forward(memorySample.states, actionProb.first);
-	torch::Tensor criticValue = torch::min(newPolicy1, newPolicy2);	
-	criticValue = criticValue.view(-1);
+		// Get actions and log probabilites for the states according to the 
+		// new policy 
+		pair<torch::Tensor, torch::Tensor> actionProb = policy.get()->CalculateActionProb(memorySample.states, false);
+		torch::Tensor logProb = actionProb.second.view(-1);
+		torch::Tensor newPolicy1 = critic1.get()->Forward(memorySample.states, actionProb.first);
+		torch::Tensor newPolicy2 = critic2.get()->Forward(memorySample.states, actionProb.first);
+		torch::Tensor criticValue = torch::min(newPolicy1, newPolicy2);	
+		criticValue = criticValue.view(-1);
 
-	// Value loss
-	value.get()->GetOptimizer()->zero_grad();
-	torch::Tensor valueTarget = criticValue - logProb;
-	torch::Tensor valueLoss = 0.5f * torch::nn::functional::mse_loss(stateValue, valueTarget);
-	valueLoss.backward({}, true);
-	value.get()->GetOptimizer()->step();
+		// Value loss
+		value.get()->GetOptimizer()->zero_grad();
+		torch::Tensor valueTarget = criticValue - logProb;
+		torch::Tensor valueLoss = 0.5f * torch::nn::functional::mse_loss(stateValue, valueTarget);
+		valueLoss.backward({}, true);
+		value.get()->GetOptimizer()->step();
 
-	// Get actions and log probabilites for the states according to the 
-	// new policy 
-	actionProb = policy.get()->CalculateActionProb(memorySample.states, true);
-	logProb = actionProb.second.view(-1);
-	newPolicy1 = critic1.get()->Forward(memorySample.states, actionProb.first);
-	newPolicy2 = critic2.get()->Forward(memorySample.states, actionProb.first);
-	criticValue = torch::min(newPolicy1, newPolicy2);
-	criticValue = criticValue.view(-1);
+		// Get actions and log probabilites for the states according to the 
+		// new policy 
+		actionProb = policy.get()->CalculateActionProb(memorySample.states, true);
+		logProb = actionProb.second.view(-1);
+		newPolicy1 = critic1.get()->Forward(memorySample.states, actionProb.first);
+		newPolicy2 = critic2.get()->Forward(memorySample.states, actionProb.first);
+		criticValue = torch::min(newPolicy1, newPolicy2);
+		criticValue = criticValue.view(-1);
 
-	// Policy loss
-	torch::Tensor policyLoss = logProb - criticValue;
-	policyLoss = torch::mean(policyLoss);
-	policy.get()->GetOptimizer()->zero_grad();
-	policyLoss.backward({}, true);
-	policy.get()->GetOptimizer()->step();
+		// Policy loss
+		torch::Tensor policyLoss = logProb - criticValue;
+		policyLoss = torch::mean(policyLoss);
+		policy.get()->GetOptimizer()->zero_grad();
+		policyLoss.backward({}, true);
+		policy.get()->GetOptimizer()->step();
 
-	// Critic loss
-	critic1.get()->GetOptimizer()->zero_grad();
-	critic2.get()->GetOptimizer()->zero_grad();
-	torch::Tensor qHat = rewardScale * memorySample.rewards + gamma * stateTargetValue;
-	torch::Tensor oldPolicy1 = critic1.get()->Forward(memorySample.states, memorySample.actions).view(-1);
-	torch::Tensor oldPolicy2 = critic2.get()->Forward(memorySample.states, memorySample.actions).view(-1);
-	torch::Tensor critic1Loss = 0.5f * torch::nn::functional::mse_loss(oldPolicy1, qHat);
-	torch::Tensor critic2Loss = 0.5f * torch::nn::functional::mse_loss(oldPolicy2, qHat);
+		// Critic loss
+		critic1.get()->GetOptimizer()->zero_grad();
+		critic2.get()->GetOptimizer()->zero_grad();
+		torch::Tensor qHat = rewardScale * memorySample.rewards + gamma * stateTargetValue;
+		torch::Tensor oldPolicy1 = critic1.get()->Forward(memorySample.states, memorySample.actions).view(-1);
+		torch::Tensor oldPolicy2 = critic2.get()->Forward(memorySample.states, memorySample.actions).view(-1);
+		torch::Tensor critic1Loss = 0.5f * torch::nn::functional::mse_loss(oldPolicy1, qHat);
+		torch::Tensor critic2Loss = 0.5f * torch::nn::functional::mse_loss(oldPolicy2, qHat);
 	
-	torch::Tensor criticLoss = critic1Loss + critic2Loss;
-	criticLoss.backward();
-	critic1.get()->GetOptimizer()->step();
-	critic2.get()->GetOptimizer()->step();
+		torch::Tensor criticLoss = critic1Loss + critic2Loss;
+		criticLoss.backward();
+		critic1.get()->GetOptimizer()->step();
+		critic2.get()->GetOptimizer()->step();
+	}
+	catch (const c10::Error& e)
+	{
+		std::cout << "SACAgent::Learn Error: " << e.what() << std::endl;
+	}
+	catch (const std::runtime_error& e)
+	{
+		std::cout << "SACAgent::Learn Error: " << e.what() << std::endl;
+		exit(0);
+	}
 
 	// Update network parameters
 	UpdateNetworkParameters(tau);
@@ -171,6 +184,9 @@ void SACAgent::SaveModel()
 	targetValue.get()->GetCheckpoint().str(string());
 	torch::save(targetValue, targetValue.get()->GetCheckpoint());
 	SaveToFile("TargetValue.txt", targetValue.get()->GetCheckpoint());
+
+	// Load Replay Memory
+	memory.get()->SaveMemory();
 }
 
 void SACAgent::LoadModel()
@@ -190,6 +206,9 @@ void SACAgent::LoadModel()
 	torch::load(value, value.get()->GetCheckpoint());
 	LoadFromFile("TargetValue.txt", targetValue.get()->GetCheckpoint());
 	torch::load(targetValue, targetValue.get()->GetCheckpoint());
+
+	// Load Replay Memory
+	// memory.get()->LoadMemory();
 }
 
 void SACAgent::SaveToFile(string filename, stringstream& checkpoint)
