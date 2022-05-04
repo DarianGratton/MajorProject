@@ -10,6 +10,8 @@
 #include "PyTorchExpansion/TorchNormal.h"
 #include "Networks/TestEnvironment/AgentTest.h"
 
+#include "Networks/ACER/ACERAgent.h"
+
 using namespace std;
 
 // Used for testing
@@ -29,9 +31,12 @@ int main()
 	cout << state.ToString() << endl; 
 	cout << state << endl;*/
 
-	AgentTest test;
+	/*AgentTest test;
 	test.Train();
-	test.Test();
+	test.Test();*/
+
+	ACERAgent test(0.0003f, 2, 5, 5, 32, 32, 1000000, 256);
+	test.Learn(true);
 
 	return 0;
 }

@@ -59,7 +59,7 @@ private:
 	unsigned int batchSize;
 
 	// Memory and Network objects
-	unique_ptr<ReplayMemory>  memory;
+	unique_ptr<ReplayMemory> memory;
 	PolicyNetwork policy = nullptr;
 	CriticNetwork critic1 = nullptr;
 	CriticNetwork critic2 = nullptr;
