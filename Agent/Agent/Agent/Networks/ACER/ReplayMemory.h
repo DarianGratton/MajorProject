@@ -2,8 +2,9 @@
 
 #include <torch/torch.h>
 
-#include <vector>
+#include <deque>
 
+#include "Trajectory.h"
 #include "../../Environment/Reward.h"
 #include "../../Environment/State.h"
 
@@ -19,6 +20,7 @@ using namespace RLGameAgent;
 
   Note: State size and number of actions per state must remain the same as when initialized.
 
+  TODO: Modify SampleMemory to sample multiple trajectories and batch them together.
   TODO: Testing of Save/Load memCounter.
   TODO: Save/Load into created directory.
 
@@ -28,6 +30,7 @@ class ACERReplayMemory
 {
 public:
 
+
 	/*
 	  Constructor for initializing the memory and its size.
 	  params:
@@ -36,7 +39,8 @@ public:
 			- nActions: The number of action taken given each state.
 			- nPossibleActions: The number of possible actions that the agent can take each state.
 	*/
-	ACERReplayMemory(unsigned int memSize, unsigned int stateSize, unsigned int nActions, unsigned int nPossibleActions);
+	ACERReplayMemory(unsigned int memSize, unsigned int maxEpisodeLength, 
+		unsigned int stateSize, unsigned int nActions, unsigned int nPossibleActions);
 
 	/*
 	  Stores input as data in memory.
@@ -55,17 +59,6 @@ public:
 		bool terminal,
 		vector<float> actionProbabilities);
 
-	/* Defines what a sample of memory contains. */
-	struct MemorySample
-	{
-		torch::Tensor states;
-		torch::Tensor actions;
-		torch::Tensor rewards;
-		torch::Tensor newStates;
-		torch::Tensor terminals;
-		torch::Tensor actionProbabilities;
-	};
-
 	/*
 	  Samples an random part of the memory.
 	  params:
@@ -73,7 +66,7 @@ public:
 	  returns:
 			- A memory sample object.
 	*/
-	MemorySample SampleMemory(unsigned int batchSize);
+	std::vector<Trajectory> SampleMemory(unsigned int batchSize, unsigned int trajectoryLength);
 
 	/*
 	  Saves memory to multiple files. One for each tensor.
@@ -88,18 +81,15 @@ public:
 	void LoadMemory();
 
 	/* Gets the current size of the memory (number of entries added). */
-	inline unsigned int GetCurrentMemsize() { return currMemStored; };
+	inline unsigned int GetCurrentMemsize() { return trajectories.size(); };
 
 private:
 
 	/* Size of the memory. */
 	unsigned int memSize;
 
-	/* Number of entries added to memory (max: memSize). */
-	unsigned int currMemStored;
-
-	/* Current position of memory. */
-	unsigned int memCounter;
+	/* Max length of episode. */
+	unsigned int maxEpisodeLength;
 
 	/* Size of the state. */
 	unsigned int stateSize;
@@ -111,12 +101,8 @@ private:
 	unsigned int nPossibleActions;
 
 	/* Memory */
-	torch::Tensor stateMem;
-	torch::Tensor newStateMem;
-	torch::Tensor actionMem;
-	torch::Tensor rewardMem;
-	torch::Tensor terminalMem;
-	torch::Tensor actionProbabilitiesMem;
+	std::deque<Trajectory> trajectories;
+	Trajectory currTrajectory;
 
 	/* TODO: Temp way to save/load memCounter without implementing framework for it. */
 	torch::Tensor memCounterMem;

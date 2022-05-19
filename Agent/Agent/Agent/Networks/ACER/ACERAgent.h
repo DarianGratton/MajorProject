@@ -4,6 +4,7 @@
 
 #include "ActorCriticNetwork.h"
 #include "ReplayMemory.h"
+#include "Trajectory.h"
 
 #include <memory>
 #include <vector>
@@ -44,7 +45,7 @@ public:
 	  TODO: Take a trejectory rather then a onPolicy boolean, 
 	        where trejectory would be struct created from playing the environment or from memory
 	*/
-	void Learn(bool onPolicy);
+	void Learn(Trajectory trajectory, bool onPolicy);
 
 	void SaveModel();
 	void LoadModel();
