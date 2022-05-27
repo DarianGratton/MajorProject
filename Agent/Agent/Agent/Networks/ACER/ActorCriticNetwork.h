@@ -34,7 +34,7 @@ public:
 	  params:
 			- state: The current state of the environment.
 	  returns:
-			- Predicted value of the action taken in that state.
+			- Predicted value and policy [description].
 	*/
 	std::pair<torch::Tensor, torch::Tensor> Forward(torch::Tensor state);
 
