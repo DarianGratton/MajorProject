@@ -26,7 +26,7 @@ public:
 			- layer1Dims: Layer 1 dimensions.
 			- layer2Dims: Layer 2 dimensions.
 	*/
-	ActorCriticNetworkImpl(float lr, unsigned int nActions,
+	ActorCriticNetworkImpl(float lr, unsigned int nPossibleActions,
 		int64_t inputDims, int64_t hiddenLayerDims, int64_t actionLayerDims);
 
 	/*
@@ -38,20 +38,18 @@ public:
 	*/
 	std::pair<torch::Tensor, torch::Tensor> Forward(torch::Tensor state);
 
-	/*
-	  Resets the parameters of each layer of the network.
-	*/
-	void ResetParameters();
+	/* TODO: source should be constant */
+	void CopyParametersFrom(ActorCriticNetworkImpl source, float decay = 0);
 
-	/*
-	  What.
-	*/
-	std::shared_ptr<ActorCriticNetworkImpl> CustomClone();
+	/* TODO: source should be constant */
+	void CopyGradientsFrom(ActorCriticNetworkImpl source);
+
+	std::shared_ptr<ActorCriticNetworkImpl> CleanClone();
 
 private:
 
 	float learningRate;
-	unsigned int nActions;
+	unsigned int nPossibleActions;
 	int64_t inputDims;
 	int64_t hiddenLayerDims;
 	int64_t actionLayerDims;

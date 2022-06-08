@@ -6,18 +6,20 @@
 #include "ReplayMemory.h"
 #include "Trajectory.h"
 
+/* Delete this and replace with Environment class. */
+#include "../TestEnvironment/TestEnvironment.h"
+
 #include <memory>
 #include <vector>
 
 /*
   ACERAgent
 
-  TODO: Constructor
-  TODO: Destructor
-  TODO: UpdateMemory function
+  TODO: Constructor: most variables should have default values
   TODO: Learn function
   TODO: Save/Load Model
   TODO: Comments
+  TODO: Fix mess with nActions and nPossibleActions
 
   Author: Darian G.
 */
@@ -27,10 +29,13 @@ public:
 	ACERAgent(unsigned int lr,
 		unsigned int nActions, unsigned int nPossibleActions,
 		int64_t inputDims, int64_t hiddenLayerDims, int64_t actionLayerDims,
-		unsigned int memSize, unsigned int batchSize,
-		float biasWeight = 0.1f, float gamma = 0.99f, int traceMax = 10);
+		unsigned int memSize, unsigned int maxEpisodeLength, unsigned int batchSize,
+		float biasWeight, float gamma, int traceMax);
 
 	~ACERAgent();
+
+	/* TODO: Not going to be void in the future. */
+	void Run(TestEnvironment& env, unsigned int nEpisodes, unsigned int episodeLength);
 
 	void UpdateMemory(
 		State state,
@@ -40,20 +45,20 @@ public:
 		bool terminal,
 		std::vector<float> actionProbabilities);
 
-	/*
-	  Follows Algorihtm 2 ACER for discrete actions from the paper.
-
-	  TODO: Take a trejectory rather then a onPolicy boolean, 
-	        where trejectory would be struct created from playing the environment or from memory
-	*/
-	void Learn(std::vector<Trajectory> trajectories, bool onPolicy);
-
 	void SaveModel();
 	void LoadModel();
 
-private:
+	// TODO: From here down needs to be private, set to public just for test environment
+	/*
+	  Follows Algorihtm 2 ACER for discrete actions from the paper.
+
+	  TODO: Take a trejectory rather then a onPolicy boolean,
+			where trejectory would be struct created from playing the environment or from memory
+	*/
+	void Learn(std::vector<Trajectory> trajectories);
+
 	/* Trust Region. */
-	torch::Tensor TrustRegion(std::vector<torch::Tensor> gradients, 
+	std::vector<torch::Tensor> TrustRegion(std::vector<torch::Tensor> gradients, 
 		torch::Tensor policy, torch::Tensor averagePolicy);
 
 	/* Network */

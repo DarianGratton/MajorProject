@@ -1,14 +1,14 @@
 #include "ActorCriticNetwork.h"
 
 ActorCriticNetworkImpl::ActorCriticNetworkImpl(
-	float lr, unsigned int nActions, 
+	float lr, unsigned int nPossibleActions, 
 	int64_t inputDims, int64_t hiddenLayerDims, int64_t actionLayerDims) : 
-	learningRate(lr), nActions(nActions),
+	learningRate(lr), nPossibleActions(nPossibleActions),
 	inputDims(inputDims), hiddenLayerDims(hiddenLayerDims), actionLayerDims(actionLayerDims),
 	inputLayer(torch::nn::Linear(inputDims, hiddenLayerDims)),
 	hiddenLayer1(torch::nn::Linear(hiddenLayerDims, actionLayerDims)),
-	actionLayer(torch::nn::Linear(actionLayerDims, nActions)),
-	actionValueLayer(torch::nn::Linear(actionLayerDims, nActions))
+	actionLayer(torch::nn::Linear(actionLayerDims, nPossibleActions)),
+	actionValueLayer(torch::nn::Linear(actionLayerDims, nPossibleActions))
 {
 	// Register modules (Needed for parameters())
 	register_module("inputLayer", inputLayer);
@@ -24,41 +24,37 @@ std::pair<torch::Tensor, torch::Tensor> ActorCriticNetworkImpl::Forward(torch::T
 	hidden = hiddenLayer1(hidden);
 	hidden = torch::nn::functional::relu(hidden);
 
-	torch::Tensor actionProbs = torch::nn::functional::softmax(actionLayer(hidden), 1);
+	torch::Tensor actionProbs = torch::nn::functional::softmax(actionLayer(hidden), -1);
 	torch::Tensor actionValues = actionValueLayer(hidden);
 
 	return std::make_pair(actionProbs, actionValues);
 }
 
-void ActorCriticNetworkImpl::ResetParameters()
+void ActorCriticNetworkImpl::CopyParametersFrom(ActorCriticNetworkImpl source, float decay /* = 0 */)
 {
-	inputLayer->reset_parameters();
-	hiddenLayer1->reset_parameters();
-	actionLayer->reset_parameters();
-	actionValueLayer->reset_parameters();
+	unsigned int i = 0;
+	std::vector<torch::Tensor> sourceParameters = source.parameters();
+	for (torch::Tensor localParameter : this->parameters())
+	{
+		localParameter.data().copy_(decay * localParameter.data() + (1 - decay) * sourceParameters[i].data());
+		i++;
+	}
 }
 
-std::shared_ptr<ActorCriticNetworkImpl> ActorCriticNetworkImpl::CustomClone()
+void ActorCriticNetworkImpl::CopyGradientsFrom(ActorCriticNetworkImpl source)
 {
-	auto newNetwork = std::make_shared<ActorCriticNetworkImpl>(
-		                 learningRate, nActions, 
-		                 inputDims, hiddenLayerDims, actionLayerDims);
-	std::string data;
+	unsigned int i = 0;
+	std::vector<torch::Tensor> sourceParameters = source.parameters();
+	for (torch::Tensor localParameter : this->parameters())
 	{
-		std::ostringstream oss;
-		torch::serialize::OutputArchive archive;
-
-		this->save(archive);
-		archive.save_to(oss);
-		data = oss.str();
+		localParameter.mutable_grad() = sourceParameters[i].grad();
+		i++;
 	}
+}
 
-	{
-		std::istringstream iss(data);
-		torch::serialize::InputArchive archive;
-		archive.load_from(iss);
-		newNetwork->load(archive);
-	}
-
-	return newNetwork;
+std::shared_ptr<ActorCriticNetworkImpl> ActorCriticNetworkImpl::CleanClone()
+{
+	return std::make_shared<ActorCriticNetworkImpl>(
+		learningRate, nPossibleActions,
+		inputDims, hiddenLayerDims, actionLayerDims);
 }

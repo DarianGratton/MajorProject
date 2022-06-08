@@ -20,7 +20,7 @@ using namespace RLGameAgent;
 
   Note: State size and number of actions per state must remain the same as when initialized.
 
-  TODO: Modify SampleMemory to sample multiple trajectories and batch them together.
+  TODO: Fix bug when environment ends on first turn.
   TODO: Testing of Save/Load memCounter.
   TODO: Save/Load into created directory.
 
@@ -82,6 +82,8 @@ public:
 
 	/* Gets the current size of the memory (number of entries added). */
 	inline unsigned int GetCurrentMemsize() { return trajectories.size(); };
+
+	inline Trajectory GetCurrTrajectory() { return currTrajectory; };
 
 private:
 

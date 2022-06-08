@@ -2,6 +2,8 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <random>
+#include <numeric>
 
 #include "Environment/Environment.h"
 #include "Environment/State.h"
@@ -35,16 +37,11 @@ int main()
 	test.Train();
 	test.Test();*/
 
-	// ACERAgent test(0.0003f, 2, 5, 5, 32, 32, 1000000, 256);
-
-	torch::Tensor tensor1 = torch::tensor({ {1, 2}, {3, 4}, {5, 6} });
-	torch::Tensor tensor2 = torch::tensor({ {0, 0}, {0, 0}, {0, 0}, {0, 0} });
-
-	// tensor2.copy_(tensor1.slice(0, 0, 2));
-	tensor1 = tensor1.index({ torch::indexing::Slice(1, torch::indexing::None), "..." });
-	cout << tensor1 << endl;
-	cout << tensor2.size(0) << endl;
+	// ACERAgent test(0.0003f, 2, 5, 5, 32, 32, 1000000, 256)
 	// cout << tensor2 << endl;
+
+	AgentTest test(false, true);
+	test.Train();
 
 	return 0;
 }

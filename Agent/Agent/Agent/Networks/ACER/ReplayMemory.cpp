@@ -39,20 +39,7 @@ void ACERReplayMemory::StoreStateTransition(
 	}
 
 	// Add elements to trajectory
-	currTrajectory.states.slice(0, currTrajectory.numOfTransitions, currTrajectory.numOfTransitions + 1) = torch::from_blob(state.ToVector().data(), { 1, stateSize });
-	currTrajectory.newStates.slice(0, currTrajectory.numOfTransitions, currTrajectory.numOfTransitions + 1) = torch::from_blob(newState.ToVector().data(), { 1, stateSize });
-
-	for (int i = 0; i < actions.size(); i++)
-		currTrajectory.actions[trajectories.size() - 1][i].data() = actions.at(i);
-
-	currTrajectory.rewards[currTrajectory.numOfTransitions].data() = reward;
-	currTrajectory.terminals[currTrajectory.numOfTransitions].data() = terminal;
-
-	for (int i = 0; i < actions.size(); i++)
-		currTrajectory.policy[currTrajectory.numOfTransitions][i].data() = actionProbabilities.at(i);
-
-	// Increment counter
-	currTrajectory.numOfTransitions++;
+	currTrajectory.StoreTransition(state, actions, reward, newState, terminal, actionProbabilities);
 
 	// Check if trajectory has ended
 	if (terminal || currTrajectory.numOfTransitions >= maxEpisodeLength)
@@ -79,38 +66,35 @@ std::vector<Trajectory> ACERReplayMemory::SampleMemory(unsigned int batchSize, u
 	RandomIterator indices(batchSize, 0, trajectories.size() - 1);
 
 	// Sample Trajectories
-	// TODO: Test
-	// TODO: Fix bug with start + trajectoryLength
-	// TODO: Fix bug with start equal to size of trajectory (meaning we get 0 in the trajectory)
 	std::vector<Trajectory> sampledTrajectories;
 	for (int i = 0; i < batchSize; ++i)
 	{
 		int index = indices.next() - 1;
 		Trajectory storedTrajectory(trajectories[index]);
 
-		RandomIterator iterator(1, 0, storedTrajectory.numOfTransitions - 1);
+		RandomIterator iterator(1, 0, storedTrajectory.numOfTransitions / 2);
 		int start = iterator.next() - 1;
-		
-		storedTrajectory.states		= storedTrajectory.states.index({ torch::indexing::Slice(start, start + trajectoryLength), "..." });
-		storedTrajectory.newStates	= storedTrajectory.newStates.index({ torch::indexing::Slice(start, start + trajectoryLength), "..." });
-		storedTrajectory.actions	= storedTrajectory.actions.index({ torch::indexing::Slice(start, start + trajectoryLength), "..." });
-		storedTrajectory.rewards	= storedTrajectory.rewards.index({ torch::indexing::Slice(start, start + trajectoryLength), "..." });
-		storedTrajectory.terminals	= storedTrajectory.terminals.index({ torch::indexing::Slice(start, start + trajectoryLength), "..." });
-		storedTrajectory.policy		= storedTrajectory.policy.index({ torch::indexing::Slice(start, start + trajectoryLength), "..." });
+		int end = (start + trajectoryLength >= storedTrajectory.numOfTransitions) ? storedTrajectory.numOfTransitions : start + trajectoryLength;
+
+		storedTrajectory.states		= storedTrajectory.states.index({ torch::indexing::Slice(start, end), "..." });
+		storedTrajectory.newStates	= storedTrajectory.newStates.index({ torch::indexing::Slice(start, end), "..." });
+		storedTrajectory.actions	= storedTrajectory.actions.index({ torch::indexing::Slice(start, end), "..." });
+		storedTrajectory.rewards	= storedTrajectory.rewards.index({ torch::indexing::Slice(start, end), "..." });
+		storedTrajectory.terminals	= storedTrajectory.terminals.index({ torch::indexing::Slice(start, end), "..." });
+		storedTrajectory.policy		= storedTrajectory.policy.index({ torch::indexing::Slice(start, end), "..." });
 	
 		sampledTrajectories.push_back(storedTrajectory);
 	}
 
 	// Truncate longer trajectories so they are all the same size
-	// TODO: Test
 	int64_t smallestTrajectory = std::numeric_limits<int64_t>::max();
-	for (auto trajectory : sampledTrajectories)
+	for (Trajectory trajectory : sampledTrajectories)
 		if (trajectory.states.size(0) < smallestTrajectory)
 			smallestTrajectory = trajectory.states.size(0);
 
-	for (auto trajectory : sampledTrajectories)
+	for (Trajectory& trajectory : sampledTrajectories)
 	{
-		int64_t start = trajectory.states.size(0) - smallestTrajectory - 1;
+		int64_t start = trajectory.states.size(0) - smallestTrajectory;
 		trajectory.states = trajectory.states.index({ torch::indexing::Slice(start, torch::indexing::None), "..." });
 		trajectory.newStates = trajectory.newStates.index({ torch::indexing::Slice(start, torch::indexing::None), "..." });
 		trajectory.actions = trajectory.actions.index({ torch::indexing::Slice(start, torch::indexing::None), "..." });
@@ -120,12 +104,11 @@ std::vector<Trajectory> ACERReplayMemory::SampleMemory(unsigned int batchSize, u
 	}
 
 	// Batch Trajectories
-	// TODO: Test
 	std::vector<Trajectory> batchedTrajectories;
-	for (int i = 0; i < sampledTrajectories.size(); i++)
+	for (int i = 0; i < sampledTrajectories[0].states.size(0); i++) // Loop through n = batchsize = 16
 	{
-		Trajectory batchedTrajectory(sampledTrajectories.size(), stateSize, nActions, nPossibleActions);
-		for (int j = 0; j < sampledTrajectories.size(); j++)
+		Trajectory batchedTrajectory(batchSize, stateSize, nActions, nPossibleActions);
+		for (int j = 0; j < batchSize; j++) // Loop through n = batchsize = 16
 		{
 			batchedTrajectory.states[j].data() = sampledTrajectories[j].states[i].data();
 			batchedTrajectory.newStates[j].data() = sampledTrajectories[j].newStates[i].data();
