@@ -25,7 +25,7 @@ ACERReplayMemory::ACERReplayMemory(
 
 void ACERReplayMemory::StoreStateTransition(
 	State state,
-	vector<float> actions,
+	vector<int> actions,
 	float reward,
 	State newState,
 	bool terminal,

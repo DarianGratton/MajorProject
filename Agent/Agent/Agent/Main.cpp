@@ -42,6 +42,7 @@ int main()
 
 	AgentTest test(false, true);
 	test.Train();
+	// test.Test();
 
 	return 0;
 }

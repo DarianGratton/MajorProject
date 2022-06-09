@@ -33,9 +33,27 @@ void ACERAgent::Run(TestEnvironment& env,
 	}
 }
 
+std::pair<int, std::vector<float>> ACERAgent::PredictAction(State observation)
+{
+	// Predict Probabilites
+	auto predictedAction = actorCritic->Forward(observation.ToTensor());
+	
+	// Get Action
+	int action = predictedAction.first.multinomial(1).item<int>();
+	
+	// Store Probabilites in Vector
+	std::vector<float> actionProbabilites;
+	for (int i = 0; i < predictedAction.first.size(1); i++)
+	{
+		actionProbabilites.push_back(predictedAction.first[0][i].item<float>());
+	}
+	
+	return std::make_pair(action, actionProbabilites);
+}
+
 void ACERAgent::UpdateMemory(
 	State state,
-	vector<float> actions,
+	vector<int> actions,
 	float reward,
 	State newState,
 	bool terminal,
@@ -46,10 +64,14 @@ void ACERAgent::UpdateMemory(
 
 void ACERAgent::SaveModel()
 {
+	torch::save(actorCritic, "ACERActorCritic.pt");
+	torch::save(averageActorCritic, "ACERAvgActorCritic.pt");
 }
 
 void ACERAgent::LoadModel()
 {
+	torch::load(actorCritic, "ACERActorCritic.pt");
+	torch::load(averageActorCritic, "ACERAvgActorCritic.pt");
 }
 
 void ACERAgent::Learn(std::vector<Trajectory> trajectories)

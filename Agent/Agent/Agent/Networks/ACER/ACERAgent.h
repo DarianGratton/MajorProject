@@ -6,11 +6,14 @@
 #include "ReplayMemory.h"
 #include "Trajectory.h"
 
+#include "../../Environment/State.h"
 /* Delete this and replace with Environment class. */
 #include "../TestEnvironment/TestEnvironment.h"
 
 #include <memory>
 #include <vector>
+
+using namespace RLGameAgent;
 
 /*
   ACERAgent
@@ -37,9 +40,11 @@ public:
 	/* TODO: Not going to be void in the future. */
 	void Run(TestEnvironment& env, unsigned int nEpisodes, unsigned int episodeLength);
 
+	std::pair<int, std::vector<float>> PredictAction(State observation);
+
 	void UpdateMemory(
 		State state,
-		std::vector<float> actions,
+		std::vector<int> actions,
 		float reward,
 		State newState,
 		bool terminal,

@@ -56,7 +56,7 @@ void AgentTest::Train()
     }
 
     // Training loop.
-    unsigned int nEpisodes = 10000;
+    unsigned int nEpisodes = 50000;
     unsigned int maxEpisodeLength = 2048;
     unsigned int winCount = 0;
     float bestAvgReward = -100000; 
@@ -82,12 +82,11 @@ void AgentTest::Train()
         for (i = 1; i <= maxEpisodeLength; i++)
         {
             // Play
-            auto predictedAction = agent->actorCritic->Forward(observation.ToTensor());
+            auto predictedAction = agent->PredictAction(observation);
 
             float xAct = 0.0f;
             float yAct = 0.0f;
-            torch::Tensor action = predictedAction.first.multinomial(1);
-            switch(action.item<int>())
+            switch(predictedAction.first)
             {
             case 0:
                 xAct = 0.5f;
@@ -105,6 +104,7 @@ void AgentTest::Train()
                 cout << "Something went wrong" << endl;
                 break;
             }
+
             auto sd = env.Act(xAct, yAct); // std::tuple<state, status, terminal>
 
             // Get parameters
@@ -117,16 +117,8 @@ void AgentTest::Train()
 
             float newReward = env.Reward(std::get<1>(sd))[0].item<float>();
             // bool terminal = (std::get<1>(sd) == TestEnvironment::STATUS::WON) ? true : false;
-            std::vector<float> actionProb = { predictedAction.first[0][0].item<float>(),
-                                              predictedAction.first[0][1].item<float>(),
-                                              predictedAction.first[0][2].item<float>(),
-                                              predictedAction.first[0][3].item<float>() };
+            std::vector<float> actionProb = predictedAction.second;
             bool terminal = std::get<2>(sd)[0].item<float>();
-
-            if (terminal)
-            {
-                cout << "Episode step: " << i << endl;
-            }
 
             // Update Agent
             reward += newReward;
@@ -134,9 +126,9 @@ void AgentTest::Train()
             if (recordOutput)
                 out << episode << ", " << env.pos(0) << ", " << env.pos(1) << ", " << env.goal(0) << ", " << env.goal(1) << ", " << std::get<1>(sd) << "\n";
             
-            agent->UpdateMemory(observation, { action.item<float>() }, newReward,
+            agent->UpdateMemory(observation, { predictedAction.first }, newReward,
                                 newObservation, terminal, actionProb);
-            trajectory.StoreTransition(observation, { action.item<float>() }, newReward,
+            trajectory.StoreTransition(observation, { predictedAction.first }, newReward,
                                 newObservation, terminal, actionProb);
             observation = newObservation;
 
@@ -148,20 +140,16 @@ void AgentTest::Train()
                 
                 break;
             }
+
+            // cout << observation << endl;
         }
-
-        cout << endl;
-
-        //cout << agent->memory->GetCurrentMemsize() << endl;
         
-        //exit(0);
+        exit(0);
 
         // Update agent
         if (agent->memory->GetCurrentMemsize() >= 16)
         {
             // Off-Policy
-            cout << "Memsize(): " << endl;
-            cout << agent->memory->GetCurrentMemsize() << endl;
             std::vector<Trajectory> trajectories = agent->memory->SampleMemory(16, 150);
             agent->Learn(trajectories);
         }
@@ -230,7 +218,7 @@ void AgentTest::Test()
     agent->LoadModel();
 
     // Training loop.
-    unsigned int nEpisodes = 10000;
+    unsigned int nEpisodes = 1000;
     unsigned int maxEpisodeLength = 2048;
     unsigned int winCount = 0;
     for (unsigned int episode = 1; episode <= nEpisodes; episode++)

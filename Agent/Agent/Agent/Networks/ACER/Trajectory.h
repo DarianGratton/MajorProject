@@ -49,7 +49,7 @@ struct Trajectory
 
 	void StoreTransition(
 		State state,
-		vector<float> newActions,
+		vector<int> newActions,
 		float reward,
 		State newState,
 		bool terminal,
