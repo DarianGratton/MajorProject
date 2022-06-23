@@ -41,8 +41,10 @@ void ACERReplayMemory::StoreStateTransition(
 	// Add elements to trajectory
 	currTrajectory.StoreTransition(state, actions, reward, newState, terminal, actionProbabilities);
 
+	// cout << currTrajectory.numOfTransitions << endl;
+
 	// Check if trajectory has ended
-	if (terminal || currTrajectory.numOfTransitions >= maxEpisodeLength)
+	if (terminal || currTrajectory.numOfTransitions >= maxEpisodeLength) // 128
 	{
 		// Insert elements
 		if (trajectories.size() >= memSize)
@@ -54,6 +56,8 @@ void ACERReplayMemory::StoreStateTransition(
 		{
 			trajectories.push_back(currTrajectory);
 		}
+
+		// cout << "Trajectory size: " << trajectories.size() << endl;
 		
 		// Reset currTrajectory
 		currTrajectory = Trajectory(maxEpisodeLength, stateSize, nActions, nPossibleActions);

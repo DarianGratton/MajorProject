@@ -39,12 +39,21 @@ public:
 	std::pair<torch::Tensor, torch::Tensor> Forward(torch::Tensor state);
 
 	/* TODO: source should be constant */
-	void CopyParametersFrom(ActorCriticNetworkImpl source, float decay = 0);
+	void CopyParametersFrom(const ActorCriticNetworkImpl& source, float decay = 0);
 
 	/* TODO: source should be constant */
-	void CopyGradientsFrom(ActorCriticNetworkImpl source);
+	void CopyGradientsFrom(const ActorCriticNetworkImpl& source);
 
+	/* 
+	  Creates a new ActorCriticNetwork object using the parameters of the original 
+	  object. Used to create a clone with refreshed hyperparameters and gradients.
+	  returns:
+			- A new ActorCriticNetwork object;
+	*/
 	std::shared_ptr<ActorCriticNetworkImpl> CleanClone();
+
+	inline std::stringstream& GetCheckpoint() { return checkpoint; }
+	inline torch::optim::Adam* GetOptimizer() { return optimizer; }
 
 private:
 
@@ -57,7 +66,15 @@ private:
 	/* Network Layers */
 	torch::nn::Linear inputLayer = nullptr;
 	torch::nn::Linear hiddenLayer1 = nullptr;
+	torch::nn::Linear hiddenLayer2 = nullptr;
+	torch::nn::Linear hiddenLayer3 = nullptr;
 	torch::nn::Linear actionLayer = nullptr;
 	torch::nn::Linear actionValueLayer = nullptr;
+
+	/* Optimizer */
+	torch::optim::Adam* optimizer;
+
+	/* Checkpoint */
+	std::stringstream checkpoint;
 };
 TORCH_MODULE(ActorCriticNetwork);

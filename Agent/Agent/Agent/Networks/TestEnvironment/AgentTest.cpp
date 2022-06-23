@@ -19,14 +19,14 @@ AgentTest::AgentTest(bool isContinous, bool recordOutput) :
 {
     // Setup Model.
     // ...
-    unsigned int lr = 0;
+    float lr = 1e-3f;
     unsigned int nActions = 1;
     unsigned int nPossibleActions = 4;
     int64_t inputDims = 4;
-    int64_t hiddenLayerDims = 32;
-    int64_t actionLayerDims = 32;
+    int64_t hiddenLayerDims = 128;
+    int64_t actionLayerDims = 128;
     unsigned int memSize = 1000000;
-    unsigned int batchSize = 16;
+    batchSize = 16;
     float biasWeight = 0.1f;
     float gamma = 0.99f;
     int traceMax = 10;
@@ -56,7 +56,7 @@ void AgentTest::Train()
     }
 
     // Training loop.
-    unsigned int nEpisodes = 50000;
+    unsigned int nEpisodes = 2000;
     unsigned int maxEpisodeLength = 2048;
     unsigned int winCount = 0;
     float bestAvgReward = -100000; 
@@ -77,10 +77,14 @@ void AgentTest::Train()
         // Create trajectory
         Trajectory trajectory(maxEpisodeLength, observation.Size(), 1, 4);
 
+        //cout << observation << endl;
+        std::vector<Trajectory> trajectories;
         float reward = 0;
         unsigned int i = 0;
         for (i = 1; i <= maxEpisodeLength; i++)
         {
+            Trajectory trajectory(1, observation.Size(), 1, 4);
+
             // Play
             auto predictedAction = agent->PredictAction(observation);
 
@@ -116,7 +120,7 @@ void AgentTest::Train()
             newObservation.AddDelta(pair<string, float>("Y", newState[0][1].item<float>()));
 
             float newReward = env.Reward(std::get<1>(sd))[0].item<float>();
-            // bool terminal = (std::get<1>(sd) == TestEnvironment::STATUS::WON) ? true : false;
+            //bool terminal = (std::get<1>(sd) == TestEnvironment::STATUS::WON) ? true : false;
             std::vector<float> actionProb = predictedAction.second;
             bool terminal = std::get<2>(sd)[0].item<float>();
 
@@ -130,6 +134,8 @@ void AgentTest::Train()
                                 newObservation, terminal, actionProb);
             trajectory.StoreTransition(observation, { predictedAction.first }, newReward,
                                 newObservation, terminal, actionProb);
+            trajectories.push_back(trajectory);
+
             observation = newObservation;
 
             // Check game status
@@ -140,24 +146,20 @@ void AgentTest::Train()
                 
                 break;
             }
-
-            // cout << observation << endl;
         }
-        
-        exit(0);
 
         // Update agent
-        if (agent->memory->GetCurrentMemsize() >= 16)
+        agent->Learn(trajectories); // on-policy
+        if (agent->memory->GetCurrentMemsize() >= batchSize)
         {
-            // Off-Policy
-            std::vector<Trajectory> trajectories = agent->memory->SampleMemory(16, 150);
+            // off-policy
+            trajectories = agent->memory->SampleMemory(batchSize, 512);
             agent->Learn(trajectories);
         }
-        else
-        {
-            // On-Policy
-            agent->Learn({ trajectory });
-        }
+        
+        /*cout << "Parameters: " << endl;
+        cout << agent->actorCritic->parameters()[0].grad() << endl;
+        cout << endl;*/
 
         // Reset game
         x = float(dist(re));
@@ -181,7 +183,7 @@ void AgentTest::Train()
         cout << "Reward: " << reward << endl;
         cout << "AvgReward: " << avgReward << endl;
 
-        if ((avgReward > bestAvgReward && rewardHistory.size() >= 100) || episode % 10000 == 0)
+        if ((avgReward > bestAvgReward && rewardHistory.size() >= 100))
         {
             bestAvgReward = avgReward;
             agent->SaveModel();

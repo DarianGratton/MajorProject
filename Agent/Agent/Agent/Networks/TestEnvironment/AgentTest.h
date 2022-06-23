@@ -22,4 +22,6 @@ private:
 
 	/* If true results will be recorded in a csv. */
 	bool recordOutput;
+
+	unsigned int batchSize;
 };

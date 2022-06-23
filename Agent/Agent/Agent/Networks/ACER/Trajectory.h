@@ -23,25 +23,26 @@ struct Trajectory
 		unsigned int nActions, unsigned int nPossibleActions) :
 		stateSize(stateSize)
 	{
-		states = torch::zeros({ maxEpisodeLength, stateSize }, torch::TensorOptions().dtype(torch::kFloat32));
-		newStates = torch::zeros({ maxEpisodeLength, stateSize }, torch::TensorOptions().dtype(torch::kFloat32));
-		actions = torch::zeros({ maxEpisodeLength, nActions }, torch::TensorOptions().dtype(torch::kFloat32));
-		rewards = torch::zeros({ maxEpisodeLength, 1 }, torch::TensorOptions().dtype(torch::kFloat32));
-		terminals = torch::zeros({ maxEpisodeLength, 1 }, torch::TensorOptions().dtype(torch::kFloat32));
-		policy = torch::zeros({ maxEpisodeLength, nPossibleActions }, torch::TensorOptions().dtype(torch::kFloat32));
-	
+		auto options = torch::TensorOptions().dtype(torch::kFloat32);
+		states = torch::zeros({ maxEpisodeLength, stateSize }, options);
+		newStates = torch::zeros({ maxEpisodeLength, stateSize }, options);
+		actions = torch::zeros({ maxEpisodeLength, nActions }, options);
+		rewards = torch::zeros({ maxEpisodeLength, 1 }, options);
+		terminals = torch::zeros({ maxEpisodeLength, 1 }, options);
+		policy = torch::zeros({ maxEpisodeLength, nPossibleActions }, options);
+
 		numOfTransitions = 0;
 	}
 
 	/* Copy Constructor. */
 	Trajectory(const Trajectory& trajectory)
 	{
-		states    = trajectory.states.clone().detach();
-		actions	  = trajectory.actions.clone().detach();
-		rewards	  = trajectory.rewards.clone().detach();
-		newStates = trajectory.newStates.clone().detach();
-		terminals = trajectory.terminals.clone().detach();
-		policy	  = trajectory.policy.clone().detach();
+		states    = trajectory.states.clone();
+		actions	  = trajectory.actions.clone();
+		rewards	  = trajectory.rewards.clone();
+		newStates = trajectory.newStates.clone();
+		terminals = trajectory.terminals.clone();
+		policy	  = trajectory.policy.clone();
 
 		numOfTransitions = trajectory.numOfTransitions;
 		stateSize = trajectory.stateSize;
@@ -55,8 +56,17 @@ struct Trajectory
 		bool terminal,
 		vector<float> actionProbabilities)
 	{
-		states.slice(0, numOfTransitions, numOfTransitions + 1) = torch::from_blob(state.ToVector().data(), { 1, stateSize });
-		newStates.slice(0, numOfTransitions, numOfTransitions + 1) = torch::from_blob(newState.ToVector().data(), { 1, stateSize });
+		/*states.slice(0, numOfTransitions, numOfTransitions + 1) = torch::nn::functional::normalize(
+			torch::from_blob(state.ToVector().data(), { 1, stateSize }),
+			torch::nn::functional::NormalizeFuncOptions().p(1).dim(1));*/
+
+		states.slice(0, numOfTransitions, numOfTransitions + 1) = state.ToTensor();
+
+		/*newStates.slice(0, numOfTransitions, numOfTransitions + 1) = torch::nn::functional::normalize(
+			torch::from_blob(newState.ToVector().data(), { 1, stateSize }),
+			torch::nn::functional::NormalizeFuncOptions().p(1).dim(1));;*/
+
+		newStates.slice(0, numOfTransitions, numOfTransitions + 1) = newState.ToTensor();
 
 		for (int i = 0; i < newActions.size(); i++)
 			actions[numOfTransitions][i].data() = newActions.at(i);
@@ -68,6 +78,17 @@ struct Trajectory
 			policy[numOfTransitions][i].data() = actionProbabilities.at(i);
 
 		numOfTransitions++;
+	}
+
+	void Truncate()
+	{
+		int64_t end = numOfTransitions;
+		states = states.index({ torch::indexing::Slice(torch::indexing::None, end), "..." });
+		newStates = newStates.index({ torch::indexing::Slice(torch::indexing::None, end), "..." });
+		actions = actions.index({ torch::indexing::Slice(torch::indexing::None, end), "..." });
+		rewards = rewards.index({ torch::indexing::Slice(torch::indexing::None, end), "..." });
+		terminals = terminals.index({ torch::indexing::Slice(torch::indexing::None, end), "..." });
+		policy = policy.index({ torch::indexing::Slice(torch::indexing::None, end), "..." });
 	}
 
 	/* */

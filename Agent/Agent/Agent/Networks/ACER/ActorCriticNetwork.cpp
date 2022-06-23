@@ -6,15 +6,23 @@ ActorCriticNetworkImpl::ActorCriticNetworkImpl(
 	learningRate(lr), nPossibleActions(nPossibleActions),
 	inputDims(inputDims), hiddenLayerDims(hiddenLayerDims), actionLayerDims(actionLayerDims),
 	inputLayer(torch::nn::Linear(inputDims, hiddenLayerDims)),
-	hiddenLayer1(torch::nn::Linear(hiddenLayerDims, actionLayerDims)),
+	hiddenLayer1(torch::nn::Linear(hiddenLayerDims, hiddenLayerDims)),
+	hiddenLayer2(torch::nn::Linear(hiddenLayerDims, hiddenLayerDims)),
+	hiddenLayer3(torch::nn::Linear(hiddenLayerDims, actionLayerDims)),
 	actionLayer(torch::nn::Linear(actionLayerDims, nPossibleActions)),
 	actionValueLayer(torch::nn::Linear(actionLayerDims, nPossibleActions))
 {
 	// Register modules (Needed for parameters())
 	register_module("inputLayer", inputLayer);
 	register_module("hiddenLayer1", hiddenLayer1);
+	register_module("hiddenLayer2", hiddenLayer2);
+	register_module("hiddenLayer3", hiddenLayer3);
 	register_module("actionLayer", actionLayer);
 	register_module("actionValueLayer", actionValueLayer);
+
+	// Create Optimizer
+	optimizer = new torch::optim::Adam(parameters(), learningRate);
+	to(torch::kCPU);
 }
 
 std::pair<torch::Tensor, torch::Tensor> ActorCriticNetworkImpl::Forward(torch::Tensor state)
@@ -30,7 +38,7 @@ std::pair<torch::Tensor, torch::Tensor> ActorCriticNetworkImpl::Forward(torch::T
 	return std::make_pair(actionProbs, actionValues);
 }
 
-void ActorCriticNetworkImpl::CopyParametersFrom(ActorCriticNetworkImpl source, float decay /* = 0 */)
+void ActorCriticNetworkImpl::CopyParametersFrom(const ActorCriticNetworkImpl& source, float decay /* = 0 */)
 {
 	unsigned int i = 0;
 	std::vector<torch::Tensor> sourceParameters = source.parameters();
@@ -41,7 +49,7 @@ void ActorCriticNetworkImpl::CopyParametersFrom(ActorCriticNetworkImpl source, f
 	}
 }
 
-void ActorCriticNetworkImpl::CopyGradientsFrom(ActorCriticNetworkImpl source)
+void ActorCriticNetworkImpl::CopyGradientsFrom(const ActorCriticNetworkImpl& source)
 {
 	unsigned int i = 0;
 	std::vector<torch::Tensor> sourceParameters = source.parameters();

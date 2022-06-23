@@ -29,11 +29,11 @@ using namespace RLGameAgent;
 class ACERAgent
 {
 public:
-	ACERAgent(unsigned int lr,
+	ACERAgent(float lr,
 		unsigned int nActions, unsigned int nPossibleActions,
 		int64_t inputDims, int64_t hiddenLayerDims, int64_t actionLayerDims,
-		unsigned int memSize, unsigned int maxEpisodeLength, unsigned int batchSize,
-		float biasWeight, float gamma, int traceMax);
+		unsigned int memSize = 10000, unsigned int maxEpisodeLength = 256, unsigned int batchSize = 16,
+		float biasWeight = 0.1f, float gamma = 0.99f, int traceMax = 10);
 
 	~ACERAgent();
 
@@ -62,6 +62,8 @@ public:
 	*/
 	void Learn(std::vector<Trajectory> trajectories);
 
+	void OnPolicyLearn(std::vector<Trajectory> trajectory);
+
 	/* Trust Region. */
 	std::vector<torch::Tensor> TrustRegion(std::vector<torch::Tensor> gradients, 
 		torch::Tensor policy, torch::Tensor averagePolicy);
@@ -71,7 +73,7 @@ public:
 	ActorCriticNetwork averageActorCritic = nullptr;
 
 	/* Optimizer */
-	torch::optim::Adam* optimizer;
+	// torch::optim::Adam* optimizer;
 	
 	/* Replay Experience Memory */
 	std::unique_ptr<ACERReplayMemory> memory;
