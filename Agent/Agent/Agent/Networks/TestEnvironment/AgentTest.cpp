@@ -32,7 +32,7 @@ AgentTest::AgentTest(bool isContinous, bool recordOutput) :
     int traceMax = 10;
 
     agent = std::make_unique<ACERAgent>(lr, nActions, nPossibleActions,
-        inputDims, hiddenLayerDims, actionLayerDims,
+        inputDims, 2, hiddenLayerDims, actionLayerDims,
         memSize, 2048, batchSize, biasWeight, gamma, traceMax);
 }
 

@@ -4,41 +4,36 @@
 
 ACERAgent::ACERAgent(float lr,
 	unsigned int nActions, unsigned int nPossibleActions,
-	int64_t inputDims, int64_t hiddenLayerDims, int64_t actionLayerDims,
+	int64_t inputDims, unsigned int nHiddenLayers, 
+	int64_t hiddenLayerDims, int64_t actionLayerDims,
 	unsigned int memSize /* = 10000 */, unsigned int maxEpisodeLength /* = 256 */, 
 	unsigned int batchSize /* = 16 */, float biasWeight /* = 0.1f */, 
 	float gamma /* = 0.99f */, int traceMax /* = 10 */) :
 	batchSize(batchSize), biasWeight(biasWeight), 
 	gamma(gamma), traceMax(traceMax)
 {
-	// TODO: Need to call share_memory() or something, but C++ API doesn't have it
-	// should figure out how to implement when doing multithreading
-	actorCritic = ActorCriticNetwork(lr, nPossibleActions, inputDims, hiddenLayerDims, actionLayerDims);
+	// Initialize Networks
+	actorCritic = ActorCriticNetwork(lr, nPossibleActions, inputDims, nHiddenLayers, hiddenLayerDims, actionLayerDims);
 	averageActorCritic = actorCritic->CleanClone();
-	memory = unique_ptr<ACERReplayMemory>(new ACERReplayMemory(memSize, maxEpisodeLength, inputDims, nActions, nPossibleActions));
 
-	// torch::autograd::AnomalyMode::set_enabled(true);
+	// Initialize Memory
+	memory = unique_ptr<ACERReplayMemory>(new ACERReplayMemory(memSize, maxEpisodeLength, inputDims, nActions, nPossibleActions));
 }
 
 ACERAgent::~ACERAgent()
 {
-	
+
 }
 
 void ACERAgent::Run(TestEnvironment& env, 
 	unsigned int nEpisodes, unsigned int episodeLength)
 {
-	for (int episode = 1; episode <= nEpisodes; episode++)
-	{
-
-	}
+	
 }
 
 std::pair<int, std::vector<float>> ACERAgent::PredictAction(State observation)
 {
 	// Predict Probabilites
-	/*torch::Tensor state = torch::nn::functional::normalize(observation.ToTensor(),
-							torch::nn::functional::NormalizeFuncOptions().p(1).dim(1));*/
 	auto predictedAction = actorCritic->Forward(observation.ToTensor());
 	
 	// Get Action
@@ -154,7 +149,6 @@ void ACERAgent::Learn(std::vector<Trajectory> trajectories)
 				* -biasWeight
 				* predictedActions.first.log()
 				* (predictedActions.second.gather(-1, actionIndices).data() - value)).sum(-1).unsqueeze(-1);
-		// actorLoss = -(actorLoss);
 
 		// Calculate gradients
 		std::vector<torch::Tensor> actorGradients = torch::autograd::grad({ actorLoss.mean() }, { predictedActions.first }, {}, /*retain_graph=*/true);
@@ -170,9 +164,8 @@ void ACERAgent::Learn(std::vector<Trajectory> trajectories)
 		// dθ ← dθ - ∇θ
 		criticLoss.mean().backward({}, true);
 
-		// Entropy
-		// TODO: 1e-3 should be a variable called entropy regularization or something
-		// TODO: Figure out formula this even follows
+		// Entropy Regularisation
+		// dθ ← dθ + β∙∇θH(π(s_i; θ))
 		torch::Tensor entropyLoss = 1e-3 * (predictedActions.first * predictedActions.first.log()).sum(-1);
 		entropyLoss.mean().backward({}, true);
 
@@ -187,28 +180,8 @@ void ACERAgent::Learn(std::vector<Trajectory> trajectories)
 	// Update networks
 	// TODO: Replace 0.99f with a variable.
 	actorCritic->CopyGradientsFrom(*newActorCritic);
-
-	// Optimizer
 	actorCritic->GetOptimizer()->step();
-
 	averageActorCritic->CopyParametersFrom(*actorCritic, 0.99f);
-}
-
-void ACERAgent::OnPolicyLearn(std::vector<Trajectory> trajectories)
-{
-	// Reset gradients and initialize models parameters
-	auto newActorCritic = actorCritic->CleanClone();
-	newActorCritic->CopyParametersFrom(*actorCritic);
-	actorCritic->GetOptimizer()->zero_grad();
-
-	for (Trajectory transition : trajectories)
-	{
-		// Calculate state-action values 
-		auto predictedActions = newActorCritic->Forward(transition.states);
-		auto avgPredictedActions = averageActorCritic->Forward(transition.states);
-
-		// 
-	}
 }
 
 // TODO: - 1 on the first line of the for loop should be a variable TRUST_REGION_CONSTRAINT

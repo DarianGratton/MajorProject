@@ -2,23 +2,25 @@
 
 ActorCriticNetworkImpl::ActorCriticNetworkImpl(
 	float lr, unsigned int nPossibleActions, 
-	int64_t inputDims, int64_t hiddenLayerDims, int64_t actionLayerDims) : 
+	int64_t inputDims, unsigned int nHiddenLayers, 
+	int64_t hiddenLayerDims, int64_t actionLayerDims) :
 	learningRate(lr), nPossibleActions(nPossibleActions),
-	inputDims(inputDims), hiddenLayerDims(hiddenLayerDims), actionLayerDims(actionLayerDims),
-	inputLayer(torch::nn::Linear(inputDims, hiddenLayerDims)),
-	hiddenLayer1(torch::nn::Linear(hiddenLayerDims, hiddenLayerDims)),
-	hiddenLayer2(torch::nn::Linear(hiddenLayerDims, hiddenLayerDims)),
-	hiddenLayer3(torch::nn::Linear(hiddenLayerDims, actionLayerDims)),
-	actionLayer(torch::nn::Linear(actionLayerDims, nPossibleActions)),
-	actionValueLayer(torch::nn::Linear(actionLayerDims, nPossibleActions))
+	inputDims(inputDims), nHiddenLayers(nHiddenLayers),
+	hiddenLayerDims(hiddenLayerDims), actionLayerDims(actionLayerDims)
 {
 	// Register modules (Needed for parameters())
-	register_module("inputLayer", inputLayer);
-	register_module("hiddenLayer1", hiddenLayer1);
-	register_module("hiddenLayer2", hiddenLayer2);
-	register_module("hiddenLayer3", hiddenLayer3);
-	register_module("actionLayer", actionLayer);
-	register_module("actionValueLayer", actionValueLayer);
+	inputLayer = register_module("inputLayer", torch::nn::Linear(inputDims, hiddenLayerDims));
+
+	for (int i = 0; i < nHiddenLayers; i++)
+	{
+		torch::nn::Linear hiddenLayer = nullptr;
+		std::string layerName = "hiddenLayer" + std::to_string(i + 1);
+		hiddenLayer = register_module(layerName.c_str(), torch::nn::Linear(hiddenLayerDims, hiddenLayerDims));
+		hiddenLayers.push_back(hiddenLayer);
+	}
+
+	actionLayer = register_module("actionLayer", torch::nn::Linear(actionLayerDims, nPossibleActions));
+	actionValueLayer = register_module("actionValueLayer", torch::nn::Linear(actionLayerDims, nPossibleActions));
 
 	// Create Optimizer
 	optimizer = new torch::optim::Adam(parameters(), learningRate);
@@ -29,8 +31,12 @@ std::pair<torch::Tensor, torch::Tensor> ActorCriticNetworkImpl::Forward(torch::T
 {
 	torch::Tensor hidden = inputLayer(state);
 	hidden = torch::nn::functional::relu(hidden);
-	hidden = hiddenLayer1(hidden);
-	hidden = torch::nn::functional::relu(hidden);
+
+	for (auto hiddenLayer : hiddenLayers)
+	{
+		hidden = hiddenLayer(hidden);
+		hidden = torch::nn::functional::relu(hidden);
+	}
 
 	torch::Tensor actionProbs = torch::nn::functional::softmax(actionLayer(hidden), -1);
 	torch::Tensor actionValues = actionValueLayer(hidden);
@@ -64,5 +70,6 @@ std::shared_ptr<ActorCriticNetworkImpl> ActorCriticNetworkImpl::CleanClone()
 {
 	return std::make_shared<ActorCriticNetworkImpl>(
 		learningRate, nPossibleActions,
-		inputDims, hiddenLayerDims, actionLayerDims);
+		inputDims, nHiddenLayers,
+		hiddenLayerDims, actionLayerDims);
 }

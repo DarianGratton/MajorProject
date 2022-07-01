@@ -27,7 +27,8 @@ public:
 			- layer2Dims: Layer 2 dimensions.
 	*/
 	ActorCriticNetworkImpl(float lr, unsigned int nPossibleActions,
-		int64_t inputDims, int64_t hiddenLayerDims, int64_t actionLayerDims);
+		int64_t inputDims, unsigned int nHiddenLayers, 
+		int64_t hiddenLayerDims, int64_t actionLayerDims);
 
 	/*
 	  Forward pass of the network.
@@ -61,15 +62,14 @@ private:
 	unsigned int nPossibleActions;
 	int64_t inputDims;
 	int64_t hiddenLayerDims;
+	unsigned int nHiddenLayers;
 	int64_t actionLayerDims;
 
 	/* Network Layers */
 	torch::nn::Linear inputLayer = nullptr;
-	torch::nn::Linear hiddenLayer1 = nullptr;
-	torch::nn::Linear hiddenLayer2 = nullptr;
-	torch::nn::Linear hiddenLayer3 = nullptr;
 	torch::nn::Linear actionLayer = nullptr;
 	torch::nn::Linear actionValueLayer = nullptr;
+	std::vector<torch::nn::Linear> hiddenLayers;
 
 	/* Optimizer */
 	torch::optim::Adam* optimizer;
