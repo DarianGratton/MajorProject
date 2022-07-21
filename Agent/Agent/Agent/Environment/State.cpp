@@ -4,11 +4,6 @@
 
 #include <iostream>
 
-State::State() 
-{
-
-}
-
 State::State(unordered_map<string, float> deltas) : deltas(deltas)
 {
 
@@ -32,7 +27,14 @@ void State::RemoveDelta(string deltaName)
 
 void State::UpdateDelta(string deltaName, float newDelta)
 {
-	deltas.at(deltaName) = newDelta;
+	try 
+	{
+		deltas.at(deltaName) = newDelta;
+	}
+	catch (const std::out_of_range& e)
+	{
+		cerr << "State::UpdateDelta(): " << e.what() << " " << deltaName << endl;
+	}
 }
 
 void State::Reset()
