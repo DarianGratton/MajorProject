@@ -8,14 +8,19 @@ ActorCriticNetworkImpl::ActorCriticNetworkImpl(
 	inputDims(inputDims), nHiddenLayers(nHiddenLayers),
 	hiddenLayerDims(hiddenLayerDims), actionLayerDims(actionLayerDims)
 {
-	// Register modules (Needed for parameters())
+	// Create network layers and register modules
 	inputLayer = register_module("inputLayer", torch::nn::Linear(inputDims, hiddenLayerDims));
 
 	for (int i = 0; i < nHiddenLayers; i++)
 	{
 		torch::nn::Linear hiddenLayer = nullptr;
 		std::string layerName = "hiddenLayer" + std::to_string(i + 1);
-		hiddenLayer = register_module(layerName.c_str(), torch::nn::Linear(hiddenLayerDims, hiddenLayerDims));
+
+		if (i == (nHiddenLayers - 1))
+			hiddenLayer = register_module(layerName.c_str(), torch::nn::Linear(hiddenLayerDims, actionLayerDims));
+		else
+			hiddenLayer = register_module(layerName.c_str(), torch::nn::Linear(hiddenLayerDims, hiddenLayerDims));
+		
 		hiddenLayers.push_back(hiddenLayer);
 	}
 
@@ -24,6 +29,8 @@ ActorCriticNetworkImpl::ActorCriticNetworkImpl(
 
 	// Create Optimizer
 	optimizer = new torch::optim::Adam(parameters(), learningRate);
+	
+	// Register network to device
 	to(torch::kCPU);
 }
 

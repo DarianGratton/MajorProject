@@ -3,90 +3,108 @@
 #include <vector>
 
 #include "State.h"
-#include "Reward.h"
 
 using namespace std;
-using namespace RLGameAgent;
 
 // TODO: Template is a work around for Reward type and variable, should figure out better way
 // - Overloaded functions might work with multiple reward variables
 /// <summary>
 /// 
 /// </summary>
-/// <typeparam name="T"></typeparam>
-template<class T>
 class Environment {
 public:
-	/// <summary>
-	/// Default constructor that constructs an environment object.
-	/// </summary>
+	/*
+	  Constructor.
+	*/
 	Environment();
 
-	/// <summary>
-	/// Set the current state of the environment.
-	/// </summary>
-	/// <param name="newState">The new state of the environment.</param>
-	void SetCurrState(State& newState);
+	/*
 	
-	/// <summary>
-	/// Set the returned reward from an action taken in this environment.
-	/// </summary>
-	/// <param name="newReward"></param>
-	void SetReturnedReward(T newReward);
+	*/
+	void Reset();
 	
-	/// <summary>
-	/// Add an action to the set of actions. Actions are just 0...n number of actions. 
-	/// </summary>
-	void AddAction();
+	/* 
 	
-	/// <summary>
-	/// Add an inputted number of actions to the set of actions. Actions are just 0...n number of actions. 
-	/// </summary>
-	/// <param name="numOfActions">The number of actions to add.</param>
-	void AddActions(int numOfActions);
+	*/
+	inline void SetInitState(State state) { initState = state; };
 
-	/// <summary>
-	/// Remove an action to the set of actions. Actions are just 0...n number of actions. 
-	/// </summary>
-	void RemoveAction();
+	/*
 	
-	/// <summary>
-	/// Remove an inputted number of actions from the set of actions. Actions are just 0...n number of actions. 
-	/// </summary>
-	/// <param name="numOfActions">The number of actions to remove.</param>
-	void RemoveActions(int numOfActions);
+	*/
+	inline State GetCurrState() const { return currState; };
+	
+	/* 
+	
+	*/
+	inline void SetCurrState(State state) 
+	{ 
+		prevState = currState;
+		currState = state; 
+	};
 
-	/// <summary>
-	/// Gets the current state of the environment.
-	/// </summary>
-	/// <returns>The current state of the environment.</returns>
-	inline State GetCurrState() { return currState; }
+	/* 
 	
-	/// <summary>
-	/// Gets the stored returned reward of an action taken in the environment.
-	/// </summary>
-	/// <returns>Returned reward of an action taken in the environement.</returns>
-	inline Reward<T> GetReturnedReward() { return returnedReward; }
+	*/
+	inline State GetPrevState() const { return prevState; };
+
+	/*
 	
-	/// <summary>
-	/// Gets the data structure of actions. 
-	/// </summary>
-	/// <returns>The actions.</returns>
-	inline vector<long> GetActions() { return actions; }
+	*/
+	inline vector<float> GetPrevAction() const { return prevAction; };
+	
+	/*
+		
+	*/
+	inline void SetPrevAction(vector<float> newAction) { prevAction = newAction; };
+	
+	/*
+	
+	*/
+	inline float GetReward() const { return reward; };
+	
+	/*
+	
+	*/
+	inline void SetReward(float newReward) 
+	{ 
+		totalReward += newReward;
+		reward = newReward; 
+	};
+
+	/*
+	  
+	*/
+	inline float GetTotalReward() const { return totalReward; };
+	
+	/* 
+	
+	*/
+	inline bool IsTerminal() const { return isTerminal; };
+	
+	/*
+	
+	*/
+	inline void SetIsTerminal(bool terminal) { isTerminal = terminal; };
 
 private:
-	/// <summary>
-	/// The current state of the environment.
-	/// </summary>
+	/* The initial state of the environment. */
+	State initState;
+
+	/* The current state of the environment. */
 	State currState;
-	
-	/// <summary>
-	/// The returned reward of an action taken in the environment.
-	/// </summary>
-	Reward<T> returnedReward;
-	
-	/// <summary>
-	/// An vector of actions. Is just 0...n number of actions.
-	/// </summary>
-	vector<long> actions;
+
+	/* The prev state of the environment. */
+	State prevState;
+
+	/* The action previously taken in the environment. */
+	vector<float> prevAction; 
+
+	/* The reward previously earned in the environment. */
+	float reward;
+
+	/* The total rewards earned. */
+	float totalReward;
+
+	/* Is the current state of the environment a terminal state. */
+	bool isTerminal;
 };

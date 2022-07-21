@@ -4,43 +4,43 @@
 
 #include <iostream>
 
-RLGameAgent::State::State() 
+State::State() 
 {
 
 }
 
-RLGameAgent::State::State(unordered_map<string, float> deltas) : deltas(deltas)
+State::State(unordered_map<string, float> deltas) : deltas(deltas)
 {
 
 }
 
-RLGameAgent::State& RLGameAgent::State::operator=(const State& state1)
+State& State::operator=(const State& state1)
 {
 	deltas = state1.deltas;
 	return *this;
 }
 
-void RLGameAgent::State::AddDelta(pair<string, float> delta)
+void State::AddDelta(pair<string, float> delta)
 {
 	deltas.insert(delta);
 }
 
-void RLGameAgent::State::RemoveDelta(string deltaName)
+void State::RemoveDelta(string deltaName)
 {
 	deltas.erase(deltaName);
 }
 
-void RLGameAgent::State::UpdateDelta(string deltaName, float newDelta)
+void State::UpdateDelta(string deltaName, float newDelta)
 {
 	deltas.at(deltaName) = newDelta;
 }
 
-void RLGameAgent::State::Reset()
+void State::Reset()
 {
 	deltas.clear();
 }
 
-string RLGameAgent::State::ToString() const
+string State::ToString() const
 {
 	// Create string
 	stringstream str;
@@ -52,7 +52,7 @@ string RLGameAgent::State::ToString() const
 	return str.str();
 }
 
-vector<float> RLGameAgent::State::ToVector() const
+vector<float> State::ToVector() const
 {
 	// Copy deltas to vector
 	vector<float> values;
@@ -64,7 +64,7 @@ vector<float> RLGameAgent::State::ToVector() const
 	return values;
 }
 
-torch::Tensor RLGameAgent::State::ToTensor() const
+torch::Tensor State::ToTensor() const
 {
 	// Create tensor
 	int64_t vec_size = ToVector().size();
@@ -82,7 +82,7 @@ torch::Tensor RLGameAgent::State::ToTensor() const
 	return tensor.clone();
 }
 
-ostream& RLGameAgent::operator<<(ostream& os, const State& state)
+ostream& operator<<(ostream& os, const State& state)
 {
 	unsigned int i = 0;
 	os << "State's deltas: \n";

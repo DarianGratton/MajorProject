@@ -12,31 +12,25 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 add_executable (
     Agent 
     "Main.cpp" 
-    "Agent.cpp" 
-    "Agent.h" 
+    "GameAgent.cpp" 
+    "GameAgent.h" 
     "Environment/Environment.h" 
     "Environment/Environment.cpp" 
     "Environment/Reward.h" 
     "Environment/Reward.cpp" 
     "Environment/State.h" 
-    "Environment/State.cpp" 
-    "Networks/SAC/ReplayMemory.h" 
-    "Networks/SAC/SACAgent.h" 
-    "Networks/SAC/CriticNetwork.h" 
-    "Networks/SAC/ValueNetwork.h" 
-    "Networks/SAC/PolicyNetwork.h" 
-    "Networks/SAC/CriticNetwork.cpp" 
-    "Networks/SAC/PolicyNetwork.cpp" 
-    "Networks/SAC/ValueNetwork.cpp" 
-    "Networks/SAC/SACAgent.cpp" 
-    "Networks/SAC/ReplayMemory.cpp" 
-    "PyTorchExpansion/TorchNormal.cpp" 
-    "PyTorchExpansion/TorchNormal.h" 
+    "Environment/State.cpp"
     "Networks/TestEnvironment/TestEnvironment.h" 
     "Networks/TestEnvironment/TestEnvironment.cpp"
     "Networks/TestEnvironment/AgentTest.h"
     "Networks/TestEnvironment/AgentTest.cpp"
- "PyTorchExpansion/TorchDistribution.h" "PyTorchExpansion/TorchDistribution.cpp" "Networks/ACER/RandomIterator.h"  "Networks/ACER/ReplayMemory.h" "Networks/ACER/ReplayMemory.cpp" "Networks/ACER/ActorCriticNetwork.h" "Networks/ACER/ActorCriticNetwork.cpp" "Networks/ACER/ACERAgent.cpp" "Networks/ACER/Trajectory.h")
+    "Networks/ACER/RandomIterator.h"  
+    "Networks/ACER/ReplayMemory.h" 
+    "Networks/ACER/ReplayMemory.cpp" 
+    "Networks/ACER/ActorCriticNetwork.h" 
+    "Networks/ACER/ActorCriticNetwork.cpp" 
+    "Networks/ACER/ACERAgent.cpp" 
+    "Networks/ACER/Trajectory.h")
 
 # Link libraries
 target_link_libraries(Agent "${TORCH_LIBRARIES}")
@@ -71,29 +65,23 @@ enable_testing()
 add_executable (
     AgentTests 
     "UnitTests/Test.cpp"
-    "Agent.cpp" 
-    "Agent.h" 
+    "GameAgent.cpp" 
+    "GameAgent.h" 
     "Environment/Environment.h" 
     "Environment/Environment.cpp" 
     "Environment/Reward.h" 
     "Environment/Reward.cpp" 
     "Environment/State.h" 
     "Environment/State.cpp" 
-    "Networks/SAC/ReplayMemory.h" 
-    "Networks/SAC/SACAgent.h" 
-    "Networks/SAC/CriticNetwork.h" 
-    "Networks/SAC/ValueNetwork.h" 
-    "Networks/SAC/PolicyNetwork.h" 
-    "Networks/SAC/CriticNetwork.cpp" 
-    "Networks/SAC/PolicyNetwork.cpp" 
-    "Networks/SAC/ValueNetwork.cpp" 
-    "Networks/SAC/SACAgent.cpp" 
-    "Networks/SAC/ReplayMemory.cpp" 
-    "PyTorchExpansion/TorchNormal.cpp" 
-    "PyTorchExpansion/TorchNormal.h" 
     "Networks/TestEnvironment/TestEnvironment.h" 
     "Networks/TestEnvironment/TestEnvironment.cpp"
- "PyTorchExpansion/TorchDistribution.h" "PyTorchExpansion/TorchDistribution.cpp" "Networks/ACER/RandomIterator.h"  "Networks/ACER/ReplayMemory.h" "Networks/ACER/ReplayMemory.cpp" "Networks/ACER/ActorCriticNetwork.h" "Networks/ACER/ActorCriticNetwork.cpp" "Networks/ACER/ACERAgent.cpp" "Networks/ACER/Trajectory.h")
+    "Networks/ACER/RandomIterator.h"  
+    "Networks/ACER/ReplayMemory.h" 
+    "Networks/ACER/ReplayMemory.cpp" 
+    "Networks/ACER/ActorCriticNetwork.h" 
+    "Networks/ACER/ActorCriticNetwork.cpp" 
+    "Networks/ACER/ACERAgent.cpp" 
+    "Networks/ACER/Trajectory.h")
 
 target_link_libraries(AgentTests gtest_main)
 target_link_libraries(AgentTests "${TORCH_LIBRARIES}")

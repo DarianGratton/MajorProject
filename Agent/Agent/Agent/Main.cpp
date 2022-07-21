@@ -6,15 +6,8 @@
 #include <numeric>
 #include <string>
 
-#include "Environment/Environment.h"
-#include "Environment/State.h"
-#include "Agent.h"
-#include "Networks/SAC/SACAgent.h"
-#include "PyTorchExpansion/TorchNormal.h"
+#include "GameAgent.h"
 #include "Networks/TestEnvironment/AgentTest.h"
-#include "Networks/ACER/ActorCriticNetwork.h"
-
-#include "Networks/ACER/ACERAgent.h"
 
 using namespace std;
 

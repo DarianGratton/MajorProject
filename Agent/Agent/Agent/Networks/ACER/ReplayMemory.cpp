@@ -16,7 +16,10 @@ ACERReplayMemory::ACERReplayMemory(
 {
 	if (memSize < maxEpisodeLength)
 	{
-		// TODO: Throw error
+		cerr << "ReplayMemory() Error: maxEpisodeLength should not be greater than memSize. " << endl;
+		
+		// TODO: Replace with exception system
+		return;
 	}
 
 	memSize = memSize / maxEpisodeLength;
@@ -25,26 +28,25 @@ ACERReplayMemory::ACERReplayMemory(
 
 void ACERReplayMemory::StoreStateTransition(
 	State state,
-	vector<int> actions,
+	vector<float> actions,
 	float reward,
 	State newState,
 	bool terminal,
-	vector<float> actionProbabilities)
+	vector<float> policy)
 {
 	// Error checking
 	if (state.Size() != stateSize)
 	{
-		cerr << "ReplayMemory: StoreStateTransition Error: State is of different size than when it was initialized, State size is: " << state.Size() << endl;
+		// TODO: Replace with exception system
+		cerr << "ReplayMemory StoreStateTransition() Error: State is of different size than when it was initialized, State size is: " << state.Size() << endl;
 		return;
 	}
 
 	// Add elements to trajectory
-	currTrajectory.StoreTransition(state, actions, reward, newState, terminal, actionProbabilities);
+	currTrajectory.StoreTransition(state, actions, reward, newState, terminal, policy);
 
-	// cout << currTrajectory.numOfTransitions << endl;
-
-	// Check if trajectory has ended
-	if (terminal || currTrajectory.numOfTransitions >= maxEpisodeLength) // 128
+	// Check if episode in environment has ended
+	if (terminal || currTrajectory.numOfTransitions >= maxEpisodeLength)
 	{
 		// Insert elements
 		if (trajectories.size() >= memSize)
@@ -56,10 +58,9 @@ void ACERReplayMemory::StoreStateTransition(
 		{
 			trajectories.push_back(currTrajectory);
 		}
-
-		// cout << "Trajectory size: " << trajectories.size() << endl;
 		
 		// Reset currTrajectory
+		prevTrajectory = currTrajectory;
 		currTrajectory = Trajectory(maxEpisodeLength, stateSize, nActions, nPossibleActions);
 	}
 }
@@ -107,12 +108,12 @@ std::vector<Trajectory> ACERReplayMemory::SampleMemory(unsigned int batchSize, u
 		trajectory.policy = trajectory.policy.index({ torch::indexing::Slice(start, torch::indexing::None), "..." });
 	}
 
-	// Batch Trajectories
+	// Batch trajectories
 	std::vector<Trajectory> batchedTrajectories;
-	for (int i = 0; i < sampledTrajectories[0].states.size(0); i++) // Loop through n = batchsize = 16
+	for (int i = 0; i < sampledTrajectories[0].states.size(0); i++)
 	{
 		Trajectory batchedTrajectory(batchSize, stateSize, nActions, nPossibleActions);
-		for (int j = 0; j < batchSize; j++) // Loop through n = batchsize = 16
+		for (int j = 0; j < batchSize; j++)
 		{
 			batchedTrajectory.states[j].data() = sampledTrajectories[j].states[i].data();
 			batchedTrajectory.newStates[j].data() = sampledTrajectories[j].newStates[i].data();
@@ -127,14 +128,4 @@ std::vector<Trajectory> ACERReplayMemory::SampleMemory(unsigned int batchSize, u
 
 	// Return object
 	return batchedTrajectories;
-}
-
-void ACERReplayMemory::SaveMemory()
-{
-	
-}
-
-void ACERReplayMemory::LoadMemory()
-{
-	
 }

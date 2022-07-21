@@ -4,12 +4,11 @@
 
 #include "../../Environment/State.h"
 
-using namespace RLGameAgent;
-
 /*
   Trajectory
 
-  ***Description***
+  Stores the states, actions, rewards, new states, terminals, and policies
+  for a single episode that the agent plays in a environment.
 
   Author: Darian G.
 */
@@ -18,7 +17,14 @@ struct Trajectory
 	/* Default Constructor. */
 	Trajectory() = default;
 
-	/* Constructor. */
+	/* 
+	  Constructor for initializing trajectory with a set size.
+	  params:
+			- maxEpisodeLength: Max length for a single episode in a environment.
+			- stateSize: The size of each size.
+			- nActions: The number of actions taken each state.
+			- nPossibleActions: The number of actions taken each state.
+	*/
 	Trajectory(unsigned int maxEpisodeLength, unsigned int stateSize,
 		unsigned int nActions, unsigned int nPossibleActions) :
 		stateSize(stateSize)
@@ -48,24 +54,25 @@ struct Trajectory
 		stateSize = trajectory.stateSize;
 	}
 
+	/* 
+	  Stores input as a transition in trajectory.
+	  params:
+			- state: The current state.
+			- action: The action(s) taken.
+			- reward: The reward for taking that action.
+			- newState: The state resulting from that action.
+			- terminal: Whether the new state is terminal or not.
+			- policy: The probabilities of each possible action before the actual action was chosen.
+	*/
 	void StoreTransition(
 		State state,
-		vector<int> newActions,
+		vector<float> newActions,
 		float reward,
 		State newState,
 		bool terminal,
 		vector<float> actionProbabilities)
 	{
-		/*states.slice(0, numOfTransitions, numOfTransitions + 1) = torch::nn::functional::normalize(
-			torch::from_blob(state.ToVector().data(), { 1, stateSize }),
-			torch::nn::functional::NormalizeFuncOptions().p(1).dim(1));*/
-
 		states.slice(0, numOfTransitions, numOfTransitions + 1) = state.ToTensor();
-
-		/*newStates.slice(0, numOfTransitions, numOfTransitions + 1) = torch::nn::functional::normalize(
-			torch::from_blob(newState.ToVector().data(), { 1, stateSize }),
-			torch::nn::functional::NormalizeFuncOptions().p(1).dim(1));;*/
-
 		newStates.slice(0, numOfTransitions, numOfTransitions + 1) = newState.ToTensor();
 
 		for (int i = 0; i < newActions.size(); i++)
@@ -80,6 +87,9 @@ struct Trajectory
 		numOfTransitions++;
 	}
 
+	/* 
+	  Truncates all empty transitions from the trajectory.
+	*/
 	void Truncate()
 	{
 		int64_t end = numOfTransitions;
@@ -91,7 +101,7 @@ struct Trajectory
 		policy = policy.index({ torch::indexing::Slice(torch::indexing::None, end), "..." });
 	}
 
-	/* */
+	/* The number of transitions added to the trajectory. */
 	unsigned int numOfTransitions = 0;
 
 	/* State Size. */

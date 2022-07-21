@@ -9,20 +9,17 @@
 #include "../../Environment/State.h"
 
 using namespace std;
-using namespace RLGameAgent;
 
 /*
   ReplayMemory
 
   A class that defines the memory of the ACER Algorithm.
-  Stores the state, action, reward, nextState, and whether it was a
-  terminal state for each action taken in the environment.
+  Stores a list of trajectories which each contain the states, actions, rewards, etc. for a 
+  single episode that the agent plays in a environment. 
 
   Note: State size and number of actions per state must remain the same as when initialized.
 
-  TODO: Fix bug when environment ends on first turn.
-  TODO: Testing of Save/Load memCounter.
-  TODO: Save/Load into created directory.
+  TODO: Modify Memory Size to be based on number of transitions rather than Trajectories in memory.
 
   Author: Darian G.
 */
@@ -35,8 +32,9 @@ public:
 	  Constructor for initializing the memory and its size.
 	  params:
 			- memSize: Physical size of the memory.
+			- maxEpisodeLength: Max length for a single episode in a environment.
 			- stateSize: The size of each state.
-			- nActions: The number of action taken given each state.
+			- nActions: The number of actions taken given each state.
 			- nPossibleActions: The number of possible actions that the agent can take each state.
 	*/
 	ACERReplayMemory(unsigned int memSize, unsigned int maxEpisodeLength, 
@@ -50,14 +48,15 @@ public:
 			- reward: The reward for taking that action.
 			- newState: The state resulting from that action.
 			- terminal: Whether the new state is terminal or not.
+			- policy: The probabilities of each possible action before the actual action was chosen.
 	*/
 	void StoreStateTransition(
 		State state,
-		vector<int> actions,
+		vector<float> actions,
 		float reward,
 		State newState,
 		bool terminal,
-		vector<float> actionProbabilities);
+		vector<float> policy);
 
 	/*
 	  Samples an random part of the memory.
@@ -68,24 +67,31 @@ public:
 	*/
 	std::vector<Trajectory> SampleMemory(unsigned int batchSize, unsigned int trajectoryLength);
 
-	/*
-	  Saves memory to multiple files. One for each tensor.
-	  TODO: Dynamically create directory for the files to exist in.
+	/* 
+	  Gets the current size of the memory (number of entries added). 
 	*/
-	void SaveMemory();
-
-	/*
-	  Loads memory from multiple files. One for each tensor.
-	  TODO: Error checking for if the files don't exist.
-	*/
-	void LoadMemory();
-
-	/* Gets the current size of the memory (number of entries added). */
 	inline unsigned int GetCurrentMemsize() { return trajectories.size(); };
 
+	/*
+	  Gets the current trajectory being built.
+	*/
 	inline Trajectory GetCurrTrajectory() { return currTrajectory; };
 
+	/*
+	  Gets the previous trajectory built.
+	*/
+	inline Trajectory GetPrevTrajectory() { return prevTrajectory; };
+
 private:
+
+	/* Memory */
+	std::deque<Trajectory> trajectories;
+
+	/* The current trajectory being built before being placed in memory. */
+	Trajectory currTrajectory;
+
+	/* The previous trajectory built. */
+	Trajectory prevTrajectory;
 
 	/* Size of the memory. */
 	unsigned int memSize;
@@ -101,11 +107,4 @@ private:
 
 	/* The number of possible actions that the agent can take each state. */
 	unsigned int nPossibleActions;
-
-	/* Memory */
-	std::deque<Trajectory> trajectories;
-	Trajectory currTrajectory;
-
-	/* TODO: Temp way to save/load memCounter without implementing framework for it. */
-	torch::Tensor memCounterMem;
 };

@@ -1,4 +1,4 @@
-#include "AgentTest.h"
+ #include "AgentTest.h"
 
 #include <iostream>
 #include <fstream>
@@ -12,8 +12,6 @@
 #include "TestEnvironment.h"
 #include "../../Environment/State.h"
 
-using namespace RLGameAgent;
-
 AgentTest::AgentTest(bool isContinous, bool recordOutput) : 
     isContinous(isContinous), recordOutput(recordOutput)
 {
@@ -24,7 +22,7 @@ AgentTest::AgentTest(bool isContinous, bool recordOutput) :
     unsigned int nPossibleActions = 4;
     int64_t inputDims = 4;
     int64_t hiddenLayerDims = 128;
-    int64_t actionLayerDims = 128;
+    int64_t actionLayerDims = 256;
     unsigned int memSize = 1000000;
     batchSize = 16;
     float biasWeight = 0.1f;
@@ -33,7 +31,7 @@ AgentTest::AgentTest(bool isContinous, bool recordOutput) :
 
     agent = std::make_unique<ACERAgent>(lr, nActions, nPossibleActions,
         inputDims, 2, hiddenLayerDims, actionLayerDims,
-        memSize, 2048, batchSize, biasWeight, gamma, traceMax);
+        memSize, 2048, batchSize, 512, biasWeight, gamma, traceMax);
 }
 
 void AgentTest::Train()
@@ -83,14 +81,14 @@ void AgentTest::Train()
         unsigned int i = 0;
         for (i = 1; i <= maxEpisodeLength; i++)
         {
-            Trajectory trajectory(1, observation.Size(), 1, 4);
+            //Trajectory trajectory(1, observation.Size(), 1, 4);
 
             // Play
-            auto predictedAction = agent->PredictAction(observation);
+            auto predictedAction = agent->PredictAction(observation.ToTensor());
 
             float xAct = 0.0f;
             float yAct = 0.0f;
-            switch(predictedAction.first)
+            switch(static_cast<int>(predictedAction.at(0)))
             {
             case 0:
                 xAct = 0.5f;
@@ -121,7 +119,6 @@ void AgentTest::Train()
 
             float newReward = env.Reward(std::get<1>(sd))[0].item<float>();
             //bool terminal = (std::get<1>(sd) == TestEnvironment::STATUS::WON) ? true : false;
-            std::vector<float> actionProb = predictedAction.second;
             bool terminal = std::get<2>(sd)[0].item<float>();
 
             // Update Agent
@@ -130,11 +127,8 @@ void AgentTest::Train()
             if (recordOutput)
                 out << episode << ", " << env.pos(0) << ", " << env.pos(1) << ", " << env.goal(0) << ", " << env.goal(1) << ", " << std::get<1>(sd) << "\n";
             
-            agent->UpdateMemory(observation, { predictedAction.first }, newReward,
-                                newObservation, terminal, actionProb);
-            trajectory.StoreTransition(observation, { predictedAction.first }, newReward,
-                                newObservation, terminal, actionProb);
-            trajectories.push_back(trajectory);
+            agent->UpdateMemory(observation, predictedAction, newReward,
+                                newObservation, terminal);
 
             observation = newObservation;
 
@@ -149,17 +143,7 @@ void AgentTest::Train()
         }
 
         // Update agent
-        agent->Learn(trajectories); // on-policy
-        if (agent->memory->GetCurrentMemsize() >= batchSize)
-        {
-            // off-policy
-            trajectories = agent->memory->SampleMemory(batchSize, 512);
-            agent->Learn(trajectories);
-        }
-        
-        /*cout << "Parameters: " << endl;
-        cout << agent->actorCritic->parameters()[0].grad() << endl;
-        cout << endl;*/
+        agent->Learn();
 
         // Reset game
         x = float(dist(re));
@@ -240,12 +224,11 @@ void AgentTest::Test()
         for (i = 1; i <= maxEpisodeLength; i++)
         {
             // Play
-            auto predictedAction = agent->actorCritic->Forward(observation.ToTensor());
+            auto predictedAction = agent->PredictAction(observation.ToTensor());
 
             float xAct = 0.0f;
             float yAct = 0.0f;
-            torch::Tensor action = predictedAction.first.multinomial(1);
-            switch (action.item<int>())
+            switch (static_cast<int>(predictedAction.at(0)))
             {
             case 0:
                 xAct = 0.5f;
@@ -263,6 +246,7 @@ void AgentTest::Test()
                 cout << "Something went wrong" << endl;
                 break;
             }
+
             auto sd = env.Act(xAct, yAct); // std::tuple<state, status, terminal>
 
             // Get parameters

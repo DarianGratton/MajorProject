@@ -5,28 +5,24 @@
 #include <iostream>
 #include <stdexcept>
 
-
-/// <summary>
-/// 
-/// RandomIterator
-/// 
-/// A C++ class that can generate random, unique, and evenly-distributed
-/// numbers with O(1) memory space.
-/// 
-/// (c) Tyler Burdsall 2018
-/// 
-/// </summary>
+/*
+  RandomIterator
+   
+  A C++ class that can generate random, unique, and evenly-distributed 
+  numbers with O(1) memory space.
+ 
+  Author: Tyler Burdsall 2018
+  Source: https://tylerburdsall.medium.com/generating-unique-random-and-evenly-distributed-numbers-in-ascending-order-with-c-and-in-o-1-9dd5be0c0fcd
+*/
 class RandomIterator
 {
 public:
-    /* Constructor for RandomIterator class.
-     * Parameters:
-     *     - amount => Amount of numbers to generate
-     *     - min    => Minimum number in range to generate
-     *     - max    => Maximum number in range to generate
-     *
-     * The constructor also instanstiates the variable gen
-     * with a new random_device.
+    /* 
+      Constructor for RandomIterator class.
+      params:
+            - amount: Amount of numbers to generate
+            - min: Minimum number in range to generate
+            - max: Maximum number in range to generate
      */
     RandomIterator(
         const unsigned long long& amount, 
@@ -40,13 +36,17 @@ public:
         n = max;
     }
 
-    // Return a bool to determine if there are any numbers left to generate
+    /* 
+      Returns a bool to determine if there are any numbers left to generate.
+    */
     const bool has_next(void)
     {
         return num_left > 0;
     }
 
-    // Generate the next random number
+    /*
+      Generates the next random number.
+    */ 
     const unsigned long long next(void)
     {
         if (num_left > 0)
