@@ -42,19 +42,21 @@ public:
 	/* 
 	  Constructor for initializing the ACERAgent and all it's parameters.
 	  params:
-			- lr:
-			- nPossibleActions:
-			- inputDims:
-			- nHiddenLayers: 
-			- hiddenLayerDims:
-			- actionLayerDims:
-			- memSize: 
-			- maxEpisodeLength: 
-			- batchSize:
-			- batchTrajectoryLength:
-			- biasWeight:
+			- lr: The learning rate of the agent.
+			- nPossibleActions: Number of actions the agent takes in any given state.
+			- inputDims: Input dimensions (size of a state in a environment).
+			- nHiddenLayers: Number of hidden layers.
+			- hiddenLayerDims: Size of each hidden layer.
+			- actionLayerDims: Size of the action layer.
+			- memSize: Physical size of the memory.
+			- maxEpisodeLength: Max length for a single episode in a environment.
+			- batchSize: Size of the batch sampled from memory.
+			- batchTrajectoryLength: Length of each Trajectory that is sampled from memory.
+			- biasWeight: Actor loss weight.
 			- gamma: Reward discount factor.
-			- traceMax: 
+			- traceMax: The trucation parameter.
+			- trustRegionConstraint: Constraint of the Trust Region Optimization.
+			- trustRegionDecay: Decay of the Trust Region Optimization.
 	*/
 	ACERAgent(float lr,
 		unsigned int nActions, unsigned int nPossibleActions,
@@ -141,10 +143,10 @@ private:
 	/* Replay Experience Memory */
 	unique_ptr<ACERReplayMemory> memory;
 
-	/* Batch Size (Used for sampling from memory) */
+	/* Size of the batch sampled from memory. */
 	unsigned int batchSize;
 	
-	/* Length of Trajectory that is sampled from memory. */
+	/* Length of each Trajectory that is sampled from memory. */
 	unsigned int batchTrajectoryLength;
 
 	/* Reward discount factor. */
