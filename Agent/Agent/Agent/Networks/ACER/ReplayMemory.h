@@ -5,7 +5,6 @@
 #include <deque>
 
 #include "Trajectory.h"
-#include "../../Environment/Reward.h"
 #include "../../Environment/State.h"
 
 using namespace std;

@@ -8,15 +8,19 @@
 
 #include "GameAgent.h"
 #include "Networks/TestEnvironment/AgentTest.h"
+#include "Environment/State.h"
 
 using namespace std;
 
 // Used for testing
 int main()
 {
-	AgentTest test(false, true);
-	test.Train();
-	test.Test();
+	State state;
+	state.UpdateDelta("Test", 1);
+
+	//AgentTest test(false, true);
+	//test.Train();
+	//test.Test();
 
 	return 0;
 }
