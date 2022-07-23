@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "EnvironmentTests.h"
 #include "StateTests.h"
 
 using namespace testing;

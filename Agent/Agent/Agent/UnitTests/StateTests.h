@@ -8,7 +8,7 @@
 
 using namespace std;
 
-TEST (AddDelta, ValidPositiveDelta)
+TEST (StateAddDelta, ValidPositiveDelta)
 {
 	State state;
 	float value = 12.0f;
@@ -18,7 +18,7 @@ TEST (AddDelta, ValidPositiveDelta)
 	EXPECT_EQ(state.GetDeltas().at("Delta 1"), value);
 }
 
-TEST(AddDelta, ValidNegativeDelta)
+TEST(StateAddDelta, ValidNegativeDelta)
 {
 	State state;
 	float value = -12.0f;
@@ -28,7 +28,7 @@ TEST(AddDelta, ValidNegativeDelta)
 	EXPECT_EQ(state.GetDeltas().at("Delta 1"), value);
 }
 
-TEST(AddDelta, ValidMultipleDeltas)
+TEST(StateAddDelta, ValidMultipleDeltas)
 {
 	State state;
 	float value1 = 12.0f;
@@ -42,7 +42,7 @@ TEST(AddDelta, ValidMultipleDeltas)
 	EXPECT_EQ(state.GetDeltas().at("Delta 2"), value2);
 }
 
-TEST(AddDelta, ValidNoDeltaName)
+TEST(StateAddDelta, ValidNoDeltaName)
 {
 	State state;
 	float value = 12.0f;
@@ -52,7 +52,7 @@ TEST(AddDelta, ValidNoDeltaName)
 	EXPECT_EQ(state.GetDeltas().at(""), value);
 }
 
-TEST(AddDelta, InvalidDupicateDelta)
+TEST(StateAddDelta, InvalidDupicateDelta)
 {
 	State state;
 	float value = -12.0f;
@@ -63,7 +63,7 @@ TEST(AddDelta, InvalidDupicateDelta)
 	EXPECT_EQ(state.Size(), 1);
 }
 
-TEST(RemoveDelta, ValidDeltaName)
+TEST(StateRemoveDelta, ValidDeltaName)
 {
 	State state;
 	float value = 12.0f;
@@ -76,7 +76,7 @@ TEST(RemoveDelta, ValidDeltaName)
 	EXPECT_EQ(state.Size(), 0);
 }
 
-TEST(RemoveDelta, InvalidDeltaNameDoesNotExist)
+TEST(StateRemoveDelta, InvalidDeltaNameDoesNotExist)
 {
 	State state;
 	state.RemoveDelta("Delta 1");
@@ -84,7 +84,7 @@ TEST(RemoveDelta, InvalidDeltaNameDoesNotExist)
 	EXPECT_EQ(state.Size(), 0);
 }
 
-TEST(UpdateDelta, ValidPositiveDeltaName)
+TEST(StateUpdateDelta, ValidPositiveDeltaName)
 {
 	State state;
 	float value1 = 12.0f;
@@ -96,7 +96,7 @@ TEST(UpdateDelta, ValidPositiveDeltaName)
 	EXPECT_EQ(state.GetDeltas().at("Delta 1"), value2);
 }
 
-TEST(UpdateDelta, ValidNegativeDeltaName)
+TEST(StateUpdateDelta, ValidNegativeDeltaName)
 {
 	State state;
 	float value1 = -12.0f;
@@ -108,14 +108,14 @@ TEST(UpdateDelta, ValidNegativeDeltaName)
 	EXPECT_EQ(state.GetDeltas().at("Delta 1"), value2);
 }
 
-TEST(UpdateDelta, InvalidDeltaNameDoesNotExist)
+TEST(StateUpdateDelta, InvalidDeltaNameDoesNotExist)
 {
 	State state;
 	float value = 12.0f;
 	EXPECT_NO_THROW(state.UpdateDelta("Delta 1", value));
 }
 
-TEST(Reset, ResetDeltas)
+TEST(StateReset, ResetDeltas)
 {
 	State state;
 	float value = 12.0f;
@@ -126,14 +126,14 @@ TEST(Reset, ResetDeltas)
 	EXPECT_EQ(state.Size(), 0);
 }
 
-TEST(Size, StateSize)
+TEST(StateSize, StateSize)
 {
 	State state;
 	state.AddDelta("Delta 1", 12.0f);
 	EXPECT_EQ(state.Size(), 1);
 }
 
-TEST(ToVector, StateToVector)
+TEST(StateToVector, StateToVector)
 {
 	State state;
 	float value1 = 12.0f;

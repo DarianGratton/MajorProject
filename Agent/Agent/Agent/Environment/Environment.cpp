@@ -26,7 +26,9 @@ void Environment::Update(vector<float> newAction, float newReward, State newStat
 
 void Environment::Reset()
 {
+	prevState = State();
 	currState = initState;
+	action.clear();
 	reward = 0;
 	totalReward = reward;
 	isTerminal = false;
