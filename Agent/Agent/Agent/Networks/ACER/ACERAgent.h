@@ -113,9 +113,8 @@ private:
 
 	/*
 	  Helper function that contains the bulk of the calculations performed
-	  to update the agent's hyper-parameters. 
-	  
-	  Implementation follows Algorithm 2 ACER for discrete actions found in the paper.
+	  to update the agent's hyper-parameters. Implementation follows 
+	  Algorithm 2 ACER for discrete actions found in the paper.
 	  params:
 			- trajectories: The trajectories the agent learns from.
 			- onPolicy: Whether the agent is learning on-policy or off-policy 

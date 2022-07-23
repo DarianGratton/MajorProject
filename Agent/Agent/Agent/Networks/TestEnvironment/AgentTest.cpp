@@ -67,10 +67,10 @@ void AgentTest::Train()
         // State of Env.
         State observation;
         torch::Tensor state = env.State();
-        observation.AddDelta(pair<string, float>("GoalX", x));
-        observation.AddDelta(pair<string, float>("GoalY", y));
-        observation.AddDelta(pair<string, float>("PosX", state[0][0].item<float>()));
-        observation.AddDelta(pair<string, float>("PosY", state[0][1].item<float>()));
+        observation.AddDelta("GoalX", x);
+        observation.AddDelta("GoalY", y);
+        observation.AddDelta("PosX", state[0][0].item<float>());
+        observation.AddDelta("PosY", state[0][1].item<float>());
 
         // Create trajectory
         Trajectory trajectory(maxEpisodeLength, observation.Size(), 1, 4);
@@ -112,10 +112,10 @@ void AgentTest::Train()
             // Get parameters
             State newObservation;
             torch::Tensor newState = std::get<0>(sd);
-            newObservation.AddDelta(pair<string, float>("GoalX", x));
-            newObservation.AddDelta(pair<string, float>("GoalY", y));
-            newObservation.AddDelta(pair<string, float>("X", newState[0][0].item<float>()));
-            newObservation.AddDelta(pair<string, float>("Y", newState[0][1].item<float>()));
+            newObservation.AddDelta("GoalX", x);
+            newObservation.AddDelta("GoalY", y);
+            newObservation.AddDelta("X", newState[0][0].item<float>());
+            newObservation.AddDelta("Y", newState[0][1].item<float>());
 
             float newReward = env.Reward(std::get<1>(sd))[0].item<float>();
             //bool terminal = (std::get<1>(sd) == TestEnvironment::STATUS::WON) ? true : false;
@@ -214,10 +214,10 @@ void AgentTest::Test()
         // State of Env.
         State observation;
         torch::Tensor state = env.State();
-        observation.AddDelta(pair<string, float>("GoalX", x));
-        observation.AddDelta(pair<string, float>("GoalY", y));
-        observation.AddDelta(pair<string, float>("PosX", state[0][0].item<float>()));
-        observation.AddDelta(pair<string, float>("PosY", state[0][1].item<float>()));
+        observation.AddDelta("GoalX", x);
+        observation.AddDelta("GoalY", y);
+        observation.AddDelta("PosX", state[0][0].item<float>());
+        observation.AddDelta("PosY", state[0][1].item<float>());
 
         float reward = 0;
         unsigned int i = 0;
@@ -252,10 +252,10 @@ void AgentTest::Test()
             // Get parameters
             State newObservation;
             torch::Tensor newState = std::get<0>(sd);
-            newObservation.AddDelta(pair<string, float>("GoalX", x));
-            newObservation.AddDelta(pair<string, float>("GoalY", y));
-            newObservation.AddDelta(pair<string, float>("X", newState[0][0].item<float>()));
-            newObservation.AddDelta(pair<string, float>("Y", newState[0][1].item<float>()));
+            newObservation.AddDelta("GoalX", x);
+            newObservation.AddDelta("GoalY", y);
+            newObservation.AddDelta("X", newState[0][0].item<float>());
+            newObservation.AddDelta("Y", newState[0][1].item<float>());
 
             // Update Agent
             float newReward = env.Reward(std::get<1>(sd))[0].item<float>();

@@ -30,7 +30,7 @@ public:
 	/* 
 	  Constructor for taking a pre-defined set of deltas. 
 	  params: 
-			- deltas: A map of deltas to set the state to
+			- deltas: A map of deltas to set the state to.
 	*/
 	State(unordered_map<string, float> deltas);
 
@@ -49,7 +49,7 @@ public:
 	  params:
 			- delta: A new delta to add.
 	*/
-	void AddDelta(pair<string, float> delta);
+	void AddDelta(string deltaName, float delta);
 
 	/*
 	  Removes an existing delta.

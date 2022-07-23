@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include "StateTests.h"
+
 using namespace testing;
 
 class ConfigurableEventListener : public TestEventListener {

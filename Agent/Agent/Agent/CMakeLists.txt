@@ -77,7 +77,7 @@ add_executable (
     "Networks/ACER/ActorCriticNetwork.h" 
     "Networks/ACER/ActorCriticNetwork.cpp" 
     "Networks/ACER/ACERAgent.cpp" 
-    "Networks/ACER/Trajectory.h")
+    "Networks/ACER/Trajectory.h" "UnitTests/StateTests.h")
 
 target_link_libraries(AgentTests gtest_main)
 target_link_libraries(AgentTests "${TORCH_LIBRARIES}")

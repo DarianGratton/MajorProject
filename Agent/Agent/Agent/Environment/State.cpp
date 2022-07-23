@@ -15,14 +15,28 @@ State& State::operator=(const State& state1)
 	return *this;
 }
 
-void State::AddDelta(pair<string, float> delta)
+void State::AddDelta(string deltaName, float delta)
 {
-	deltas.insert(delta);
+	if (deltas.find(deltaName) == deltas.end())
+	{
+		deltas.insert(make_pair(deltaName, delta));
+	}
+	else
+	{
+		cerr << "State::AddDelta(): " << deltaName << " delta already exists." << endl;
+	}
 }
 
 void State::RemoveDelta(string deltaName)
 {
-	deltas.erase(deltaName);
+	if (deltas.find(deltaName) != deltas.end())
+	{
+		deltas.erase(deltaName);
+	}
+	else
+	{
+		cerr << "State::RemoveDelta(): " << deltaName << " delta doesn't exists." << endl;
+	}
 }
 
 void State::UpdateDelta(string deltaName, float newDelta)
@@ -33,7 +47,7 @@ void State::UpdateDelta(string deltaName, float newDelta)
 	}
 	catch (const std::out_of_range& e)
 	{
-		cerr << "State::UpdateDelta(): " << e.what() << " " << deltaName << endl;
+		cerr << "State::UpdateDelta(): " << deltaName << " delta doesn't exists." << endl;
 	}
 }
 

@@ -7,7 +7,6 @@
 #include <string>
 
 #include "GameAgent.h"
-#include "Networks/TestEnvironment/AgentTest.h"
 #include "Environment/State.h"
 
 using namespace std;
@@ -16,7 +15,11 @@ using namespace std;
 int main()
 {
 	State state;
-	state.UpdateDelta("Test", 1);
+	state.AddDelta("Test", 1);
+	state.AddDelta("Test", 2);
+	state.RemoveDelta("Test2");
+
+	cout << state.Size() << endl;
 
 	//AgentTest test(false, true);
 	//test.Train();

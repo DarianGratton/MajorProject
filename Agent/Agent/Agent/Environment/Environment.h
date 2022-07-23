@@ -9,7 +9,7 @@ using namespace std;
 /*
   Environment
 
-  ***Description***
+  A class that defines a game environment. [Add more.]
 
   Author: Darian G.
 */
