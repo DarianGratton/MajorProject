@@ -21,6 +21,17 @@ public:
 	Environment(State initState);
 
 	/*
+	  Updates the environment's variables.
+	  params:
+			- newAction: New action taken in the environment.
+			- newReward: New reward earned from taking action.
+			- newState: New state reached from taking action.
+			- terminal: Whether new state is terminal or not.
+	*/
+	void Update(vector<float> newAction, float newReward, 
+				State newState, bool terminal = false);
+
+	/*
 	  Resets the environment's variables for a new episode.
 	*/
 	void Reset();
@@ -38,16 +49,6 @@ public:
 	  Gets the current state of the environment.
 	*/
 	inline State GetCurrState() const { return currState; };
-	
-	/* 
-	  Sets the current state of the environment and sets the previous 
-	  state of the environment to the old state.
-	*/
-	inline void SetCurrState(State state) 
-	{ 
-		prevState = currState;
-		currState = state; 
-	};
 
 	/* 
 	  Gets the previous state of the environment.
@@ -60,24 +61,9 @@ public:
 	inline vector<float> GetAction() const { return action; };
 	
 	/*
-	  Sets the previous action taken in the environment.
-	*/
-	inline void SetAction(vector<float> newAction) { action = newAction; };
-	
-	/*
 	  Gets the previous reward earned in the environment.
 	*/
 	inline float GetReward() const { return reward; };
-	
-	/*
-	  Sets the previous reward earned in the environment and added to
-	  the total reward earned.
-	*/
-	inline void SetReward(float newReward) 
-	{ 
-		totalReward += newReward;
-		reward = newReward; 
-	};
 
 	/*
 	  Gets the total reward earned in the environment.
@@ -88,11 +74,6 @@ public:
 	  Gets whether the environment is in a terminal state.
 	*/
 	inline bool IsTerminal() const { return isTerminal; };
-	
-	/*
-	  Sets whether the environment is in a terminal state.
-	*/
-	inline void SetIsTerminal(bool terminal) { isTerminal = terminal; };
 
 private:
 	
