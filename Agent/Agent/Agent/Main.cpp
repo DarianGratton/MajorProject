@@ -1,4 +1,5 @@
 #include <torch/torch.h>
+#include <matplot/matplot.h>
 #include <iostream>
 #include <sstream>
 #include <vector>

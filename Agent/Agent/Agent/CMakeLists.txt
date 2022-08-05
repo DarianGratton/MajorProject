@@ -3,9 +3,12 @@
 #
 cmake_minimum_required(VERSION 3.14)
 
-find_package(Torch REQUIRED)
+set(Matplot++_DIR "C:\\Program Files\\matplotplusplus 1.1.0\\lib\\cmake\\Matplot++")
 
-set(CMAKE_CXX_STANDARD 11)
+find_package(Torch REQUIRED)
+find_package(Matplot++ REQUIRED)
+
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 
 # Add source to this project's executable.
@@ -28,13 +31,19 @@ add_executable (
     "Networks/ACER/ActorCriticNetwork.h" 
     "Networks/ACER/ActorCriticNetwork.cpp" 
     "Networks/ACER/ACERAgent.cpp" 
-    "Networks/ACER/Trajectory.h" "Networks/NetworkAgent.h" "Networks/NetworkParameters.h" "Networks/ACER/ACERParameters.h" "Networks/AgentFactory.h" "Networks/AgentFactory.cpp")
+    "Networks/ACER/Trajectory.h" 
+    "Networks/NetworkAgent.h" 
+    "Networks/NetworkParameters.h" 
+    "Networks/ACER/ACERParameters.h" 
+    "Networks/AgentFactory.h" 
+    "Networks/AgentFactory.cpp")
 
 # Link libraries
 target_link_libraries(Agent "${TORCH_LIBRARIES}")
+target_link_libraries(Agent Matplot++::matplot)
 
 # Set properties
-set_property(TARGET Agent PROPERTY CXX_STANDARD 14)
+set_property(TARGET Agent PROPERTY CXX_STANDARD 17)
 
 # The following code block is suggested to be used on Windows.
 # According to https://github.com/pytorch/pytorch/issues/25457,
