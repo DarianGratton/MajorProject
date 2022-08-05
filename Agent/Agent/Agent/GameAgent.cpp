@@ -10,11 +10,6 @@ GameAgent::GameAgent(State initState, NetworkParameters& params)
 	agent = factory.GetNetworkAgent(params);
 }
 
-GameAgent::~GameAgent()
-{
-	
-}
-
 vector<float> GameAgent::PredictAction(State state)
 {
 	return agent->PredictAction(state.ToTensor());

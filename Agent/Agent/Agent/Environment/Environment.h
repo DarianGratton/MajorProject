@@ -75,9 +75,6 @@ public:
 	*/
 	inline bool IsTerminal() const { return isTerminal; }
 
-	/* Gets the steps that have been taken. */
-	inline unsigned int GetSteps() const { return steps; }
-
 private:
 	
 	/* The initial state of the environment. */
@@ -100,7 +97,4 @@ private:
 
 	/* Is the current state of the environment a terminal state. */
 	bool isTerminal;
-
-	/* The steps that have been taken in the environment. */
-	unsigned int steps;
 };

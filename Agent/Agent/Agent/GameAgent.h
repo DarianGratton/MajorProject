@@ -10,6 +10,7 @@
 #include "Networks/NetworkAgent.h"
 #include "Networks/NetworkParameters.h"
 #include "Networks/AgentFactory.h"
+#include "Visualizer/Visualizer.h"
 
 using namespace std;
 
@@ -27,8 +28,6 @@ public:
 	/* */
 	GameAgent(State initState, NetworkParameters& params);
 
-	~GameAgent();
-
 	vector<float> PredictAction(State state);
 
 	void Train();
@@ -39,7 +38,10 @@ public:
 
 	inline shared_ptr<Environment> GetEnvironment() { return environment; }
 
+	inline Visualizer& GetVisualizer() { return visualizer; }
+
 private:
 	shared_ptr<Environment> environment;
 	shared_ptr<NetworkAgent> agent;
+	Visualizer visualizer;
 };
