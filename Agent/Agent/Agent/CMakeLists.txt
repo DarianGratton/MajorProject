@@ -36,7 +36,7 @@ add_executable (
     "Networks/NetworkParameters.h" 
     "Networks/ACER/ACERParameters.h" 
     "Networks/AgentFactory.h" 
-    "Networks/AgentFactory.cpp")
+    "Networks/AgentFactory.cpp" "Visualizer/Visualizer.h" "Visualizer/Visualizer.cpp")
 
 # Link libraries
 target_link_libraries(Agent "${TORCH_LIBRARIES}")

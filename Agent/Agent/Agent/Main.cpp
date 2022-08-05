@@ -15,6 +15,7 @@
 #include "Networks/AgentFactory.h"
 
 using namespace std;
+using namespace matplot;
 
 // Used for testing
 int main()
