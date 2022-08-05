@@ -9,6 +9,7 @@
 #include <numeric>
 
 #include "../ACER/Trajectory.h"
+#include "../ACER/ACERParameters.h"
 #include "TestEnvironment.h"
 #include "../../Environment/State.h"
 
@@ -17,21 +18,21 @@ AgentTest::AgentTest(bool isContinous, bool recordOutput) :
 {
     // Setup Model.
     // ...
-    float lr = 1e-3f;
-    unsigned int nActions = 1;
-    unsigned int nPossibleActions = 4;
-    int64_t inputDims = 4;
-    int64_t hiddenLayerDims = 128;
-    int64_t actionLayerDims = 256;
-    unsigned int memSize = 1000000;
+    ACERParameters params;
+    params.learningRate = 1e-3f;
+    params.nActions = 1;
+    params.nPossibleActions = 4;
+    params.inputDims = 4;
+    params.hiddenLayerDims = 128;
+    params.actionLayerDims = 256;
+    params.memSize = 1000000;
     batchSize = 16;
-    float biasWeight = 0.1f;
-    float gamma = 0.99f;
-    int traceMax = 10;
+    params.batchSize = batchSize;
+    params.biasWeight = 0.1f;
+    params.gamma = 0.99f;
+    params.traceMax = 10;
 
-    agent = std::make_unique<ACERAgent>(lr, nActions, nPossibleActions,
-        inputDims, 2, hiddenLayerDims, actionLayerDims,
-        memSize, 2048, batchSize, 512, biasWeight, gamma, traceMax);
+    agent = std::make_unique<ACERAgent>(params);
 }
 
 void AgentTest::Train()
@@ -143,7 +144,7 @@ void AgentTest::Train()
         }
 
         // Update agent
-        agent->Learn();
+        //agent->Learn();
 
         // Reset game
         x = float(dist(re));

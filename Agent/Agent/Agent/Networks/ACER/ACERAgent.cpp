@@ -1,24 +1,18 @@
 ﻿#include "ACERAgent.h"
 
-ACERAgent::ACERAgent(float lr,
-	unsigned int nActions, unsigned int nPossibleActions,
-	int64_t inputDims, unsigned int nHiddenLayers, 
-	int64_t hiddenLayerDims, int64_t actionLayerDims,
-	unsigned int memSize /* = 10000 */, unsigned int maxEpisodeLength /* = 256 */, 
-	unsigned int batchSize /* = 16 */, unsigned int batchTrajectoryLength /* = 16 */,
-	float biasWeight /* = 0.1f */, float gamma /* = 0.99f */, 
-	int traceMax /* = 10 */, float trustRegionConstraint /* = 1.0f */, 
-	float trustRegionDecay /* = 0.99f */) :
-	batchSize(batchSize), biasWeight(biasWeight), 
-	gamma(gamma), traceMax(traceMax),
-	trustRegionConstraint(trustRegionConstraint), trustRegionDecay(trustRegionDecay)
+ACERAgent::ACERAgent(const ACERParameters& params) :
+	maxEpisodeLength(params.maxEpisodeLength),
+	batchSize(params.batchSize), biasWeight(params.biasWeight),
+	gamma(params.gamma), traceMax(params.traceMax),
+	trustRegionConstraint(params.trustRegionConstraint), 
+	trustRegionDecay(params.trustRegionDecay)
 {
 	// Initialize Networks
-	actorCritic = ActorCriticNetwork(lr, nPossibleActions, inputDims, nHiddenLayers, hiddenLayerDims, actionLayerDims);
+	actorCritic = ActorCriticNetwork(params.learningRate, params.nPossibleActions, params.inputDims, params.nHiddenLayers, params.hiddenLayerDims, params.actionLayerDims);
 	averageActorCritic = actorCritic->CleanClone();
 
 	// Initialize Memory
-	memory = unique_ptr<ACERReplayMemory>(new ACERReplayMemory(memSize, maxEpisodeLength, inputDims, nActions, nPossibleActions));
+	memory = unique_ptr<ACERReplayMemory>(new ACERReplayMemory(params.memSize, params.maxEpisodeLength, params.inputDims, params.nActions, params.nPossibleActions));
 }
 
 vector<float> ACERAgent::PredictAction(torch::Tensor state)
@@ -31,6 +25,26 @@ vector<float> ACERAgent::PredictAction(torch::Tensor state)
 	float action = predictedAction.first.multinomial(1).item<float>();
 
 	return { action };
+}
+
+void ACERAgent::Train(const Environment& environment)
+{
+	UpdateMemory(environment.GetPrevState(), environment.GetAction(), 
+				 environment.GetReward(), environment.GetCurrState(), environment.IsTerminal());
+
+	// Check if the agent is finished an episode in the environment
+	if (environment.IsTerminal() || memory->GetPrevTrajectory().numOfTransitions >= maxEpisodeLength)
+	{
+		// On-Policy
+		Learn({ memory->GetPrevTrajectory() }, true);
+
+		// Off-Policy
+		if (memory->GetCurrentMemsize() >= batchSize)
+		{
+			vector<Trajectory> trajectories = memory->SampleMemory(batchSize, batchTrajectoryLength);
+			Learn(trajectories, false);
+		}
+	}
 }
 
 void ACERAgent::UpdateMemory(
@@ -50,19 +64,6 @@ void ACERAgent::UpdateMemory(
 
 	// Insert Transition into memory
 	memory->StoreStateTransition(state, actions, reward, newState, terminal, policy);
-}
-
-void ACERAgent::Learn()
-{
-	// On-Policy
-	Learn({ memory->GetPrevTrajectory() }, true);
-
-	// Off-Policy
-	if (memory->GetCurrentMemsize() >= batchSize)
-	{
-		vector<Trajectory> trajectories = memory->SampleMemory(batchSize, batchTrajectoryLength);
-		Learn(trajectories, false);
-	}
 }
 
 void ACERAgent::SaveModel()

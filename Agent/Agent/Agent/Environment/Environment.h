@@ -9,7 +9,7 @@ using namespace std;
 /*
   Environment
 
-  A class that defines a game environment. [Add more.]
+  A class that defines a game environment and all its variables.
 
   Author: Darian G.
 */
@@ -43,37 +43,40 @@ public:
 			Might be able to set it to only change when isTerminal is 
 			true or a flag is set during reset.
 	*/
-	inline void SetInitState(State state) { initState = state; };
+	inline void SetInitState(State state) { initState = state; }
 
 	/*
 	  Gets the current state of the environment.
 	*/
-	inline State GetCurrState() const { return currState; };
+	inline State GetCurrState() const { return currState; }
 
 	/* 
 	  Gets the previous state of the environment.
 	*/
-	inline State GetPrevState() const { return prevState; };
+	inline State GetPrevState() const { return prevState; }
 
 	/*
 	  Gets the previous action taken in the environment. 
 	*/
-	inline vector<float> GetAction() const { return action; };
+	inline vector<float> GetAction() const { return action; }
 	
 	/*
 	  Gets the previous reward earned in the environment.
 	*/
-	inline float GetReward() const { return reward; };
+	inline float GetReward() const { return reward; }
 
 	/*
 	  Gets the total reward earned in the environment.
 	*/
-	inline float GetTotalReward() const { return totalReward; };
+	inline float GetTotalReward() const { return totalReward; }
 	
 	/* 
 	  Gets whether the environment is in a terminal state.
 	*/
-	inline bool IsTerminal() const { return isTerminal; };
+	inline bool IsTerminal() const { return isTerminal; }
+
+	/* Gets the steps that have been taken. */
+	inline unsigned int GetSteps() const { return steps; }
 
 private:
 	
@@ -98,4 +101,6 @@ private:
 	/* Is the current state of the environment a terminal state. */
 	bool isTerminal;
 
+	/* The steps that have been taken in the environment. */
+	unsigned int steps;
 };

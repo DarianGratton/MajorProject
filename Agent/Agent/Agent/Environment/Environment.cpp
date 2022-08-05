@@ -22,6 +22,7 @@ void Environment::Update(vector<float> newAction, float newReward, State newStat
 
 	// Update terminal
 	isTerminal = terminal;
+	steps++;
 }
 
 void Environment::Reset()
@@ -32,4 +33,5 @@ void Environment::Reset()
 	reward = 0;
 	totalReward = reward;
 	isTerminal = false;
+	steps = 0;
 }

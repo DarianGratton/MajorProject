@@ -2,11 +2,13 @@
 
 #include <torch/torch.h>
 
+#include "ACERParameters.h"
 #include "ActorCriticNetwork.h"
 #include "ReplayMemory.h"
 #include "Trajectory.h"
 
-#include "../../GameAgent.h"
+#include "../NetworkAgent.h"
+#include "../../Environment/Environment.h"
 #include "../../Environment/State.h"
 
 #include <memory>
@@ -35,37 +37,16 @@ using namespace std;
 
   Author: Darian G.
 */
-class ACERAgent : public GameAgent
+class ACERAgent : public NetworkAgent
 {
 public:
 
 	/* 
 	  Constructor for initializing the ACERAgent and all it's parameters.
 	  params:
-			- lr: The learning rate of the agent.
-			- nPossibleActions: Number of actions the agent takes in any given state.
-			- inputDims: Input dimensions (size of a state in a environment).
-			- nHiddenLayers: Number of hidden layers.
-			- hiddenLayerDims: Size of each hidden layer.
-			- actionLayerDims: Size of the action layer.
-			- memSize: Physical size of the memory.
-			- maxEpisodeLength: Max length for a single episode in a environment.
-			- batchSize: Size of the batch sampled from memory.
-			- batchTrajectoryLength: Length of each Trajectory that is sampled from memory.
-			- biasWeight: Actor loss weight.
-			- gamma: Reward discount factor.
-			- traceMax: The trucation parameter.
-			- trustRegionConstraint: Constraint of the Trust Region Optimization.
-			- trustRegionDecay: Decay of the Trust Region Optimization.
+			- params: ACERParameters object that contains all the network's parameters.
 	*/
-	ACERAgent(float lr,
-		unsigned int nActions, unsigned int nPossibleActions,
-		int64_t inputDims, unsigned int nHiddenLayers, 
-		int64_t hiddenLayerDims, int64_t actionLayerDims,
-		unsigned int memSize = 100000, unsigned int maxEpisodeLength = 256, 
-		unsigned int batchSize = 16, unsigned int batchTrajectoryLength = 16,
-		float biasWeight = 0.1f, float gamma = 0.99f, int traceMax = 10,
-		float trustRegionConstraint = 1.0f, float trustRegionDecay = 0.99f);
+	ACERAgent(const ACERParameters& params);
 
 	/*
 	  Predicts an action given a state.
@@ -75,6 +56,14 @@ public:
 			- A set of actions.
 	*/
 	vector<float> PredictAction(torch::Tensor state) override;
+
+	/*
+	  Trains the agent by calling the approate function neccessary to update
+	  the agent's components and hyper-parameters.
+	  params:
+			- The environment that the agent is being trained on.
+	*/
+	void Train(const Environment& environment) override;
 
 	/*
 	  Stores input as data in memory.
@@ -93,13 +82,6 @@ public:
 		bool terminal);
 
 	/*
-	  Performs a learning iteration on the agent by performing the calculations
-	  to update it's hyper-parameters. ACER: Only call after an episode has been 
-	  finished in the environment.
-	*/
-	void Learn() override;
-
-	/*
 	  Saves the agent for later use.
 	*/
 	void SaveModel() override;
@@ -112,8 +94,8 @@ public:
 private:
 
 	/*
-	  Helper function that contains the bulk of the calculations performed
-	  to update the agent's hyper-parameters. Implementation follows 
+	  Performs a learning iteration on the agent by performing the calculations
+	  to update it's hyper-parameters. Implementation follows 
 	  Algorithm 2 ACER for discrete actions found in the paper.
 	  params:
 			- trajectories: The trajectories the agent learns from.
@@ -141,6 +123,9 @@ private:
 	
 	/* Replay Experience Memory */
 	unique_ptr<ACERReplayMemory> memory;
+
+	/* Max length of an episode a agent can act in a environment. */
+	unsigned int maxEpisodeLength;
 
 	/* Size of the batch sampled from memory. */
 	unsigned int batchSize;
