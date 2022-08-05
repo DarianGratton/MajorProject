@@ -36,7 +36,9 @@ add_executable (
     "Networks/NetworkParameters.h" 
     "Networks/ACER/ACERParameters.h" 
     "Networks/AgentFactory.h" 
-    "Networks/AgentFactory.cpp" "Visualizer/Visualizer.h" "Visualizer/Visualizer.cpp")
+    "Networks/AgentFactory.cpp" 
+    "Visualizer/Visualizer.h" 
+    "Visualizer/Visualizer.cpp")
 
 # Link libraries
 target_link_libraries(Agent "${TORCH_LIBRARIES}")
@@ -86,7 +88,16 @@ add_executable (
     "Networks/ACER/ActorCriticNetwork.h" 
     "Networks/ACER/ActorCriticNetwork.cpp" 
     "Networks/ACER/ACERAgent.cpp" 
-    "Networks/ACER/Trajectory.h" "UnitTests/StateTests.h" "UnitTests/EnvironmentTests.h" "Networks/NetworkAgent.h" "Networks/NetworkParameters.h" "Networks/ACER/ACERParameters.h" "Networks/AgentFactory.h" "Networks/AgentFactory.cpp")
+    "Networks/ACER/Trajectory.h" 
+    "UnitTests/StateTests.h" 
+    "UnitTests/EnvironmentTests.h" 
+    "Networks/NetworkAgent.h" 
+    "Networks/NetworkParameters.h" 
+    "Networks/ACER/ACERParameters.h" 
+    "Networks/AgentFactory.h" 
+    "Networks/AgentFactory.cpp"
+    "Visualizer/Visualizer.h" 
+    "Visualizer/Visualizer.cpp")
 
 target_link_libraries(AgentTests gtest_main)
 target_link_libraries(AgentTests "${TORCH_LIBRARIES}")
