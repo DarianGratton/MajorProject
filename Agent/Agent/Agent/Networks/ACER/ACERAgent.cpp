@@ -12,10 +12,10 @@ ACERAgent::ACERAgent(const ACERParameters& params) :
 	averageActorCritic = actorCritic->CleanClone();
 
 	// Initialize Memory
-	memory = unique_ptr<ACERReplayMemory>(new ACERReplayMemory(params.memSize, params.maxEpisodeLength, params.inputDims, params.nActions, params.nPossibleActions));
+	memory = std::unique_ptr<ACERReplayMemory>(new ACERReplayMemory(params.memSize, params.maxEpisodeLength, params.inputDims, params.nActions, params.nPossibleActions));
 }
 
-vector<float> ACERAgent::PredictAction(torch::Tensor state)
+std::vector<float> ACERAgent::PredictAction(torch::Tensor state)
 {
 	// Predict Probabilites
 	auto predictedAction = actorCritic->Forward(state);
@@ -41,7 +41,7 @@ void ACERAgent::Train(const Environment& environment)
 		// Off-Policy
 		if (memory->GetCurrentMemsize() >= batchSize)
 		{
-			vector<Trajectory> trajectories = memory->SampleMemory(batchSize, batchTrajectoryLength);
+			std::vector<Trajectory> trajectories = memory->SampleMemory(batchSize, batchTrajectoryLength);
 			Learn(trajectories, false);
 		}
 	}
@@ -49,14 +49,14 @@ void ACERAgent::Train(const Environment& environment)
 
 void ACERAgent::UpdateMemory(
 	State state,
-	vector<float> actions,
+	std::vector<float> actions,
 	float reward,
 	State newState,
 	bool terminal)
 {
 	// Get Current Policy
 	auto pred = actorCritic->Forward(state.ToTensor());
-	vector<float> policy;
+	std::vector<float> policy;
 	for (int i = 0; i < pred.first.size(1); i++)
 	{
 		policy.push_back(pred.first[0][i].item<float>());
@@ -69,19 +69,19 @@ void ACERAgent::UpdateMemory(
 void ACERAgent::SaveModel()
 {
 	// Save checkpoint
-	actorCritic->GetCheckpoint().str(string());
+	actorCritic->GetCheckpoint().str(std::string());
 	torch::save(actorCritic, actorCritic->GetCheckpoint());
 
-	averageActorCritic->GetCheckpoint().str(string());
+	averageActorCritic->GetCheckpoint().str(std::string());
 	torch::save(averageActorCritic, averageActorCritic->GetCheckpoint());
 
 	// Save checkpoint to file
-	ofstream outFile;
-	outFile.open("ACERActorCritic.txt", ios::binary | ios::trunc);
+	std::ofstream outFile;
+	outFile.open("ACERActorCritic.txt", std::ios::binary | std::ios::trunc);
 	outFile << actorCritic->GetCheckpoint().rdbuf();
 	outFile.close();
 
-	outFile.open("ACERAvgActorCritic.txt", ios::binary | ios::trunc);
+	outFile.open("ACERAvgActorCritic.txt", std::ios::binary | std::ios::trunc);
 	outFile << averageActorCritic->GetCheckpoint().rdbuf();
 	outFile.close();
 }
@@ -89,16 +89,16 @@ void ACERAgent::SaveModel()
 void ACERAgent::LoadModel()
 {
 	// Clear the Checkpoint
-	actorCritic->GetCheckpoint().str(string());
-	averageActorCritic->GetCheckpoint().str(string());
+	actorCritic->GetCheckpoint().str(std::string());
+	averageActorCritic->GetCheckpoint().str(std::string());
 
 	// Load Checkpoint from file
-	ifstream inFile;
-	inFile.open("ACERActorCritic.txt", ios::binary);
+	std::ifstream inFile;
+	inFile.open("ACERActorCritic.txt", std::ios::binary);
 	actorCritic->GetCheckpoint() << inFile.rdbuf();
 	inFile.close();
 
-	inFile.open("ACERAvgActorCritic.txt", ios::binary);
+	inFile.open("ACERAvgActorCritic.txt", std::ios::binary);
 	averageActorCritic->GetCheckpoint() << inFile.rdbuf();
 	inFile.close();
 
@@ -107,7 +107,7 @@ void ACERAgent::LoadModel()
 	torch::load(averageActorCritic, averageActorCritic->GetCheckpoint());
 }
 
-void ACERAgent::Learn(vector<Trajectory> trajectories, bool onPolicy)
+void ACERAgent::Learn(std::vector<Trajectory> trajectories, bool onPolicy)
 {
 	// Reset gradients and initialize models parameters
 	auto newActorCritic = actorCritic->CleanClone();
@@ -183,10 +183,10 @@ void ACERAgent::Learn(vector<Trajectory> trajectories, bool onPolicy)
 				* (predictedActions.second.gather(-1, actionIndices).data() - value)).sum(-1).unsqueeze(-1);
 
 		// Calculate gradients
-		vector<torch::Tensor> actorGradients = torch::autograd::grad({ actorLoss.mean() }, { predictedActions.first }, {}, /*retain_graph=*/true);
+		std::vector<torch::Tensor> actorGradients = torch::autograd::grad({ actorLoss.mean() }, { predictedActions.first }, {}, /*retain_graph=*/true);
 
 		// Trust Region update
-		vector<torch::Tensor> trustRegionGrad = TrustRegion(actorGradients, predictedActions.first, avgPredictedActions.first.data());
+		std::vector<torch::Tensor> trustRegionGrad = TrustRegion(actorGradients, predictedActions.first, avgPredictedActions.first.data());
 		predictedActions.first.backward(trustRegionGrad[0], true);
 	
 		// Critic
@@ -215,17 +215,17 @@ void ACERAgent::Learn(vector<Trajectory> trajectories, bool onPolicy)
 	averageActorCritic->CopyParametersFrom(*actorCritic, trustRegionDecay);
 }
 
-vector<torch::Tensor> ACERAgent::TrustRegion(vector<torch::Tensor> gradients,
+std::vector<torch::Tensor> ACERAgent::TrustRegion(std::vector<torch::Tensor> gradients,
 	torch::Tensor policy, torch::Tensor averagePolicy)
 {
 	// KL divergence k ← ∇θ0∙DKL[π(∙|s_i; θ_a) || π(∙|s_i; θ)]
 	torch::Tensor kullbackLeibler = -((averagePolicy.log() - policy.log()) * averagePolicy).sum(-1);
-	vector<torch::Tensor> kullbackLeiblerGrad = torch::autograd::grad({ kullbackLeibler.mean() }, { policy }, {}, true);
+	std::vector<torch::Tensor> kullbackLeiblerGrad = torch::autograd::grad({ kullbackLeibler.mean() }, { policy }, {}, true);
 
 	// Update Gradients by performing the dot product of each of the
 	// gradients and then computing the trust region update
 	unsigned int i = 0;
-	vector<torch::Tensor> updatedGradients;
+	std::vector<torch::Tensor> updatedGradients;
 	for (torch::Tensor actorGrad : gradients)
 	{
 		torch::Tensor scale = actorGrad.mul(kullbackLeiblerGrad[i]).sum(-1).unsqueeze(-1) - trustRegionConstraint;

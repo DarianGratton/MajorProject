@@ -14,8 +14,6 @@
 #include <memory>
 #include <vector>
 
-using namespace std;
-
 /*
   ACERAgent
 
@@ -55,7 +53,7 @@ public:
 	  returns:
 			- A set of actions.
 	*/
-	vector<float> PredictAction(torch::Tensor state) override;
+	std::vector<float> PredictAction(torch::Tensor state) override;
 
 	/*
 	  Trains the agent by calling the approate function neccessary to update
@@ -76,7 +74,7 @@ public:
 	*/
 	void UpdateMemory(
 		State state,
-		vector<float> actions,
+		std::vector<float> actions,
 		float reward,
 		State newState,
 		bool terminal);
@@ -102,7 +100,7 @@ private:
 			- onPolicy: Whether the agent is learning on-policy or off-policy 
 						(one trajectory directly from the environment or multiple from memory).
 	*/
-	void Learn(vector<Trajectory> trajectories, bool onPolicy);
+	void Learn(std::vector<Trajectory> trajectories, bool onPolicy);
 
 	/* 
 	  Helper function that contains the calculation for Trust Region Optimization used in the
@@ -114,7 +112,7 @@ private:
 	  return: 
 			- The new gradients updated with Trust Region Optimizaiton.
 	*/
-	vector<torch::Tensor> TrustRegion(vector<torch::Tensor> gradients, 
+	std::vector<torch::Tensor> TrustRegion(std::vector<torch::Tensor> gradients,
 		torch::Tensor policy, torch::Tensor averagePolicy);
 
 	/* Network */
@@ -122,7 +120,7 @@ private:
 	ActorCriticNetwork averageActorCritic = nullptr;
 	
 	/* Replay Experience Memory */
-	unique_ptr<ACERReplayMemory> memory;
+	std::unique_ptr<ACERReplayMemory> memory;
 
 	/* Max length of an episode a agent can act in a environment. */
 	unsigned int maxEpisodeLength;

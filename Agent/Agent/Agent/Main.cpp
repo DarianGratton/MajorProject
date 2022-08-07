@@ -1,5 +1,4 @@
 #include <torch/torch.h>
-#include <matplot/matplot.h>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -8,14 +7,11 @@
 #include <string>
 #include <memory>
 
-#include "GameAgent.h"
+#include "Agent.h"
 #include "Environment/State.h"
 #include "Environment/Environment.h"
 #include "Networks/TestEnvironment/AgentTest.h"
 #include "Networks/AgentFactory.h"
-
-using namespace std;
-using namespace matplot;
 
 // Used for testing
 int main()
@@ -37,8 +33,8 @@ int main()
     state.AddDelta("X", 12);
     state.AddDelta("Y", 10);
 
-    GameAgent agent(state, params);
-    shared_ptr<Environment> env = agent.GetEnvironment();
+    std::shared_ptr<Environment> env = std::make_shared<Environment>(state);
+    Agent agent(env, params);
 
 	//AgentTest test(false, true);
 	//test.Train();

@@ -15,8 +15,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 add_executable (
     Agent 
     "Main.cpp" 
-    "GameAgent.cpp" 
-    "GameAgent.h" 
+    "Agent.cpp" 
+    "Agent.h" 
     "Environment/Environment.h" 
     "Environment/Environment.cpp"
     "Environment/State.h" 
@@ -74,8 +74,8 @@ enable_testing()
 add_executable (
     AgentTests 
     "UnitTests/Test.cpp"
-    "GameAgent.cpp" 
-    "GameAgent.h" 
+    "Agent.cpp" 
+    "Agent.h" 
     "Environment/Environment.h" 
     "Environment/Environment.cpp"
     "Environment/State.h" 

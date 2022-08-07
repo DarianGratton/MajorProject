@@ -6,8 +6,6 @@
 
 #include "../Environment/Environment.h"
 
-using namespace std;
-
 /*
   NetworkAgent
 
@@ -27,7 +25,7 @@ public:
 	  returns:
 			- A set of actions.
 	*/
-	virtual vector<float> PredictAction(torch::Tensor state) = 0;
+	virtual std::vector<float> PredictAction(torch::Tensor state) = 0;
 
 	/* 
 	  Trains the agent by calling the approate function neccessary to update

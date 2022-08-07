@@ -66,11 +66,11 @@ struct Trajectory
 	*/
 	void StoreTransition(
 		State state,
-		vector<float> newActions,
+		std::vector<float> newActions,
 		float reward,
 		State newState,
 		bool terminal,
-		vector<float> actionProbabilities)
+		std::vector<float> actionProbabilities)
 	{
 		states.slice(0, numOfTransitions, numOfTransitions + 1) = state.ToTensor();
 		newStates.slice(0, numOfTransitions, numOfTransitions + 1) = newState.ToTensor();

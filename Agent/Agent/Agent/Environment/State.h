@@ -6,7 +6,7 @@
 #include <string>
 #include <map>
 
-using namespace std;
+
 
 /*
   State
@@ -32,7 +32,7 @@ public:
 	  params: 
 			- deltas: A map of deltas to set the state to.
 	*/
-	State(unordered_map<string, float> deltas);
+	State(std::unordered_map<std::string, float> deltas);
 
 	/* 
 	  Copy Constructor.
@@ -49,14 +49,14 @@ public:
 	  params:
 			- delta: A new delta to add.
 	*/
-	void AddDelta(string deltaName, float delta);
+	void AddDelta(std::string deltaName, float delta);
 
 	/*
 	  Removes an existing delta.
 	  params:
 			- deltaName: The name of the delta to be removed.
 	*/
-	void RemoveDelta(string deltaName);
+	void RemoveDelta(std::string deltaName);
 
 	/*
 	  Updates an existing delta to a new value.
@@ -64,7 +64,7 @@ public:
 			- deltaName: The name of the delta to update.
 			- newDelta: The value of the new delta.
 	*/
-	void UpdateDelta(string deltaName, float newDelta);
+	void UpdateDelta(std::string deltaName, float newDelta);
 
 	/* 
 	  Resets the state by removing all the stored deltas. 
@@ -79,14 +79,14 @@ public:
 	/* 
 	  Returns a copy of the state's deltas. 
 	*/
-	inline unordered_map<string, float> GetDeltas() { return deltas; }
+	inline std::unordered_map<std::string, float> GetDeltas() { return deltas; }
 
 	/* 
 	  Helper function for changing the state to a std::vector object. 
 	  returns:
 			- A newly created vector containing the state's deltas.
 	*/
-	vector<float> ToVector() const;
+	std::vector<float> ToVector() const;
 
 	/* 
 	  Helper function for changing the state to a torch::Tensor object. 
@@ -101,12 +101,12 @@ public:
 	  returns:
 			- The state's deltas as a string
 	*/
-	string ToString() const;
+	std::string ToString() const;
 
 	/* 
 	  Insertion Operator. 
 	*/
-	friend ostream& operator<<(ostream& os, const State& state);
+	friend std::ostream& operator<<(std::ostream& os, const State& state);
 
 private:
 
@@ -118,5 +118,5 @@ private:
 		- Y: -120.0
 		- Z: 5.0
 	*/
-	unordered_map<string, float> deltas;
+	std::unordered_map<std::string, float> deltas;
 };

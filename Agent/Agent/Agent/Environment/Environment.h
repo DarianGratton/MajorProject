@@ -4,8 +4,6 @@
 
 #include "State.h"
 
-using namespace std;
-
 /*
   Environment
 
@@ -13,8 +11,10 @@ using namespace std;
 
   Author: Darian G.
 */
-class Environment {
+class Environment 
+{
 public:
+
 	/*
 	  Constructor for initializing the environment.
 	*/
@@ -28,7 +28,7 @@ public:
 			- newState: New state reached from taking action.
 			- terminal: Whether new state is terminal or not.
 	*/
-	void Update(vector<float> newAction, float newReward, 
+	void Update(std::vector<float> newAction, float newReward,
 				State newState, bool terminal = false);
 
 	/*
@@ -58,7 +58,7 @@ public:
 	/*
 	  Gets the previous action taken in the environment. 
 	*/
-	inline vector<float> GetAction() const { return action; }
+	inline std::vector<float> GetAction() const { return action; }
 	
 	/*
 	  Gets the previous reward earned in the environment.
@@ -87,7 +87,7 @@ private:
 	State prevState;
 
 	/* The action previously taken in the environment. */
-	vector<float> action; 
+	std::vector<float> action;
 
 	/* The reward previously earned in the environment. */
 	float reward;

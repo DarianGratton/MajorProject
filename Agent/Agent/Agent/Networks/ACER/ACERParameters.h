@@ -21,7 +21,7 @@ public:
 	/*
 	  Gets the name of the network.
 	*/
-	inline string GetNetworkName() const override
+	inline std::string GetNetworkName() const override
 	{
 		return "ACER";
 	}

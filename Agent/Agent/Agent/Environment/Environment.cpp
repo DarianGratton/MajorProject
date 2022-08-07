@@ -7,7 +7,7 @@ Environment::Environment(State initState) : initState(initState)
 	Reset();
 }
 
-void Environment::Update(vector<float> newAction, float newReward, State newState, bool terminal)
+void Environment::Update(std::vector<float> newAction, float newReward, State newState, bool terminal)
 {
 	// Update action
 	action = newAction;
@@ -22,7 +22,6 @@ void Environment::Update(vector<float> newAction, float newReward, State newStat
 
 	// Update terminal
 	isTerminal = terminal;
-	steps++;
 }
 
 void Environment::Reset()
@@ -33,5 +32,4 @@ void Environment::Reset()
 	reward = 0;
 	totalReward = reward;
 	isTerminal = false;
-	steps = 0;
 }

@@ -28,7 +28,7 @@ public:
         const unsigned long long& amount, 
         const unsigned long long& min, 
         const unsigned long long& max) : 
-        gen((random_device())())
+        gen((std::random_device())())
     {
         floor = min;
         num_left = amount;
@@ -55,7 +55,7 @@ public:
             unsigned long long range_size = (n - last_k) / num_left;
 
             // Initialize random generator
-            uniform_int_distribution<unsigned long long> rnd(floor, range_size);
+            std::uniform_int_distribution<unsigned long long> rnd(floor, range_size);
 
             // Generate random number
             unsigned long long r = rnd(gen) + last_k + 1;
@@ -67,7 +67,7 @@ public:
         }
         else
         {
-            throw out_of_range("Exceeded amount of random numbers to generate.");
+            throw std::out_of_range("Exceeded amount of random numbers to generate.");
         }
     }
 
@@ -76,5 +76,5 @@ private:
     unsigned long long n;
     unsigned long long last_k;
     unsigned long long num_left;
-    mt19937_64 gen;
+    std::mt19937_64 gen;
 };

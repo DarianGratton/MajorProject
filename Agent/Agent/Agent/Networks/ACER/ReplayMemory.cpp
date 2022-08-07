@@ -16,7 +16,7 @@ ACERReplayMemory::ACERReplayMemory(
 {
 	if (memSize < maxEpisodeLength)
 	{
-		cerr << "ReplayMemory() Error: maxEpisodeLength should not be greater than memSize. " << endl;
+		std::cerr << "ReplayMemory() Error: maxEpisodeLength should not be greater than memSize. " << std::endl;
 		
 		// TODO: Replace with exception system
 		return;
@@ -28,17 +28,17 @@ ACERReplayMemory::ACERReplayMemory(
 
 void ACERReplayMemory::StoreStateTransition(
 	State state,
-	vector<float> actions,
+	std::vector<float> actions,
 	float reward,
 	State newState,
 	bool terminal,
-	vector<float> policy)
+	std::vector<float> policy)
 {
 	// Error checking
 	if (state.Size() != stateSize)
 	{
 		// TODO: Replace with exception system
-		cerr << "ReplayMemory StoreStateTransition() Error: State is of different size than when it was initialized, State size is: " << state.Size() << endl;
+		std::cerr << "ReplayMemory StoreStateTransition() Error: State is of different size than when it was initialized, State size is: " << state.Size() << std::endl;
 		return;
 	}
 

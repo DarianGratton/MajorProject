@@ -10,12 +10,11 @@
 #include "Networks/NetworkAgent.h"
 #include "Networks/NetworkParameters.h"
 #include "Networks/AgentFactory.h"
-#include "Visualizer/Visualizer.h"
 
-using namespace std;
+
 
 /* 
-  GameAgent
+  Agent
 
   Main front-end of the Agent. Defines the type of agent being used and acts as
   a meditator between the user and the internal logic of the agent.
@@ -24,17 +23,17 @@ using namespace std;
 
   Author: Darian G.
 */
-class GameAgent
+class Agent
 {
 public:
 
 	/* 
-	  Constructor for initializing the GameAgent and it's components.
+	  Constructor for initializing the Agent and it's components.
 	  params:
 			- env: Environment that the agent acts in.
 			- params: Network parameters of the Agent to create.
 	*/
-	GameAgent(shared_ptr<Environment> env, NetworkParameters& params);
+	Agent(std::shared_ptr<Environment> env, NetworkParameters& params);
 
 	/*
 	  Calls the functions neccessary for the agent to predict a set
@@ -44,7 +43,7 @@ public:
 	  returns:
 			- A set of actions.
 	*/
-	vector<float> PredictAction();
+	std::vector<float> PredictAction();
 
 	/*
 	  Calls the functions neccessary to train the agent on the environment.
@@ -64,14 +63,14 @@ public:
 	/*
 	  Gets a pointer to the environment for updating.
 	*/
-	inline shared_ptr<Environment> GetEnvironment() { return environment; }
+	inline std::shared_ptr<Environment> GetEnvironment() { return environment; }
 
 private:
 
 	/* Environment that the agent acts in. */
-	shared_ptr<Environment> environment;
+	std::shared_ptr<Environment> environment;
 	
 	/* Agent that acts in an environment. */
-	shared_ptr<NetworkAgent> agent;
+	std::shared_ptr<NetworkAgent> agent;
 
 };

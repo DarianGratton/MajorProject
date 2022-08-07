@@ -60,7 +60,7 @@ void AgentTest::Train()
     unsigned int winCount = 0;
     float bestAvgReward = -100000; 
     float avgReward = 0;
-    vector<float> rewardHistory;
+    std::vector<float> rewardHistory;
     for (unsigned int episode = 1; episode <= nEpisodes; episode++)
     {
         printf("Game %u/%u\n", episode, nEpisodes);
@@ -104,7 +104,7 @@ void AgentTest::Train()
                 yAct = -0.5f;
                 break;
             default:
-                cout << "Something went wrong" << endl;
+                std::cout << "Something went wrong" << std::endl;
                 break;
             }
 
@@ -163,10 +163,10 @@ void AgentTest::Train()
         else
             avgReward = accumulate(rewardHistory.begin(), rewardHistory.end(), 0.0) / rewardHistory.size();
         
-        cout << "Step count: " << i << endl;
+        std::cout << "Step count: " << i << std::endl;
         printf("Game's Won %u/%u\n", winCount, nEpisodes);
-        cout << "Reward: " << reward << endl;
-        cout << "AvgReward: " << avgReward << endl;
+        std::cout << "Reward: " << reward << std::endl;
+        std::cout << "AvgReward: " << avgReward << std::endl;
 
         if ((avgReward > bestAvgReward && rewardHistory.size() >= 100))
         {
@@ -174,7 +174,7 @@ void AgentTest::Train()
             agent->SaveModel();
         }
 
-        cout << "BestAvgReward: " << bestAvgReward << endl << endl;
+        std::cout << "BestAvgReward: " << bestAvgReward << std::endl << std::endl;
     }
 
     out.close();
@@ -244,7 +244,7 @@ void AgentTest::Test()
                 yAct = -0.5f;
                 break;
             default:
-                cout << "Something went wrong" << endl;
+                std::cout << "Something went wrong" << std::endl;
                 break;
             }
 
@@ -286,7 +286,7 @@ void AgentTest::Test()
         if (recordOutput)
             out << episode << ", " << env.pos(0) << ", " << env.pos(1) << ", " << env.goal(0) << ", " << env.goal(1) << ", " << env.RESETTING << "\n";
 
-        cout << "Step count: " << i << endl;
+        std::cout << "Step count: " << i << std::endl;
         printf("Game's Won %u/%u\n", winCount, nEpisodes);
     }
 

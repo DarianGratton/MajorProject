@@ -6,11 +6,11 @@
 #include "ACER/ACERAgent.h"
 #include "ACER/ACERParameters.h"
 
-shared_ptr<NetworkAgent> AgentFactory::GetNetworkAgent(NetworkParameters& params)
+std::shared_ptr<NetworkAgent> AgentFactory::GetNetworkAgent(NetworkParameters& params)
 {
 	if (params.GetNetworkName() == "ACER")
 	{
-		return make_shared<ACERAgent>(dynamic_cast<ACERParameters&>(params));
+		return std::make_shared<ACERAgent>(dynamic_cast<ACERParameters&>(params));
 	}
 
 	return nullptr;

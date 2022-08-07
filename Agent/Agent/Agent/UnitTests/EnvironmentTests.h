@@ -6,8 +6,6 @@
 
 #include "../Environment/Environment.h"
 
-using namespace std;
-
 TEST(EnvUpdate, ValidValues)
 {
 	State state;
@@ -15,7 +13,7 @@ TEST(EnvUpdate, ValidValues)
 	state.AddDelta("Delta 2", 2.0f);
 	
 	Environment env(state);
-	vector<float> action = { 1.0f };
+	std::vector<float> action = { 1.0f };
 	float reward = 25.0f;
 	state.UpdateDelta("Delta 2", 5.0f);
 	bool terminal = true;
@@ -35,7 +33,7 @@ TEST(EnvUpdate, ValidValuesNoTerminalValue)
 	state.AddDelta("Delta 2", 2.0f);
 
 	Environment env(state);
-	vector<float> action = { 1.0f };
+	std::vector<float> action = { 1.0f };
 	float reward = 25.0f;
 	state.UpdateDelta("Delta 2", 5.0f);
 
@@ -54,7 +52,7 @@ TEST(EnvReset, ValidValuesNoTerminalValue)
 	state.AddDelta("Delta 2", 2.0f);
 
 	Environment env(state);
-	vector<float> action = { 1.0f };
+	std::vector<float> action = { 1.0f };
 	float reward = 25.0f;
 	state.UpdateDelta("Delta 2", 5.0f);
 	env.Update(action, reward, state);

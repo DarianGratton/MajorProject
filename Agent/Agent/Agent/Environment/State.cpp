@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-State::State(unordered_map<string, float> deltas) : deltas(deltas)
+State::State(std::unordered_map<std::string, float> deltas) : deltas(deltas)
 {
 
 }
@@ -15,19 +15,19 @@ State& State::operator=(const State& state1)
 	return *this;
 }
 
-void State::AddDelta(string deltaName, float delta)
+void State::AddDelta(std::string deltaName, float delta)
 {
 	if (deltas.find(deltaName) == deltas.end())
 	{
-		deltas.insert(make_pair(deltaName, delta));
+		deltas.insert(std::make_pair(deltaName, delta));
 	}
 	else
 	{
-		cerr << "State::AddDelta(): " << deltaName << " delta already exists." << endl;
+		std::cerr << "State::AddDelta(): " << deltaName << " delta already exists." << std::endl;
 	}
 }
 
-void State::RemoveDelta(string deltaName)
+void State::RemoveDelta(std::string deltaName)
 {
 	if (deltas.find(deltaName) != deltas.end())
 	{
@@ -35,11 +35,11 @@ void State::RemoveDelta(string deltaName)
 	}
 	else
 	{
-		cerr << "State::RemoveDelta(): " << deltaName << " delta doesn't exists." << endl;
+		std::cerr << "State::RemoveDelta(): " << deltaName << " delta doesn't exists." << std::endl;
 	}
 }
 
-void State::UpdateDelta(string deltaName, float newDelta)
+void State::UpdateDelta(std::string deltaName, float newDelta)
 {
 	try 
 	{
@@ -47,7 +47,7 @@ void State::UpdateDelta(string deltaName, float newDelta)
 	}
 	catch (const std::out_of_range& e)
 	{
-		cerr << "State::UpdateDelta(): " << deltaName << " delta doesn't exists." << endl;
+		std::cerr << "State::UpdateDelta(): " << deltaName << " delta doesn't exists." << std::endl;
 	}
 }
 
@@ -56,23 +56,23 @@ void State::Reset()
 	deltas.clear();
 }
 
-string State::ToString() const
+std::string State::ToString() const
 {
 	// Create string
-	stringstream str;
+	std::stringstream str;
 	str << "State's deltas: \n";
-	for (pair<string, float> delta : deltas)
+	for (std::pair<std::string, float> delta : deltas)
 	{
-		str << delta.first << ": " << to_string(delta.second) << "\n";
+		str << delta.first << ": " << std::to_string(delta.second) << "\n";
 	}
 	return str.str();
 }
 
-vector<float> State::ToVector() const
+std::vector<float> State::ToVector() const
 {
 	// Copy deltas to vector
-	vector<float> values;
-	for (pair<string, float> delta : deltas)
+	std::vector<float> values;
+	for (std::pair<std::string, float> delta : deltas)
 	{
 		values.push_back(delta.second);
 	}
@@ -89,7 +89,7 @@ torch::Tensor State::ToTensor() const
 	
 	// Store values
 	int i = 0;
-	for (pair<string, float> delta : deltas)
+	for (std::pair<std::string, float> delta : deltas)
 	{
 		tensor[0][i].data() = delta.second;
 		i++;
@@ -98,16 +98,16 @@ torch::Tensor State::ToTensor() const
 	return tensor.clone();
 }
 
-ostream& operator<<(ostream& os, const State& state)
+std::ostream& operator<<(std::ostream& os, const State& state)
 {
 	unsigned int i = 0;
 	os << "State's deltas: \n";
-	for (pair<string, float> delta : state.deltas)
+	for (std::pair<std::string, float> delta : state.deltas)
 	{
 		if (i == state.deltas.size() - 1)
-			os << delta.first << ": " << to_string(delta.second);
+			os << delta.first << ": " << std::to_string(delta.second);
 		else
-			os << delta.first << ": " << to_string(delta.second) << "\n";
+			os << delta.first << ": " << std::to_string(delta.second) << "\n";
 		i++;
 	}
 	return os;

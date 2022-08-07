@@ -7,8 +7,6 @@
 #include "Trajectory.h"
 #include "../../Environment/State.h"
 
-using namespace std;
-
 /*
   ReplayMemory
 
@@ -51,11 +49,11 @@ public:
 	*/
 	void StoreStateTransition(
 		State state,
-		vector<float> actions,
+		std::vector<float> actions,
 		float reward,
 		State newState,
 		bool terminal,
-		vector<float> policy);
+		std::vector<float> policy);
 
 	/*
 	  Samples an random part of the memory.

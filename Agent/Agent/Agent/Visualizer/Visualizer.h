@@ -7,8 +7,6 @@
 
 #include "../Environment/Environment.h"
 
-using namespace std;
-
 /* 
   Visualizer
 
@@ -36,7 +34,7 @@ public:
 			- Y: Values to be plotted on the Y axis
 			- filename: Name of the file for the plot to be stored in.
 	*/
-	void PlotLine(vector<float> X, vector<float> Y, string filename);
+	void PlotLine(std::vector<float> X, std::vector<float> Y, std::string filename);
 
 	/*
 	  Creates a bar plot then stores it in a file.
@@ -45,6 +43,6 @@ public:
 			- Y: Values to be plotted on the Y axis
 			- filename: Name of the file for the plot to be stored in.
 	*/
-	void PlotBar(vector<float> X, vector<float> Y, string filename);
+	void PlotBar(std::vector<float> X, std::vector<float> Y, std::string filename);
 
 };

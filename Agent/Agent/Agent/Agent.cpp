@@ -1,6 +1,6 @@
-﻿#include "GameAgent.h"
+﻿#include "Agent.h"
 
-GameAgent::GameAgent(shared_ptr<Environment> env, NetworkParameters& params)
+Agent::Agent(std::shared_ptr<Environment> env, NetworkParameters& params)
 {
 	// Initial Environment
 	environment = env;
@@ -10,22 +10,22 @@ GameAgent::GameAgent(shared_ptr<Environment> env, NetworkParameters& params)
 	agent = factory.GetNetworkAgent(params);
 }
 
-vector<float> GameAgent::PredictAction()
+std::vector<float> Agent::PredictAction()
 {
 	return agent->PredictAction(environment->GetCurrState().ToTensor());
 }
 
-void GameAgent::Train()
+void Agent::Train()
 {
 	agent->Train(*environment);
 }
 
-void GameAgent::SaveAgent()
+void Agent::SaveAgent()
 {
 	agent->SaveModel();
 }
 
-void GameAgent::LoadAgent()
+void Agent::LoadAgent()
 {
 	agent->LoadModel();
 }

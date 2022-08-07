@@ -5,8 +5,6 @@
 #include "NetworkAgent.h"
 #include "NetworkParameters.h"
 
-using namespace std;
-
 /*
   AgentFactory
 
@@ -30,5 +28,5 @@ public:
 	  returns:
 			- A new NetworkAgent.
 	*/
-	shared_ptr<NetworkAgent> GetNetworkAgent(NetworkParameters& params);
+	std::shared_ptr<NetworkAgent> GetNetworkAgent(NetworkParameters& params);
 };

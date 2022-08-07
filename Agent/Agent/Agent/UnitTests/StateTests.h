@@ -6,8 +6,6 @@
 
 #include "../Environment/State.h"
 
-using namespace std;
-
 TEST (StateAddDelta, ValidPositiveDelta)
 {
 	State state;
