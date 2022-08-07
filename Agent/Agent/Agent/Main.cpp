@@ -1,3 +1,5 @@
+#include "GameAgent.h"
+
 #include <torch/torch.h>
 #include <iostream>
 #include <sstream>
@@ -6,12 +8,6 @@
 #include <numeric>
 #include <string>
 #include <memory>
-
-#include "Agent.h"
-#include "Environment/State.h"
-#include "Environment/Environment.h"
-#include "Networks/TestEnvironment/AgentTest.h"
-#include "Networks/AgentFactory.h"
 
 // Used for testing
 int main()
