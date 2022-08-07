@@ -2,6 +2,9 @@
 
 #include "Environment.h"
 
+namespace GameAgent
+{
+
 Environment::Environment(State initState) : initState(initState)
 {
 	Reset();
@@ -33,3 +36,5 @@ void Environment::Reset()
 	totalReward = reward;
 	isTerminal = false;
 }
+
+} /* namespace GameAgent */

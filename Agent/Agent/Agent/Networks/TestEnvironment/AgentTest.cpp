@@ -66,7 +66,7 @@ void AgentTest::Train()
         printf("Game %u/%u\n", episode, nEpisodes);
 
         // State of Env.
-        State observation;
+        GameAgent::State observation;
         torch::Tensor state = env.State();
         observation.AddDelta("GoalX", x);
         observation.AddDelta("GoalY", y);
@@ -111,7 +111,7 @@ void AgentTest::Train()
             auto sd = env.Act(xAct, yAct); // std::tuple<state, status, terminal>
 
             // Get parameters
-            State newObservation;
+            GameAgent::State newObservation;
             torch::Tensor newState = std::get<0>(sd);
             newObservation.AddDelta("GoalX", x);
             newObservation.AddDelta("GoalY", y);
@@ -213,7 +213,7 @@ void AgentTest::Test()
         printf("Game %u/%u\n", episode, nEpisodes);
 
         // State of Env.
-        State observation;
+        GameAgent::State observation;
         torch::Tensor state = env.State();
         observation.AddDelta("GoalX", x);
         observation.AddDelta("GoalY", y);
@@ -251,7 +251,7 @@ void AgentTest::Test()
             auto sd = env.Act(xAct, yAct); // std::tuple<state, status, terminal>
 
             // Get parameters
-            State newObservation;
+            GameAgent::State newObservation;
             torch::Tensor newState = std::get<0>(sd);
             newObservation.AddDelta("GoalX", x);
             newObservation.AddDelta("GoalY", y);

@@ -25,12 +25,12 @@ int main()
     params.gamma = 0.99f;
     params.traceMax = 10;
 
-    State state;
+    GameAgent::State state;
     state.AddDelta("X", 12);
     state.AddDelta("Y", 10);
 
-    std::shared_ptr<Environment> env = std::make_shared<Environment>(state);
-    Agent agent(env, params);
+    std::shared_ptr<GameAgent::Environment> env = std::make_shared<GameAgent::Environment>(state);
+    GameAgent::Agent agent(env, params);
 
 	//AgentTest test(false, true);
 	//test.Train();

@@ -6,7 +6,8 @@
 #include <string>
 #include <map>
 
-
+namespace GameAgent
+{
 
 /*
   State
@@ -120,3 +121,5 @@ private:
 	*/
 	std::unordered_map<std::string, float> deltas;
 };
+
+} /* namespace GameAgent */

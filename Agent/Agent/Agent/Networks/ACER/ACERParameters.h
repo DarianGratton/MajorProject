@@ -2,6 +2,11 @@
 
 #include "../NetworkParameters.h"
 
+namespace GameAgent
+{
+namespace Networks
+{
+
 /*
   ACERParameters
 
@@ -74,3 +79,6 @@ public:
 	/* Decay of the Trust Region Optimization. */
 	float trustRegionDecay = 0.99f;
 };
+
+} /* namespace Networks */
+} /* namespace GameAgent */

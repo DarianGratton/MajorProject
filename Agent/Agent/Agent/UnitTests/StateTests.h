@@ -8,7 +8,7 @@
 
 TEST (StateAddDelta, ValidPositiveDelta)
 {
-	State state;
+	GameAgent::State state;
 	float value = 12.0f;
 
 	state.AddDelta("Delta 1", value);
@@ -18,7 +18,7 @@ TEST (StateAddDelta, ValidPositiveDelta)
 
 TEST(StateAddDelta, ValidNegativeDelta)
 {
-	State state;
+	GameAgent::State state;
 	float value = -12.0f;
 
 	state.AddDelta("Delta 1", value);
@@ -28,7 +28,7 @@ TEST(StateAddDelta, ValidNegativeDelta)
 
 TEST(StateAddDelta, ValidMultipleDeltas)
 {
-	State state;
+	GameAgent::State state;
 	float value1 = 12.0f;
 	float value2 = -12.0f;
 
@@ -42,7 +42,7 @@ TEST(StateAddDelta, ValidMultipleDeltas)
 
 TEST(StateAddDelta, ValidNoDeltaName)
 {
-	State state;
+	GameAgent::State state;
 	float value = 12.0f;
 
 	state.AddDelta("", value);
@@ -52,7 +52,7 @@ TEST(StateAddDelta, ValidNoDeltaName)
 
 TEST(StateAddDelta, InvalidDupicateDelta)
 {
-	State state;
+	GameAgent::State state;
 	float value = -12.0f;
 
 	state.AddDelta("Delta 1", value);
@@ -63,7 +63,7 @@ TEST(StateAddDelta, InvalidDupicateDelta)
 
 TEST(StateRemoveDelta, ValidDeltaName)
 {
-	State state;
+	GameAgent::State state;
 	float value = 12.0f;
 
 	state.AddDelta("Delta 1", value);
@@ -76,7 +76,7 @@ TEST(StateRemoveDelta, ValidDeltaName)
 
 TEST(StateRemoveDelta, InvalidDeltaNameDoesNotExist)
 {
-	State state;
+	GameAgent::State state;
 	state.RemoveDelta("Delta 1");
 	EXPECT_ANY_THROW(state.GetDeltas().at("Delta 1"));
 	EXPECT_EQ(state.Size(), 0);
@@ -84,7 +84,7 @@ TEST(StateRemoveDelta, InvalidDeltaNameDoesNotExist)
 
 TEST(StateUpdateDelta, ValidPositiveDeltaName)
 {
-	State state;
+	GameAgent::State state;
 	float value1 = 12.0f;
 	float value2 = 24.0f;
 
@@ -96,7 +96,7 @@ TEST(StateUpdateDelta, ValidPositiveDeltaName)
 
 TEST(StateUpdateDelta, ValidNegativeDeltaName)
 {
-	State state;
+	GameAgent::State state;
 	float value1 = -12.0f;
 	float value2 = -24.0f;
 
@@ -108,14 +108,14 @@ TEST(StateUpdateDelta, ValidNegativeDeltaName)
 
 TEST(StateUpdateDelta, InvalidDeltaNameDoesNotExist)
 {
-	State state;
+	GameAgent::State state;
 	float value = 12.0f;
 	EXPECT_NO_THROW(state.UpdateDelta("Delta 1", value));
 }
 
 TEST(StateReset, ResetDeltas)
 {
-	State state;
+	GameAgent::State state;
 	float value = 12.0f;
 
 	state.AddDelta("Delta 1", value);
@@ -126,14 +126,14 @@ TEST(StateReset, ResetDeltas)
 
 TEST(StateSize, StateSize)
 {
-	State state;
+	GameAgent::State state;
 	state.AddDelta("Delta 1", 12.0f);
 	EXPECT_EQ(state.Size(), 1);
 }
 
 TEST(StateToVector, StateToVector)
 {
-	State state;
+	GameAgent::State state;
 	float value1 = 12.0f;
 	float value2 = 14.0f;
 

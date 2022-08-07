@@ -27,7 +27,7 @@ std::vector<float> ACERAgent::PredictAction(torch::Tensor state)
 	return { action };
 }
 
-void ACERAgent::Train(const Environment& environment)
+void ACERAgent::Train(const GameAgent::Environment& environment)
 {
 	UpdateMemory(environment.GetPrevState(), environment.GetAction(), 
 				 environment.GetReward(), environment.GetCurrState(), environment.IsTerminal());
@@ -48,10 +48,10 @@ void ACERAgent::Train(const Environment& environment)
 }
 
 void ACERAgent::UpdateMemory(
-	State state,
+	GameAgent::State state,
 	std::vector<float> actions,
 	float reward,
-	State newState,
+	GameAgent::State newState,
 	bool terminal)
 {
 	// Get Current Policy

@@ -4,6 +4,9 @@
 
 #include <iostream>
 
+namespace GameAgent
+{ 
+
 State::State(std::unordered_map<std::string, float> deltas) : deltas(deltas)
 {
 
@@ -112,3 +115,5 @@ std::ostream& operator<<(std::ostream& os, const State& state)
 	}
 	return os;
 }
+
+} /* namespace GameAgent */

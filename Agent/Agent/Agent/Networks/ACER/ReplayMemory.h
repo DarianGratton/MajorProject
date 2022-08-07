@@ -48,10 +48,10 @@ public:
 			- policy: The probabilities of each possible action before the actual action was chosen.
 	*/
 	void StoreStateTransition(
-		State state,
+		GameAgent::State state,
 		std::vector<float> actions,
 		float reward,
-		State newState,
+		GameAgent::State newState,
 		bool terminal,
 		std::vector<float> policy);
 

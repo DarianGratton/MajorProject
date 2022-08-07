@@ -27,10 +27,10 @@ ACERReplayMemory::ACERReplayMemory(
 }
 
 void ACERReplayMemory::StoreStateTransition(
-	State state,
+	GameAgent::State state,
 	std::vector<float> actions,
 	float reward,
-	State newState,
+	GameAgent::State newState,
 	bool terminal,
 	std::vector<float> policy)
 {

@@ -14,6 +14,8 @@
 #include <memory>
 #include <vector>
 
+using namespace GameAgent::Networks;
+
 /*
   ACERAgent
 
@@ -61,7 +63,7 @@ public:
 	  params:
 			- The environment that the agent is being trained on.
 	*/
-	void Train(const Environment& environment) override;
+	void Train(const GameAgent::Environment& environment) override;
 
 	/*
 	  Stores input as data in memory.
@@ -73,10 +75,10 @@ public:
 			- terminal: Whether the new state is terminal or not.
 	*/
 	void UpdateMemory(
-		State state,
+		GameAgent::State state,
 		std::vector<float> actions,
 		float reward,
-		State newState,
+		GameAgent::State newState,
 		bool terminal);
 
 	/*

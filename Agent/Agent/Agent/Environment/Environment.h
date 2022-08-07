@@ -4,6 +4,9 @@
 
 #include "State.h"
 
+namespace GameAgent
+{
+
 /*
   Environment
 
@@ -98,3 +101,5 @@ private:
 	/* Is the current state of the environment a terminal state. */
 	bool isTerminal;
 };
+
+} /* namespace GameAgent */

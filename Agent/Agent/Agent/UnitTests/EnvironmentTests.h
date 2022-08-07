@@ -8,11 +8,11 @@
 
 TEST(EnvUpdate, ValidValues)
 {
-	State state;
+	GameAgent::State state;
 	state.AddDelta("Delta 1", 1.0f);
 	state.AddDelta("Delta 2", 2.0f);
 	
-	Environment env(state);
+	GameAgent::Environment env(state);
 	std::vector<float> action = { 1.0f };
 	float reward = 25.0f;
 	state.UpdateDelta("Delta 2", 5.0f);
@@ -28,11 +28,11 @@ TEST(EnvUpdate, ValidValues)
 
 TEST(EnvUpdate, ValidValuesNoTerminalValue)
 {
-	State state;
+	GameAgent::State state;
 	state.AddDelta("Delta 1", 1.0f);
 	state.AddDelta("Delta 2", 2.0f);
 
-	Environment env(state);
+	GameAgent::Environment env(state);
 	std::vector<float> action = { 1.0f };
 	float reward = 25.0f;
 	state.UpdateDelta("Delta 2", 5.0f);
@@ -47,11 +47,11 @@ TEST(EnvUpdate, ValidValuesNoTerminalValue)
 
 TEST(EnvReset, ValidValuesNoTerminalValue)
 {
-	State state;
+	GameAgent::State state;
 	state.AddDelta("Delta 1", 1.0f);
 	state.AddDelta("Delta 2", 2.0f);
 
-	Environment env(state);
+	GameAgent::Environment env(state);
 	std::vector<float> action = { 1.0f };
 	float reward = 25.0f;
 	state.UpdateDelta("Delta 2", 5.0f);

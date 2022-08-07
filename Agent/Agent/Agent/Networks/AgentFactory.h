@@ -5,6 +5,8 @@
 #include "NetworkAgent.h"
 #include "NetworkParameters.h"
 
+using namespace GameAgent::Networks;
+
 /*
   AgentFactory
 

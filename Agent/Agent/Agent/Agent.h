@@ -11,7 +11,8 @@
 #include "Networks/NetworkParameters.h"
 #include "Networks/AgentFactory.h"
 
-
+namespace GameAgent
+{ 
 
 /* 
   Agent
@@ -74,3 +75,5 @@ private:
 	std::shared_ptr<NetworkAgent> agent;
 
 };
+
+} /* namespace GameAgent */

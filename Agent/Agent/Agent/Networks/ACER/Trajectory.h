@@ -65,10 +65,10 @@ struct Trajectory
 			- policy: The probabilities of each possible action before the actual action was chosen.
 	*/
 	void StoreTransition(
-		State state,
+		GameAgent::State state,
 		std::vector<float> newActions,
 		float reward,
-		State newState,
+		GameAgent::State newState,
 		bool terminal,
 		std::vector<float> actionProbabilities)
 	{
