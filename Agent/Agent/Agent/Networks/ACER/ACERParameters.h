@@ -3,14 +3,18 @@
 #include "../NetworkParameters.h"
 
 /*
+  ACERParameters
 
+  Defines the parameters used to initialize a new ACERAgent object.
+
+  Author: Darian G.
 */
 class ACERParameters : public NetworkParameters
 {
 public: 
 
 	/*
-	  
+	  Default Constructor.
 	*/
 	ACERParameters() = default;
 

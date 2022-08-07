@@ -1,18 +1,18 @@
 ﻿#include "GameAgent.h"
 
-GameAgent::GameAgent(State initState, NetworkParameters& params)
+GameAgent::GameAgent(shared_ptr<Environment> env, NetworkParameters& params)
 {
 	// Initial Environment
-	environment = make_shared<Environment>(initState);
+	environment = env;
 
 	// Initial Agent
 	AgentFactory factory;
 	agent = factory.GetNetworkAgent(params);
 }
 
-vector<float> GameAgent::PredictAction(State state)
+vector<float> GameAgent::PredictAction()
 {
-	return agent->PredictAction(state.ToTensor());
+	return agent->PredictAction(environment->GetCurrState().ToTensor());
 }
 
 void GameAgent::Train()

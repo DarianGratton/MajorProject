@@ -20,7 +20,7 @@ using namespace std;
   ACERAgent
 
   A class that defines the main front-end of the ACER Algorithm. 
-  Includes functions that allow for the user to use and update a ACERAgent
+  Includes all the logic that allows for the user to use and update a ACERAgent
   in a environment. 
 
   Main implementation of the ACER Algorithm is based off an implemention from 
