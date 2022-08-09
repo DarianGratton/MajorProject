@@ -4,59 +4,78 @@
 
 #include <iostream>
 
-RLGameAgent::State::State() 
+namespace GameAgent
+{ 
+
+State::State(std::unordered_map<std::string, float> deltas) : deltas(deltas)
 {
 
 }
 
-RLGameAgent::State::State(unordered_map<string, float> deltas) : deltas(deltas)
-{
-
-}
-
-RLGameAgent::State& RLGameAgent::State::operator=(const State& state1)
+State& State::operator=(const State& state1)
 {
 	deltas = state1.deltas;
 	return *this;
 }
 
-void RLGameAgent::State::AddDelta(pair<string, float> delta)
+void State::AddDelta(std::string deltaName, float delta)
 {
-	deltas.insert(delta);
+	if (deltas.find(deltaName) == deltas.end())
+	{
+		deltas.insert(std::make_pair(deltaName, delta));
+	}
+	else
+	{
+		std::cerr << "State::AddDelta(): " << deltaName << " delta already exists." << std::endl;
+	}
 }
 
-void RLGameAgent::State::RemoveDelta(string deltaName)
+void State::RemoveDelta(std::string deltaName)
 {
-	deltas.erase(deltaName);
+	if (deltas.find(deltaName) != deltas.end())
+	{
+		deltas.erase(deltaName);
+	}
+	else
+	{
+		std::cerr << "State::RemoveDelta(): " << deltaName << " delta doesn't exists." << std::endl;
+	}
 }
 
-void RLGameAgent::State::UpdateDelta(string deltaName, float newDelta)
+void State::UpdateDelta(std::string deltaName, float newDelta)
 {
-	deltas.at(deltaName) = newDelta;
+	try 
+	{
+		deltas.at(deltaName) = newDelta;
+	}
+	catch (const std::out_of_range& e)
+	{
+		std::cerr << "State::UpdateDelta(): " << deltaName << " delta doesn't exists." << std::endl;
+	}
 }
 
-void RLGameAgent::State::Reset()
+void State::Reset()
 {
 	deltas.clear();
 }
 
-string RLGameAgent::State::ToString() const
+std::string State::ToString() const
 {
 	// Create string
-	stringstream str;
+	std::stringstream str;
 	str << "State's deltas: \n";
-	for (pair<string, float> delta : deltas)
+	for (std::pair<std::string, float> delta : deltas)
 	{
-		str << delta.first << ": " << to_string(delta.second) << "\n";
+		str << delta.first << ": " << std::to_string(delta.second) << "\n";
 	}
 	return str.str();
 }
 
-vector<float> RLGameAgent::State::ToVector() const
+std::vector<float> State::ToVector() const
 {
 	// Copy deltas to vector
-	vector<float> values;
-	for (pair<string, float> delta : deltas)
+	std::vector<float> values;
+	for (std::pair<std::string, float> delta : deltas)
 	{
 		values.push_back(delta.second);
 	}
@@ -64,7 +83,7 @@ vector<float> RLGameAgent::State::ToVector() const
 	return values;
 }
 
-torch::Tensor RLGameAgent::State::ToTensor() const
+torch::Tensor State::ToTensor() const
 {
 	// Create tensor
 	int64_t vec_size = ToVector().size();
@@ -73,7 +92,7 @@ torch::Tensor RLGameAgent::State::ToTensor() const
 	
 	// Store values
 	int i = 0;
-	for (pair<string, float> delta : deltas)
+	for (std::pair<std::string, float> delta : deltas)
 	{
 		tensor[0][i].data() = delta.second;
 		i++;
@@ -82,17 +101,19 @@ torch::Tensor RLGameAgent::State::ToTensor() const
 	return tensor.clone();
 }
 
-ostream& RLGameAgent::operator<<(ostream& os, const State& state)
+std::ostream& operator<<(std::ostream& os, const State& state)
 {
 	unsigned int i = 0;
 	os << "State's deltas: \n";
-	for (pair<string, float> delta : state.deltas)
+	for (std::pair<std::string, float> delta : state.deltas)
 	{
 		if (i == state.deltas.size() - 1)
-			os << delta.first << ": " << to_string(delta.second);
+			os << delta.first << ": " << std::to_string(delta.second);
 		else
-			os << delta.first << ": " << to_string(delta.second) << "\n";
+			os << delta.first << ": " << std::to_string(delta.second) << "\n";
 		i++;
 	}
 	return os;
 }
+
+} /* namespace GameAgent */

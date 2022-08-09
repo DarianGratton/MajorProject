@@ -1,37 +1,40 @@
+#include "GameAgent.h"
+
 #include <torch/torch.h>
 #include <iostream>
 #include <sstream>
 #include <vector>
-
-#include "Environment/Environment.h"
-#include "Environment/State.h"
-#include "Agent.h"
-#include "Networks/SAC/SACAgent.h"
-#include "PyTorchExpansion/TorchNormal.h"
-#include "Networks/TestEnvironment/AgentTest.h"
-
-using namespace std;
+#include <random>
+#include <numeric>
+#include <string>
+#include <memory>
 
 // Used for testing
 int main()
 {
-	/*sacagent agent(0.0003f, 0.0003, 1, 1,
-			5, 256, 256,
-			1000000, 0.99f, 0.005f, 256, 2);
-	agent.savemodel();
-	agent.loadmodel();*/
+    ACERParameters params;
+    params.learningRate = 1e-3f;
+    params.nActions = 1;
+    params.nPossibleActions = 4;
+    params.inputDims = 4;
+    params.hiddenLayerDims = 128;
+    params.actionLayerDims = 256;
+    params.memSize = 1000000;
+    params.batchSize = 16;
+    params.biasWeight = 0.1f;
+    params.gamma = 0.99f;
+    params.traceMax = 10;
 
-	/*RLGameAgent::State state;
-	state.AddDelta(make_pair<string, float>("X", 12.0f));
-	state.AddDelta(make_pair<string, float>("Y", 123.0f));
-	state.AddDelta(make_pair<string, float>("Value", 12323.0f));
+    GameAgent::State state;
+    state.AddDelta("X", 12);
+    state.AddDelta("Y", 10);
 
-	cout << state.ToString() << endl; 
-	cout << state << endl;*/
+    std::shared_ptr<GameAgent::Environment> env = std::make_shared<GameAgent::Environment>(state);
+    GameAgent::Agent agent(env, params);
 
-	AgentTest test;
-	test.Train();
-	test.Test();
+	//AgentTest test(false, true);
+	//test.Train();
+	//test.Test();
 
 	return 0;
 }

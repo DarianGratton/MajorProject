@@ -2,61 +2,39 @@
 
 #include "Environment.h"
 
-template<class T>
-Environment<T>::Environment() 
+namespace GameAgent
 {
 
+Environment::Environment(State initState) : initState(initState)
+{
+	Reset();
 }
 
-template<class T>
-void Environment<T>::SetCurrState(State& newState) 
+void Environment::Update(std::vector<float> newAction, float newReward, State newState, bool terminal)
 {
+	// Update action
+	action = newAction;
+
+	// Update reward
+	totalReward += newReward;
+	reward = newReward;
+
+	// Update state
+	prevState = currState;
 	currState = newState;
+
+	// Update terminal
+	isTerminal = terminal;
 }
 
-template<class T>
-void Environment<T>::SetReturnedReward(T newReward)
+void Environment::Reset()
 {
-	returnedReward.SetReward(newReward);
+	prevState = State();
+	currState = initState;
+	action.clear();
+	reward = 0;
+	totalReward = reward;
+	isTerminal = false;
 }
 
-template<class T>
-void Environment<T>::AddAction()
-{
-	long newAction = actions.size();
-	actions.push_back(newAction);
-}
-
-template<class T>
-void Environment<T>::AddActions(int numOfActions)
-{
-	for (int i = 0; i < numOfActions; i++)
-	{
-		long newAction = actions.size();
-		actions.push_back(newAction);
-	}
-}
-
-template<class T>
-void Environment<T>::RemoveAction()
-{
-	actions.pop_back();
-}
-
-
-template<class T>
-void Environment<T>::RemoveActions(int numOfActions)
-{
-	for (int i = 0; i < numOfActions; i++)
-	{
-		if (actions.empty())
-		{
-			// TODO: Error
-			break;
-		}
-
-		actions.pop_back();
-	}
-}
-
-template class Environment<int>;
+} /* namespace GameAgent */

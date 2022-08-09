@@ -5,34 +5,30 @@
 #include <iostream>
 #include <stdexcept>
 
-
-/// <summary>
-/// 
-/// RandomIterator
-/// 
-/// A C++ class that can generate random, unique, and evenly-distributed
-/// numbers with O(1) memory space.
-/// 
-/// (c) Tyler Burdsall 2018
-/// 
-/// </summary>
+/*
+  RandomIterator
+   
+  A C++ class that can generate random, unique, and evenly-distributed 
+  numbers with O(1) memory space.
+ 
+  Author: Tyler Burdsall 2018
+  Source: https://tylerburdsall.medium.com/generating-unique-random-and-evenly-distributed-numbers-in-ascending-order-with-c-and-in-o-1-9dd5be0c0fcd
+*/
 class RandomIterator
 {
 public:
-    /* Constructor for RandomIterator class.
-     * Parameters:
-     *     - amount => Amount of numbers to generate
-     *     - min    => Minimum number in range to generate
-     *     - max    => Maximum number in range to generate
-     *
-     * The constructor also instanstiates the variable gen
-     * with a new random_device.
+    /* 
+      Constructor for RandomIterator class.
+      params:
+            - amount: Amount of numbers to generate
+            - min: Minimum number in range to generate
+            - max: Maximum number in range to generate
      */
     RandomIterator(
         const unsigned long long& amount, 
         const unsigned long long& min, 
         const unsigned long long& max) : 
-        gen((random_device())())
+        gen((std::random_device())())
     {
         floor = min;
         num_left = amount;
@@ -40,13 +36,17 @@ public:
         n = max;
     }
 
-    // Return a bool to determine if there are any numbers left to generate
+    /* 
+      Returns a bool to determine if there are any numbers left to generate.
+    */
     const bool has_next(void)
     {
         return num_left > 0;
     }
 
-    // Generate the next random number
+    /*
+      Generates the next random number.
+    */ 
     const unsigned long long next(void)
     {
         if (num_left > 0)
@@ -55,7 +55,7 @@ public:
             unsigned long long range_size = (n - last_k) / num_left;
 
             // Initialize random generator
-            uniform_int_distribution<unsigned long long> rnd(floor, range_size);
+            std::uniform_int_distribution<unsigned long long> rnd(floor, range_size);
 
             // Generate random number
             unsigned long long r = rnd(gen) + last_k + 1;
@@ -67,7 +67,7 @@ public:
         }
         else
         {
-            throw out_of_range("Exceeded amount of random numbers to generate.");
+            throw std::out_of_range("Exceeded amount of random numbers to generate.");
         }
     }
 
@@ -76,5 +76,5 @@ private:
     unsigned long long n;
     unsigned long long last_k;
     unsigned long long num_left;
-    mt19937_64 gen;
+    std::mt19937_64 gen;
 };

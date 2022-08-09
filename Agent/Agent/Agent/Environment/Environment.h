@@ -3,90 +3,103 @@
 #include <vector>
 
 #include "State.h"
-#include "Reward.h"
 
-using namespace std;
-using namespace RLGameAgent;
+namespace GameAgent
+{
 
-// TODO: Template is a work around for Reward type and variable, should figure out better way
-// - Overloaded functions might work with multiple reward variables
-/// <summary>
-/// 
-/// </summary>
-/// <typeparam name="T"></typeparam>
-template<class T>
-class Environment {
+/*
+  Environment
+
+  A class that defines a game environment and all its variables.
+
+  Author: Darian G.
+*/
+class Environment 
+{
 public:
-	/// <summary>
-	/// Default constructor that constructs an environment object.
-	/// </summary>
-	Environment();
 
-	/// <summary>
-	/// Set the current state of the environment.
-	/// </summary>
-	/// <param name="newState">The new state of the environment.</param>
-	void SetCurrState(State& newState);
-	
-	/// <summary>
-	/// Set the returned reward from an action taken in this environment.
-	/// </summary>
-	/// <param name="newReward"></param>
-	void SetReturnedReward(T newReward);
-	
-	/// <summary>
-	/// Add an action to the set of actions. Actions are just 0...n number of actions. 
-	/// </summary>
-	void AddAction();
-	
-	/// <summary>
-	/// Add an inputted number of actions to the set of actions. Actions are just 0...n number of actions. 
-	/// </summary>
-	/// <param name="numOfActions">The number of actions to add.</param>
-	void AddActions(int numOfActions);
+	/*
+	  Constructor for initializing the environment.
+	*/
+	Environment(State initState);
 
-	/// <summary>
-	/// Remove an action to the set of actions. Actions are just 0...n number of actions. 
-	/// </summary>
-	void RemoveAction();
-	
-	/// <summary>
-	/// Remove an inputted number of actions from the set of actions. Actions are just 0...n number of actions. 
-	/// </summary>
-	/// <param name="numOfActions">The number of actions to remove.</param>
-	void RemoveActions(int numOfActions);
+	/*
+	  Updates the environment's variables.
+	  params:
+			- newAction: New action taken in the environment.
+			- newReward: New reward earned from taking action.
+			- newState: New state reached from taking action.
+			- terminal: Whether new state is terminal or not.
+	*/
+	void Update(std::vector<float> newAction, float newReward,
+				State newState, bool terminal = false);
 
-	/// <summary>
-	/// Gets the current state of the environment.
-	/// </summary>
-	/// <returns>The current state of the environment.</returns>
-	inline State GetCurrState() { return currState; }
+	/*
+	  Resets the environment's variables for a new episode.
+	*/
+	void Reset();
 	
-	/// <summary>
-	/// Gets the stored returned reward of an action taken in the environment.
-	/// </summary>
-	/// <returns>Returned reward of an action taken in the environement.</returns>
-	inline Reward<T> GetReturnedReward() { return returnedReward; }
+	/* 
+	  Sets the initial state of the environment.
+	  TODO: Return to this when doing the state storage as changing it 
+			while playing in the environment might cause issues.
+			Might be able to set it to only change when isTerminal is 
+			true or a flag is set during reset.
+	*/
+	inline void SetInitState(State state) { initState = state; }
+
+	/*
+	  Gets the current state of the environment.
+	*/
+	inline State GetCurrState() const { return currState; }
+
+	/* 
+	  Gets the previous state of the environment.
+	*/
+	inline State GetPrevState() const { return prevState; }
+
+	/*
+	  Gets the previous action taken in the environment. 
+	*/
+	inline std::vector<float> GetAction() const { return action; }
 	
-	/// <summary>
-	/// Gets the data structure of actions. 
-	/// </summary>
-	/// <returns>The actions.</returns>
-	inline vector<long> GetActions() { return actions; }
+	/*
+	  Gets the previous reward earned in the environment.
+	*/
+	inline float GetReward() const { return reward; }
+
+	/*
+	  Gets the total reward earned in the environment.
+	*/
+	inline float GetTotalReward() const { return totalReward; }
+	
+	/* 
+	  Gets whether the environment is in a terminal state.
+	*/
+	inline bool IsTerminal() const { return isTerminal; }
 
 private:
-	/// <summary>
-	/// The current state of the environment.
-	/// </summary>
+	
+	/* The initial state of the environment. */
+	State initState;
+
+	/* The current state of the environment. */
 	State currState;
-	
-	/// <summary>
-	/// The returned reward of an action taken in the environment.
-	/// </summary>
-	Reward<T> returnedReward;
-	
-	/// <summary>
-	/// An vector of actions. Is just 0...n number of actions.
-	/// </summary>
-	vector<long> actions;
+
+	/* The prev state of the environment. */
+	State prevState;
+
+	/* The action previously taken in the environment. */
+	std::vector<float> action;
+
+	/* The reward previously earned in the environment. */
+	float reward;
+
+	/* The total rewards earned. */
+	float totalReward;
+
+	/* Is the current state of the environment a terminal state. */
+	bool isTerminal;
 };
+
+} /* namespace GameAgent */

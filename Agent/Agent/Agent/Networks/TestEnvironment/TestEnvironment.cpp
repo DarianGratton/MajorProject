@@ -13,7 +13,8 @@ std::tuple<torch::Tensor, int, torch::Tensor> TestEnvironment::Act(float act_x, 
 {
     old_dist = GoalDist(pos);
 
-    float max_step = 0.1;
+    // float max_step = 0.1f; If Continous
+    float max_step = 0.1f; // If Discrete
     pos(0) += max_step * act_x;
     pos(1) += max_step * act_y;
 

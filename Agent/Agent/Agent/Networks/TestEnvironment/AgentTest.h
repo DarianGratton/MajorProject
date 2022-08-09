@@ -1,15 +1,26 @@
 #pragma once
 
-#include "../SAC/SACAgent.h"
+#include "../ACER/ACERAgent.h"
+
+#include <memory>
 
 class AgentTest
 {
 public:
-	AgentTest();
+	AgentTest(bool isContinous = false, bool recordOutput = false);
 
 	void Train();
 	void Test();
 
 private:
-	SACAgent* agent;
+	/* Agent pointer. */
+	std::unique_ptr<ACERAgent> agent;
+
+	/* Action space of Environment used. */
+	bool isContinous;
+
+	/* If true results will be recorded in a csv. */
+	bool recordOutput;
+
+	unsigned int batchSize;
 };

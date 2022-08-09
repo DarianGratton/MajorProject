@@ -1,64 +1,36 @@
-﻿// Agent.cpp : Defines the entry point for the application.
-//
+﻿#include "Agent.h"
 
-#include "Agent.h"
+namespace GameAgent
+{ 
 
-#include <torch/torch.h>
-#include <iostream>
+Agent::Agent(std::shared_ptr<Environment> env, NetworkParameters& params)
+{
+	// Initial Environment
+	environment = env;
 
-using namespace std;
+	// Initial Agent
+	AgentFactory factory;
+	agent = factory.GetNetworkAgent(params);
+}
 
-// TODO: Implement functionality for a basic Policy Gradient network
-class PolicyGradientNetwork : torch::nn::Module {
-public:
-	/// <summary>
-	/// Constructs the object and creates the neutral network.
-	/// </summary>
-	/// <param name="N"></param>
-	/// <param name="M"></param>
-	PolicyGradientNetwork(int64_t N, int64_t M) 
-	{
-		/*W = register_parameter("W", torch::randn({ N, M }));
-		b = register_parameter("b", torch::randn(M));*/
-	}
-	
-	/// <summary>
-	///	Model prediction that takes an input Tensor and returns an output as
-	/// an Tensor of probabilities.
-	/// </summary>
-	/// <param name="input">Data to predict on</param>
-	/// <returns>A Tensor of probability distributions</returns>
-	torch::Tensor Forward(torch::Tensor input) 
-	{
-		return torch::addmm(b, input, W);
-	}
+std::vector<float> Agent::PredictAction()
+{
+	return agent->PredictAction(environment->GetCurrState().ToTensor());
+}
 
-	/// <summary>
-	/// Updates the policy of the Agent's network.
-	/// </summary>
-	void UpdatePoicy() {}
+void Agent::Train()
+{
+	agent->Train(*environment);
+}
 
-private:
-	torch::Tensor W, b;
-};
+void Agent::SaveAgent()
+{
+	agent->SaveModel();
+}
 
-class Agent {
-public:
-	Agent() {}
+void Agent::LoadAgent()
+{
+	agent->LoadModel();
+}
 
-	/// <summary>
-	///	Takes the current environment and returns an action.
-	/// </summary>
-	/// <returns></returns>
-	std::vector<long> predictAction();
-
-	/// <summary>
-	/// TODO: parameters for training the network?
-	/// </summary>
-	void trainNetwork();
-
-	void loadNetwork();
-	void saveNetwork();
-private:
-	std::shared_ptr<PolicyGradientNetwork> model;
-};
+} /* namespace GameAgent */
