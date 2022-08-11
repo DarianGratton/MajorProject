@@ -98,6 +98,9 @@ private:
 	/* The total rewards earned. */
 	float totalReward;
 
+	/* The history of rewards earned in the environment. */
+	std::vector<float> rewardHistory;
+
 	/* Is the current state of the environment a terminal state. */
 	bool isTerminal;
 };
