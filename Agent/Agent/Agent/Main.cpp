@@ -12,7 +12,7 @@
 // Used for testing
 int main()
 {
-    ACERParameters params;
+    GameAgent::Networks::ACERParameters params;
     params.learningRate = 1e-3f;
     params.nActions = 1;
     params.nPossibleActions = 4;

@@ -34,7 +34,7 @@ public:
 			- env: Environment that the agent acts in.
 			- params: Network parameters of the Agent to create.
 	*/
-	Agent(std::shared_ptr<Environment> env, NetworkParameters& params);
+	Agent(std::shared_ptr<Environment> env, GameAgent::Networks::NetworkParameters& params);
 
 	/*
 	  Calls the functions neccessary for the agent to predict a set

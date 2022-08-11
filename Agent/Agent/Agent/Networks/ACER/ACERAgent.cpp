@@ -1,6 +1,6 @@
 ﻿#include "ACERAgent.h"
 
-ACERAgent::ACERAgent(const ACERParameters& params) :
+ACERAgent::ACERAgent(const GameAgent::Networks::ACERParameters& params) :
 	maxEpisodeLength(params.maxEpisodeLength),
 	batchSize(params.batchSize), biasWeight(params.biasWeight),
 	gamma(params.gamma), traceMax(params.traceMax),

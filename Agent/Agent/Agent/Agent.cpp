@@ -3,7 +3,7 @@
 namespace GameAgent
 { 
 
-Agent::Agent(std::shared_ptr<Environment> env, NetworkParameters& params)
+Agent::Agent(std::shared_ptr<Environment> env, GameAgent::Networks::NetworkParameters& params)
 {
 	// Initial Environment
 	environment = env;

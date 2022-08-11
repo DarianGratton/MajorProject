@@ -18,7 +18,7 @@ AgentTest::AgentTest(bool isContinous, bool recordOutput) :
 {
     // Setup Model.
     // ...
-    ACERParameters params;
+    GameAgent::Networks::ACERParameters params;
     params.learningRate = 1e-3f;
     params.nActions = 1;
     params.nPossibleActions = 4;
