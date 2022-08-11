@@ -40,7 +40,7 @@ add_executable (
     "Visualizer/Visualizer.h" 
     "Visualizer/Visualizer.cpp" 
     "GameAgent.h" 
-    "Networks/Parameters.h" "Storage/UtilityStorage.h")
+    "Networks/Parameters.h" "Storage/UtilityStorage.h" "Storage/UtilityStorage.cpp")
 
 # Link libraries
 target_link_libraries(Agent "${TORCH_LIBRARIES}")
@@ -101,7 +101,7 @@ add_executable (
     "Visualizer/Visualizer.h" 
     "Visualizer/Visualizer.cpp" 
     "GameAgent.h" 
-    "Networks/Parameters.h" "Storage/UtilityStorage.h")
+    "Networks/Parameters.h" "Storage/UtilityStorage.h" "Storage/UtilityStorage.cpp")
 
 target_link_libraries(AgentTests gtest_main)
 target_link_libraries(AgentTests "${TORCH_LIBRARIES}")
