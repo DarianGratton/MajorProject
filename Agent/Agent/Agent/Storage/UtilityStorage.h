@@ -18,7 +18,7 @@ public:
 	/*
 	
 	*/
-	void Save(GameAgent::State newState, float utility);
+	void Save(GameAgent::State newState, float utility, std::string filename = "UtilityStorage.txt");
 
 	/*
 	
@@ -33,12 +33,12 @@ public:
 	/*
 	
 	*/
-	inline std::unordered_map<GameAgent::State, float> GetCachedStates() const { return states; }
+	inline std::vector<std::pair<GameAgent::State, float>> GetCachedStates() const { return cachedStates; }
 
 private:
 
 	/* */
-	std::unordered_map<GameAgent::State, float> states;
+	std::vector<std::pair<GameAgent::State, float>> cachedStates;
 
 	/* */
 	bool isLoaded;
