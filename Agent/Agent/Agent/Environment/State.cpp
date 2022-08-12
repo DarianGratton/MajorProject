@@ -116,4 +116,26 @@ std::ostream& operator<<(std::ostream& os, const State& state)
 	return os;
 }
 
+bool operator==(const State& lhs, const State& rhs)
+{
+	if (lhs.deltas.size() != rhs.deltas.size())
+		return false;
+
+	for (auto delta : lhs.deltas)
+	{
+		if (rhs.deltas.find(delta.first) != rhs.deltas.end())
+		{
+			if (rhs.deltas.at(delta.first) != lhs.deltas.at(delta.first))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 } /* namespace GameAgent */

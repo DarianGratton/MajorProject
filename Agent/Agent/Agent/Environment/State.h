@@ -109,6 +109,12 @@ public:
 	*/
 	friend std::ostream& operator<<(std::ostream& os, const State& state);
 
+	/*
+	  Comparison Operator.
+	  TODO: Revisit to account for floating point error
+	*/
+	friend bool operator==(const State& lhs, const State& rhs);
+
 private:
 
 	/* 

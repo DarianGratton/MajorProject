@@ -32,6 +32,20 @@ int main()
     std::shared_ptr<GameAgent::Environment> env = std::make_shared<GameAgent::Environment>(state);
     GameAgent::Agent agent(env, params);
 
+    GameAgent::State state2;
+    state2.AddDelta("X", 12);
+    state2.AddDelta("Y", 10);
+    state2.AddDelta("Z", 10);
+
+    if (state == state2)
+    {
+        std::cout << "Equal" << std::endl;
+    }
+    else
+    {
+        std::cout << "Not Equal" << std::endl;
+    }
+
 	//AgentTest test(false, true);
 	//test.Train();
 	//test.Test();
