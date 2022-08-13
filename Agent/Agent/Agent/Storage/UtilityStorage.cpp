@@ -4,7 +4,7 @@
 #include <sstream>
 #include <vector>
 
-UtilityStorage::UtilityStorage() : isLoaded(false)
+UtilityStorage::UtilityStorage()
 {
 }
 

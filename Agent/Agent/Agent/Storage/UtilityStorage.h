@@ -30,17 +30,4 @@ public:
 	*/
 	void Clear();
 
-	/*
-	
-	*/
-	inline std::vector<std::pair<GameAgent::State, float>> GetCachedStates() const { return cachedStates; }
-
-private:
-
-	/* */
-	std::vector<std::pair<GameAgent::State, float>> cachedStates;
-
-	/* */
-	bool isLoaded;
-
 };
