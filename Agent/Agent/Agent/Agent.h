@@ -10,6 +10,7 @@
 #include "Networks/NetworkAgent.h"
 #include "Networks/NetworkParameters.h"
 #include "Networks/AgentFactory.h"
+#include "Storage/UtilityStorage.h"
 
 namespace GameAgent
 { 
@@ -62,6 +63,16 @@ public:
 	void LoadAgent();
 
 	/*
+	
+	*/
+	void SaveEnvToStorage();
+
+	/*
+	
+	*/
+	void ClearStorage();
+
+	/*
 	  Gets a pointer to the environment for updating.
 	*/
 	inline std::shared_ptr<Environment> GetEnvironment() { return environment; }
@@ -73,6 +84,9 @@ private:
 	
 	/* Agent that acts in an environment. */
 	std::shared_ptr<NetworkAgent> agent;
+
+	/* Storage system to store the states and average utility. */
+	std::unique_ptr<UtilityStorage> storage;
 
 };
 

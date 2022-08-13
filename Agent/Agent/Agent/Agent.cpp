@@ -5,12 +5,15 @@ namespace GameAgent
 
 Agent::Agent(std::shared_ptr<Environment> env, GameAgent::Networks::NetworkParameters& params)
 {
-	// Initial Environment
+	// Initialize Environment
 	environment = env;
 
-	// Initial Agent
+	// Initialize Agent
 	AgentFactory factory;
 	agent = factory.GetNetworkAgent(params);
+
+	// Initialize Storage
+	storage = std::make_unique<UtilityStorage>();
 }
 
 std::vector<float> Agent::PredictAction()
@@ -31,6 +34,15 @@ void Agent::SaveAgent()
 void Agent::LoadAgent()
 {
 	agent->LoadModel();
+}
+
+void Agent::SaveEnvToStorage()
+{
+}
+
+void Agent::ClearStorage()
+{
+	storage->Clear();
 }
 
 } /* namespace GameAgent */
