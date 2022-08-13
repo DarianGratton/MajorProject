@@ -38,6 +38,11 @@ public:
 	  Resets the environment's variables for a new episode.
 	*/
 	void Reset();
+
+	/*
+	  Gets the initial state of the environment.
+	*/
+	inline State GetInitState() { return initState; }
 	
 	/* 
 	  Sets the initial state of the environment.
@@ -72,6 +77,11 @@ public:
 	  Gets the total reward earned in the environment.
 	*/
 	inline float GetTotalReward() const { return totalReward; }
+
+	/* 
+	  Gets the history of reward earned in the environment.
+	*/
+	inline std::vector<float> GetRewardHistory() const { return rewardHistory; }
 	
 	/* 
 	  Gets whether the environment is in a terminal state.

@@ -1,5 +1,7 @@
 ﻿#include "Agent.h"
 
+#include <numeric>
+
 namespace GameAgent
 { 
 
@@ -38,6 +40,13 @@ void Agent::LoadAgent()
 
 void Agent::SaveEnvToStorage()
 {
+	// Calculate Utility
+	std::vector<float> rewardHistory = environment->GetRewardHistory();
+	float rewardCount = static_cast<float>(rewardHistory.size());
+	float utility = std::accumulate(rewardHistory.begin(), rewardHistory.end(), 0.0f) / rewardCount;
+	 
+	// Save to Storage
+	storage->Save(environment->GetInitState(), utility);
 }
 
 void Agent::ClearStorage()
