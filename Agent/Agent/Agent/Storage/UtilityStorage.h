@@ -23,7 +23,7 @@ public:
 	/*
 	
 	*/
-	void Load();
+	std::vector<std::pair<GameAgent::State, float>> Load();
 
 	/*
 	

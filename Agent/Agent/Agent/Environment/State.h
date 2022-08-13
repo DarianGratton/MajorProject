@@ -111,7 +111,7 @@ public:
 
 	/*
 	  Comparison Operator.
-	  TODO: Revisit to account for floating point error
+	  TODO: Revisit to account for floating point error 
 	*/
 	friend bool operator==(const State& lhs, const State& rhs);
 

@@ -9,6 +9,8 @@
 #include <string>
 #include <memory>
 
+#include "Storage/UtilityStorage.h"
+
 // Used for testing
 int main()
 {
@@ -32,19 +34,18 @@ int main()
     std::shared_ptr<GameAgent::Environment> env = std::make_shared<GameAgent::Environment>(state);
     GameAgent::Agent agent(env, params);
 
-    GameAgent::State state2;
-    state2.AddDelta("X", 12);
-    state2.AddDelta("Y", 10);
-    state2.AddDelta("Z", 10);
+    UtilityStorage storage;
+    storage.Save(state, 480.0f);
+    storage.Save(state, 980.0f);
 
-    if (state == state2)
-    {
-        std::cout << "Equal" << std::endl;
-    }
-    else
-    {
-        std::cout << "Not Equal" << std::endl;
-    }
+    GameAgent::State state2;
+    state2.AddDelta("X", 7);
+    state2.AddDelta("Y", 10);
+    storage.Save(state2, 1000.0f);
+
+    auto data = storage.Load();
+    std::cout << data.at(0).first << std::endl;
+    std::cout << data.at(0).second << std::endl;
 
 	//AgentTest test(false, true);
 	//test.Train();
