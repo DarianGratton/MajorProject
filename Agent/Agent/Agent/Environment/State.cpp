@@ -59,6 +59,11 @@ void State::Reset()
 	deltas.clear();
 }
 
+bool State::Contains(std::string deltaName, float delta) const
+{
+	return deltas.find(deltaName) != deltas.end() && deltas.at(deltaName) == delta;
+}
+
 std::string State::ToString() const
 {
 	// Create string

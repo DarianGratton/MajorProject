@@ -86,7 +86,7 @@ std::vector<std::pair<GameAgent::State, float>> UtilityStorage::Load()
 std::vector<std::pair<GameAgent::State, float>> UtilityStorage::Search(GameAgent::State state)
 {
 	std::vector<std::pair<GameAgent::State, float>> states;
-	if (state.Size() == 0)
+	if (state.IsEmpty())
 		return states;
 
 	// Check storage for key and values 
@@ -96,9 +96,7 @@ std::vector<std::pair<GameAgent::State, float>> UtilityStorage::Search(GameAgent
 	{
 		for (auto delta : state.GetDeltas())
 		{
-			std::string key = delta.first;
-			if (storedStates.at(i).first.GetDeltas().find(key) == storedStates.at(i).first.GetDeltas().end() ||
-				storedStates.at(i).first.GetDeltas().at(key) != delta.second)
+			if (!storedStates.at(i).first.Contains(delta.first, delta.second))
 			{
 				foundDifferingKeyValue = true;
 				break;

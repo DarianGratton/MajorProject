@@ -72,10 +72,20 @@ public:
 	*/
 	void Reset();
 
+	/*
+	  Checks if state contains a delta name and value.
+	*/
+	bool Contains(std::string deltaName, float delta) const;
+
 	/* 
 	  Returns the size of the state. 
 	*/
 	inline int64_t Size() { return deltas.size(); }
+
+	/*
+	  Returns if the state is empty.
+	*/
+	inline bool IsEmpty() { return deltas.size() == 0; }
 
 	/* 
 	  Returns a copy of the state's deltas. 
