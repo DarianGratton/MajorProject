@@ -43,9 +43,14 @@ int main()
     state2.AddDelta("Y", 10);
     storage.Save(state2, 1000.0f);
 
-    auto data = storage.Load();
-    std::cout << data.at(0).first << std::endl;
-    std::cout << data.at(0).second << std::endl;
+    GameAgent::State state3;
+    state3.AddDelta("X", 12);
+    state3.AddDelta("Y", 10);
+    auto states = storage.Search(state3);
+
+    std::cout << states.size() << std::endl;
+    std::cout << states.at(0).first << std::endl;
+    std::cout << states.at(0).second << std::endl;
 
 	//AgentTest test(false, true);
 	//test.Train();

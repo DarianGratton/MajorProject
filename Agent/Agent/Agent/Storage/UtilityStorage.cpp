@@ -83,6 +83,35 @@ std::vector<std::pair<GameAgent::State, float>> UtilityStorage::Load()
 	return storage;
 }
 
+std::vector<std::pair<GameAgent::State, float>> UtilityStorage::Search(GameAgent::State state)
+{
+	std::vector<std::pair<GameAgent::State, float>> states;
+	if (state.Size() == 0)
+		return states;
+
+	// Check storage for key and values 
+	auto storedStates = Load();
+	bool foundDifferingKeyValue = false;
+	for (int i = 0; i < storedStates.size(); i++)
+	{
+		for (auto delta : state.GetDeltas())
+		{
+			std::string key = delta.first;
+			if (storedStates.at(i).first.GetDeltas().find(key) == storedStates.at(i).first.GetDeltas().end() ||
+				storedStates.at(i).first.GetDeltas().at(key) != delta.second)
+			{
+				foundDifferingKeyValue = true;
+				break;
+			}
+		}
+
+		if (!foundDifferingKeyValue)
+			states.push_back(storedStates.at(i));
+	}
+
+	return states;
+}
+
 void UtilityStorage::Clear()
 {
 	std::ofstream ofs;

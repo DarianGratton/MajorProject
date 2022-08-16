@@ -65,7 +65,12 @@ public:
 	/*
 	
 	*/
-	void SaveEnvToStorage();
+	void SaveUtility();
+
+	/* 
+	
+	*/
+	std::vector<std::pair<State, float>> SearchUtilityStorage(State state);
 
 	/*
 	

@@ -38,7 +38,7 @@ void Agent::LoadAgent()
 	agent->LoadModel();
 }
 
-void Agent::SaveEnvToStorage()
+void Agent::SaveUtility()
 {
 	// Calculate Utility
 	std::vector<float> rewardHistory = environment->GetRewardHistory();
@@ -47,6 +47,11 @@ void Agent::SaveEnvToStorage()
 	 
 	// Save to Storage
 	storage->Save(environment->GetInitState(), utility);
+}
+
+std::vector<std::pair<State, float>> Agent::SearchUtilityStorage(State state)
+{
+	return storage->Search(state);
 }
 
 void Agent::ClearStorage()

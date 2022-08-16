@@ -28,6 +28,11 @@ public:
 	/*
 	
 	*/
+	std::vector<std::pair<GameAgent::State, float>> Search(GameAgent::State state);
+
+	/*
+	
+	*/
 	void Clear();
 
 };
