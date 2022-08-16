@@ -46,12 +46,14 @@ public:
 	
 	/* 
 	  Sets the initial state of the environment.
-	  TODO: Return to this when doing the state storage as changing it 
-			while playing in the environment might cause issues.
-			Might be able to set it to only change when isTerminal is 
-			true or a flag is set during reset.
 	*/
-	inline void SetInitState(State state) { initState = state; }
+	inline void SetInitState(State state) 
+	{ 
+		if (prevState.IsEmpty())
+			initState = state;
+		else
+			std::cerr << "Environment::SetInitState(): Cannot change initial state after acting on the environment." << std::endl;
+	}
 
 	/*
 	  Gets the current state of the environment.
