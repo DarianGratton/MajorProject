@@ -43,6 +43,13 @@ void Agent::SaveUtility()
 	// Calculate Utility
 	std::vector<float> rewardHistory = environment->GetRewardHistory();
 	float rewardCount = static_cast<float>(rewardHistory.size());
+
+	if (rewardCount == 0)
+	{
+		std::cerr << "Agent::SaveUtility(): The RewardHistory of the environment is empty." << std::endl;
+		return;
+	}
+
 	float utility = std::accumulate(rewardHistory.begin(), rewardHistory.end(), 0.0f) / rewardCount;
 	 
 	// Save to Storage
