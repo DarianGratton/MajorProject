@@ -17,7 +17,7 @@ void UtilityStorage::Save(GameAgent::State newState, float utility, std::string 
 	{
 		if (storedStates.at(i).first == newState)
 		{
-			storedStates.at(i).second = utility;
+			storedStates.at(i).second = (storedStates.at(i).second + utility) / 2.0f;
 			foundDup = true;
 			break;
 		}

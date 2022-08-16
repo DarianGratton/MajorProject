@@ -35,13 +35,14 @@ int main()
     GameAgent::Agent agent(env, params);
 
     UtilityStorage storage;
-    storage.Save(state, 480.0f);
-    storage.Save(state, 980.0f);
+    storage.Clear();
+    storage.Save(state, 500.0f);
+    storage.Save(state, 1000.0f);
 
     GameAgent::State state2;
     state2.AddDelta("X", 7);
     state2.AddDelta("Y", 10);
-    storage.Save(state2, 1000.0f);
+    storage.Save(state2, 250.0f);
 
     GameAgent::State state3;
     state3.AddDelta("X", 12);
