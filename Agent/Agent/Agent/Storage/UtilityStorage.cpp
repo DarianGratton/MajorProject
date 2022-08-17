@@ -4,11 +4,11 @@
 #include <sstream>
 #include <vector>
 
-UtilityStorage::UtilityStorage()
+UtilityStorage::UtilityStorage(std::string filename /* = "UtilityStorage.txt" */) : filename(filename)
 {
 }
 
-void UtilityStorage::Save(GameAgent::State state, float utility, std::string filename /* = "UtilityStorage.txt" */)
+void UtilityStorage::Save(GameAgent::State state, float utility)
 {
 	// Check for dupicate
 	bool foundDup = false;
@@ -32,9 +32,9 @@ void UtilityStorage::Save(GameAgent::State state, float utility, std::string fil
 	{
 		for (auto delta : storedStates.at(i).first.GetDeltas())
 		{
-			str << delta.first << " " << std::to_string(delta.second) << " ";
+			str << delta.first << ", " << std::to_string(delta.second) << ", ";
 		}
-		str << std::to_string(storedStates.at(i).second) << " " << std::endl;
+		str << std::to_string(storedStates.at(i).second) << ", " << std::endl;
 	}
 
 	// Save to end of file
@@ -44,7 +44,7 @@ void UtilityStorage::Save(GameAgent::State state, float utility, std::string fil
 	ofs.close();
 }
 
-std::vector<std::pair<GameAgent::State, float>> UtilityStorage::Load(std::string filename /* = "UtilityStorage.txt" */)
+std::vector<std::pair<GameAgent::State, float>> UtilityStorage::Load()
 {
 	// Open stream
 	std::ifstream ifs;
@@ -59,10 +59,10 @@ std::vector<std::pair<GameAgent::State, float>> UtilityStorage::Load(std::string
 		size_t pos;
 		std::vector<std::string> data;
 		std::string token;
-		while ((pos = line.find(" ")) != std::string::npos)
+		while ((pos = line.find(", ")) != std::string::npos)
 		{
 			token = line.substr(0, pos);
-			line.erase(0, pos + 1);
+			line.erase(0, pos + 2);
 			data.push_back(token);
 		}
 
@@ -113,6 +113,6 @@ std::vector<std::pair<GameAgent::State, float>> UtilityStorage::Search(GameAgent
 void UtilityStorage::Clear()
 {
 	std::ofstream ofs;
-	ofs.open("Storage.txt", std::ofstream::out | std::ofstream::trunc);
+	ofs.open(filename, std::ofstream::out | std::ofstream::trunc);
 	ofs.close();
 }

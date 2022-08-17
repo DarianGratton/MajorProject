@@ -7,8 +7,7 @@ namespace GameAgent
 
 Agent::Agent(std::shared_ptr<Environment> env,
 	         GameAgent::Networks::NetworkParameters& params,
-			 std::string storageFilename /* = "AgentStorage.txt" */) :
-			 storageFilename(storageFilename)
+			 std::string storageFilename /* = "AgentStorage.txt" */)
 {
 	// Initialize Environment
 	environment = env;
@@ -18,7 +17,7 @@ Agent::Agent(std::shared_ptr<Environment> env,
 	agent = factory.GetNetworkAgent(params);
 
 	// Initialize Storage
-	storage = std::make_unique<UtilityStorage>();
+	storage = std::make_unique<UtilityStorage>(storageFilename);
 }
 
 std::vector<float> Agent::PredictAction()
@@ -56,7 +55,7 @@ void Agent::SaveUtility()
 	float utility = std::accumulate(rewardHistory.begin(), rewardHistory.end(), 0.0f) / rewardCount;
 	 
 	// Save to Storage
-	storage->Save(environment->GetInitState(), utility, storageFilename);
+	storage->Save(environment->GetInitState(), utility);
 }
 
 std::vector<std::pair<State, float>> Agent::SearchUtilityStorage(State state)

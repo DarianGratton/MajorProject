@@ -28,8 +28,8 @@ int main()
     params.traceMax = 10;
 
     GameAgent::State state;
-    state.AddDelta("X", 12);
-    state.AddDelta("Y", 10);
+    state.AddDelta("X Y", 12);
+    state.AddDelta("Y Z", 10);
 
     std::shared_ptr<GameAgent::Environment> env = std::make_shared<GameAgent::Environment>(state);
     GameAgent::Agent agent(env, params);
@@ -42,11 +42,12 @@ int main()
     GameAgent::State state2;
     state2.AddDelta("X", 7);
     state2.AddDelta("Y", 10);
+    state2.AddDelta("Z 1", 9);
     storage.Save(state2, 250.0f);
 
     GameAgent::State state3;
-    state3.AddDelta("X", 12);
-    state3.AddDelta("Y", 10);
+    state3.AddDelta("X Y", 12);
+    state3.AddDelta("Y Z", 10);
     auto states = storage.Search(state3);
 
     std::cout << states.size() << std::endl;

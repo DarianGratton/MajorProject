@@ -97,9 +97,6 @@ private:
 	/* Storage system to store the states and average utility. */
 	std::unique_ptr<UtilityStorage> storage;
 
-	/* Storage system filename. */
-	std::string storageFilename;
-
 };
 
 } /* namespace GameAgent */

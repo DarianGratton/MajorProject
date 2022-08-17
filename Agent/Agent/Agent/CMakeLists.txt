@@ -103,7 +103,10 @@ add_executable (
     "Visualizer/Visualizer.h" 
     "Visualizer/Visualizer.cpp" 
     "GameAgent.h" 
-    "Networks/Parameters.h" "Storage/UtilityStorage.h" "Storage/UtilityStorage.cpp" "UnitTests/StorageTests.h")
+    "Networks/Parameters.h" 
+    "Storage/UtilityStorage.h" 
+    "Storage/UtilityStorage.cpp" 
+    "UnitTests/StorageTests.h")
 
 target_link_libraries(AgentTests gtest_main)
 target_link_libraries(AgentTests "${TORCH_LIBRARIES}")
