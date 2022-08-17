@@ -21,8 +21,6 @@ namespace GameAgent
   Main front-end of the Agent. Defines the type of agent being used and acts as
   a meditator between the user and the internal logic of the agent.
 
-  TODO: Update description once we add the storage system.
-
   Author: Darian G.
 */
 class Agent
@@ -35,7 +33,9 @@ public:
 			- env: Environment that the agent acts in.
 			- params: Network parameters of the Agent to create.
 	*/
-	Agent(std::shared_ptr<Environment> env, GameAgent::Networks::NetworkParameters& params);
+	Agent(std::shared_ptr<Environment> env, 
+		  GameAgent::Networks::NetworkParameters& params,
+		  std::string storageFilename = "AgentStorage.txt");
 
 	/*
 	  Calls the functions neccessary for the agent to predict a set
@@ -63,17 +63,21 @@ public:
 	void LoadAgent();
 
 	/*
-	
+	  Saves the environment's current utility and it's matching initial state to storage.
 	*/
 	void SaveUtility();
 
 	/* 
-	
+	  Searchs storage for states that match the deltas in the inputted state.
+	  params:
+			- state: State containng deltas to search storage for.
+	  returns:
+			- A vector containing all the states and utilities that match the inputted deltas.
 	*/
 	std::vector<std::pair<State, float>> SearchUtilityStorage(State state);
 
 	/*
-	
+	  Clears storage of all stored states and utilities.
 	*/
 	void ClearStorage();
 
@@ -92,6 +96,9 @@ private:
 
 	/* Storage system to store the states and average utility. */
 	std::unique_ptr<UtilityStorage> storage;
+
+	/* Storage system filename. */
+	std::string storageFilename;
 
 };
 

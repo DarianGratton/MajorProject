@@ -8,14 +8,14 @@ UtilityStorage::UtilityStorage()
 {
 }
 
-void UtilityStorage::Save(GameAgent::State newState, float utility, std::string filename)
+void UtilityStorage::Save(GameAgent::State state, float utility, std::string filename /* = "UtilityStorage.txt" */)
 {
 	// Check for dupicate
 	bool foundDup = false;
 	auto storedStates = Load();
 	for (int i = 0; i < storedStates.size(); i++)
 	{
-		if (storedStates.at(i).first == newState)
+		if (storedStates.at(i).first == state)
 		{
 			storedStates.at(i).second = (storedStates.at(i).second + utility) / 2.0f;
 			foundDup = true;
@@ -24,7 +24,7 @@ void UtilityStorage::Save(GameAgent::State newState, float utility, std::string 
 	}
 
 	if (!foundDup)
-		storedStates.push_back(std::make_pair(newState, utility));
+		storedStates.push_back(std::make_pair(state, utility));
 
 	// Create string
 	std::stringstream str;
@@ -39,16 +39,16 @@ void UtilityStorage::Save(GameAgent::State newState, float utility, std::string 
 
 	// Save to end of file
 	std::ofstream ofs;
-	ofs.open("Storage.txt", std::ifstream::out | std::ifstream::trunc);
+	ofs.open(filename, std::ifstream::out | std::ifstream::trunc);
 	ofs << str.rdbuf();
 	ofs.close();
 }
 
-std::vector<std::pair<GameAgent::State, float>> UtilityStorage::Load()
+std::vector<std::pair<GameAgent::State, float>> UtilityStorage::Load(std::string filename /* = "UtilityStorage.txt" */)
 {
 	// Open stream
 	std::ifstream ifs;
-	ifs.open("Storage.txt", std::ifstream::out);
+	ifs.open(filename, std::ifstream::out);
 
 	// Parse file
 	std::string line;
