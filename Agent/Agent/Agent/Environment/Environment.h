@@ -38,15 +38,25 @@ public:
 	  Resets the environment's variables for a new episode.
 	*/
 	void Reset();
+
+	/*
+	  Gets the initial state of the environment.
+	*/
+	inline State GetInitState() { return initState; }
 	
 	/* 
 	  Sets the initial state of the environment.
-	  TODO: Return to this when doing the state storage as changing it 
-			while playing in the environment might cause issues.
-			Might be able to set it to only change when isTerminal is 
-			true or a flag is set during reset.
 	*/
-	inline void SetInitState(State state) { initState = state; }
+	inline void SetInitState(State state) 
+	{ 
+		if (prevState.IsEmpty())
+		{
+			initState = state;
+			currState = initState;
+		}
+		else
+			std::cerr << "Environment::SetInitState(): Cannot change initial state after acting on the environment." << std::endl;
+	}
 
 	/*
 	  Gets the current state of the environment.
@@ -72,11 +82,21 @@ public:
 	  Gets the total reward earned in the environment.
 	*/
 	inline float GetTotalReward() const { return totalReward; }
+
+	/* 
+	  Gets the history of reward earned in the environment.
+	*/
+	inline std::vector<float> GetRewardHistory() const { return rewardHistory; }
 	
 	/* 
 	  Gets whether the environment is in a terminal state.
 	*/
 	inline bool IsTerminal() const { return isTerminal; }
+
+	/* 
+	  Gets the number of steps taken in the environment. 
+	*/
+	inline unsigned int GetSteps() const { return steps; }
 
 private:
 	
@@ -98,8 +118,14 @@ private:
 	/* The total rewards earned. */
 	float totalReward;
 
+	/* The history of rewards earned in the environment. */
+	std::vector<float> rewardHistory;
+
 	/* Is the current state of the environment a terminal state. */
 	bool isTerminal;
+
+	/* The number of steps taken in the environment. */
+	unsigned int steps;
 };
 
 } /* namespace GameAgent */

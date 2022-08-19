@@ -59,6 +59,11 @@ void State::Reset()
 	deltas.clear();
 }
 
+bool State::Contains(std::string deltaName, float delta) const
+{
+	return deltas.find(deltaName) != deltas.end() && deltas.at(deltaName) == delta;
+}
+
 std::string State::ToString() const
 {
 	// Create string
@@ -114,6 +119,28 @@ std::ostream& operator<<(std::ostream& os, const State& state)
 		i++;
 	}
 	return os;
+}
+
+bool operator==(const State& lhs, const State& rhs)
+{
+	if (lhs.deltas.size() != rhs.deltas.size())
+		return false;
+
+	for (auto delta : lhs.deltas)
+	{
+		if (rhs.deltas.find(delta.first) != rhs.deltas.end())
+		{
+			if (rhs.deltas.at(delta.first) != lhs.deltas.at(delta.first))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 } /* namespace GameAgent */

@@ -18,6 +18,7 @@ void Environment::Update(std::vector<float> newAction, float newReward, State ne
 	// Update reward
 	totalReward += newReward;
 	reward = newReward;
+	rewardHistory.push_back(newReward);
 
 	// Update state
 	prevState = currState;
@@ -25,6 +26,9 @@ void Environment::Update(std::vector<float> newAction, float newReward, State ne
 
 	// Update terminal
 	isTerminal = terminal;
+
+	// Update steps
+	steps++;
 }
 
 void Environment::Reset()
@@ -34,7 +38,9 @@ void Environment::Reset()
 	action.clear();
 	reward = 0;
 	totalReward = reward;
+	rewardHistory.clear();
 	isTerminal = false;
+	steps = 0;
 }
 
 } /* namespace GameAgent */

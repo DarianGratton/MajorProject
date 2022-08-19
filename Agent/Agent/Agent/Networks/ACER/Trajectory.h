@@ -15,8 +15,18 @@
 struct Trajectory
 {
 	/* Default Constructor. */
-	Trajectory() = default;
+	Trajectory() 
+	{
+		auto options = torch::TensorOptions().dtype(torch::kFloat32);
+		states = torch::zeros({ 1, 1 }, options);
+		newStates = torch::zeros({ 1, 1 }, options);
+		actions = torch::zeros({ 1, 1 }, options);
+		rewards = torch::zeros({ 1, 1 }, options);
+		terminals = torch::zeros({ 1, 1 }, options);
+		policy = torch::zeros({ 1, 1 }, options);
 
+		numOfTransitions = 0;
+	}
 	/* 
 	  Constructor for initializing trajectory with a set size.
 	  params:

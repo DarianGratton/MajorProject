@@ -2,6 +2,7 @@
 
 #include "EnvironmentTests.h"
 #include "StateTests.h"
+#include "StorageTests.h"
 
 using namespace testing;
 

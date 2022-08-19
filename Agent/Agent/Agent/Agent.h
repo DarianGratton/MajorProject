@@ -10,6 +10,7 @@
 #include "Networks/NetworkAgent.h"
 #include "Networks/NetworkParameters.h"
 #include "Networks/AgentFactory.h"
+#include "Storage/UtilityStorage.h"
 
 namespace GameAgent
 { 
@@ -19,8 +20,6 @@ namespace GameAgent
 
   Main front-end of the Agent. Defines the type of agent being used and acts as
   a meditator between the user and the internal logic of the agent.
-
-  TODO: Update description once we add the storage system.
 
   Author: Darian G.
 */
@@ -34,7 +33,9 @@ public:
 			- env: Environment that the agent acts in.
 			- params: Network parameters of the Agent to create.
 	*/
-	Agent(std::shared_ptr<Environment> env, NetworkParameters& params);
+	Agent(std::shared_ptr<Environment> env, 
+		  GameAgent::Networks::NetworkParameters& params,
+		  std::string storageFilename = "AgentStorage.txt");
 
 	/*
 	  Calls the functions neccessary for the agent to predict a set
@@ -44,7 +45,7 @@ public:
 	  returns:
 			- A set of actions.
 	*/
-	std::vector<float> PredictAction();
+	std::vector<float> PredictAction(State state);
 
 	/*
 	  Calls the functions neccessary to train the agent on the environment.
@@ -62,6 +63,25 @@ public:
 	void LoadAgent();
 
 	/*
+	  Saves the environment's current utility and it's matching initial state to storage.
+	*/
+	void SaveUtility();
+
+	/* 
+	  Searchs storage for states that match the deltas in the inputted state.
+	  params:
+			- state: State containng deltas to search storage for.
+	  returns:
+			- A vector containing all the states and utilities that match the inputted deltas.
+	*/
+	std::vector<std::pair<State, float>> SearchUtilityStorage(State state);
+
+	/*
+	  Clears storage of all stored states and utilities.
+	*/
+	void ClearStorage();
+
+	/*
 	  Gets a pointer to the environment for updating.
 	*/
 	inline std::shared_ptr<Environment> GetEnvironment() { return environment; }
@@ -73,6 +93,9 @@ private:
 	
 	/* Agent that acts in an environment. */
 	std::shared_ptr<NetworkAgent> agent;
+
+	/* Storage system to store the states and average utility. */
+	std::unique_ptr<UtilityStorage> storage;
 
 };
 

@@ -1,8 +1,9 @@
 ﻿#include "ACERAgent.h"
 
-ACERAgent::ACERAgent(const ACERParameters& params) :
-	maxEpisodeLength(params.maxEpisodeLength),
-	batchSize(params.batchSize), biasWeight(params.biasWeight),
+ACERAgent::ACERAgent(const GameAgent::Networks::ACERParameters& params) :
+	maxEpisodeLength(params.maxEpisodeLength), batchSize(params.batchSize), 
+	batchTrajectoryLength(params.batchTrajectoryLength), 
+	biasWeight(params.biasWeight),
 	gamma(params.gamma), traceMax(params.traceMax),
 	trustRegionConstraint(params.trustRegionConstraint), 
 	trustRegionDecay(params.trustRegionDecay)
@@ -33,7 +34,7 @@ void ACERAgent::Train(const GameAgent::Environment& environment)
 				 environment.GetReward(), environment.GetCurrState(), environment.IsTerminal());
 
 	// Check if the agent is finished an episode in the environment
-	if (environment.IsTerminal() || memory->GetPrevTrajectory().numOfTransitions >= maxEpisodeLength)
+	if (environment.IsTerminal() || environment.GetSteps() >= maxEpisodeLength)
 	{
 		// On-Policy
 		Learn({ memory->GetPrevTrajectory() }, true);

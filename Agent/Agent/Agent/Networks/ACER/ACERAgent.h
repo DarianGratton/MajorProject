@@ -14,8 +14,6 @@
 #include <memory>
 #include <vector>
 
-using namespace GameAgent::Networks;
-
 /*
   ACERAgent
 
@@ -46,7 +44,7 @@ public:
 	  params:
 			- params: ACERParameters object that contains all the network's parameters.
 	*/
-	ACERAgent(const ACERParameters& params);
+	ACERAgent(const GameAgent::Networks::ACERParameters& params);
 
 	/*
 	  Predicts an action given a state.
