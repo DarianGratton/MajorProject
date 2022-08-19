@@ -62,7 +62,7 @@ public:
 	unsigned int batchSize = 16;
 	
 	/* Length of each Trajectory that is sampled from memory. */
-	unsigned int batchTrajectoryLength = 16;
+	unsigned int batchTrajectoryLength = 100;
 	
 	/* Actor loss weight. */
 	float biasWeight = 0.1f;

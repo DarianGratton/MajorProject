@@ -20,9 +20,9 @@ Agent::Agent(std::shared_ptr<Environment> env,
 	storage = std::make_unique<UtilityStorage>(storageFilename);
 }
 
-std::vector<float> Agent::PredictAction()
+std::vector<float> Agent::PredictAction(State state)
 {
-	return agent->PredictAction(environment->GetCurrState().ToTensor());
+	return agent->PredictAction(state.ToTensor());
 }
 
 void Agent::Train()

@@ -10,11 +10,13 @@
 #include <memory>
 
 #include "Storage/UtilityStorage.h"
+#include "GameAgent.h"
+#include "Networks/TestEnvironment/AgentTest.h"
 
 // Used for testing
 int main()
 {
-    GameAgent::Networks::ACERParameters params;
+    /*GameAgent::Networks::ACERParameters params;
     params.learningRate = 1e-3f;
     params.nActions = 1;
     params.nPossibleActions = 4;
@@ -52,11 +54,11 @@ int main()
 
     std::cout << states.size() << std::endl;
     std::cout << states.at(0).first << std::endl;
-    std::cout << states.at(0).second << std::endl;
+    std::cout << states.at(0).second << std::endl;*/
 
-	//AgentTest test(false, true);
-	//test.Train();
-	//test.Test();
+	AgentTest test(false, true);
+	test.Train();
+	test.Test();
 
 	return 0;
 }

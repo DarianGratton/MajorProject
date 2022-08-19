@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../ACER/ACERAgent.h"
+#include "../../Environment/Environment.h"
+#include "../../Agent.h"
 
 #include <memory>
 
@@ -14,7 +16,10 @@ public:
 
 private:
 	/* Agent pointer. */
-	std::unique_ptr<ACERAgent> agent;
+	std::unique_ptr<GameAgent::Agent> gameAgent;
+	
+	/* Environment pointer. */
+	std::shared_ptr<GameAgent::Environment> environment;
 
 	/* Action space of Environment used. */
 	bool isContinous;

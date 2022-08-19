@@ -26,6 +26,9 @@ void Environment::Update(std::vector<float> newAction, float newReward, State ne
 
 	// Update terminal
 	isTerminal = terminal;
+
+	// Update steps
+	steps++;
 }
 
 void Environment::Reset()
@@ -37,6 +40,7 @@ void Environment::Reset()
 	totalReward = reward;
 	rewardHistory.clear();
 	isTerminal = false;
+	steps = 0;
 }
 
 } /* namespace GameAgent */

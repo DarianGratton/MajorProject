@@ -50,7 +50,10 @@ public:
 	inline void SetInitState(State state) 
 	{ 
 		if (prevState.IsEmpty())
+		{
 			initState = state;
+			currState = initState;
+		}
 		else
 			std::cerr << "Environment::SetInitState(): Cannot change initial state after acting on the environment." << std::endl;
 	}
@@ -90,6 +93,11 @@ public:
 	*/
 	inline bool IsTerminal() const { return isTerminal; }
 
+	/* 
+	  Gets the number of steps taken in the environment. 
+	*/
+	inline unsigned int GetSteps() const { return steps; }
+
 private:
 	
 	/* The initial state of the environment. */
@@ -115,6 +123,9 @@ private:
 
 	/* Is the current state of the environment a terminal state. */
 	bool isTerminal;
+
+	/* The number of steps taken in the environment. */
+	unsigned int steps;
 };
 
 } /* namespace GameAgent */

@@ -45,7 +45,7 @@ public:
 	  returns:
 			- A set of actions.
 	*/
-	std::vector<float> PredictAction();
+	std::vector<float> PredictAction(State state);
 
 	/*
 	  Calls the functions neccessary to train the agent on the environment.
