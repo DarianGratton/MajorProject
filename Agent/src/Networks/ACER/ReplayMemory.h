@@ -60,7 +60,7 @@ public:
 	  params:
 			- batchSize: The size of the sample.
 	  returns:
-			- A memory sample object.
+			- A memory sample object of size { trajectoryLength, batchSize }.
 	*/
 	std::vector<Trajectory> SampleMemory(unsigned int batchSize, unsigned int trajectoryLength);
 

@@ -3,6 +3,16 @@
 #include <Eigen/Core>
 #include <torch/torch.h>
 
+/*
+  TestEnvironment
+
+  Third-party environment takening from github user mhubii.
+
+  TODO: Replace with a system that is easier to use and allows for 
+  testing with discrete and continous action spaces. (Major Project: Out-of-Scope)
+
+  Source: https://github.com/mhubii/ppo_libtorch
+*/
 class TestEnvironment
 {
 public:
