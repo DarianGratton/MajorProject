@@ -10,8 +10,8 @@ LIBRARIES	:= -lglfw3dll -lentityx -lfreetype -lbass -lbox2d
 
 EXECUTABLE	:= Game
 
-TESTS		:= tests
-TEST_BIN	:= bin_tests
+TESTS		:= test
+TEST_BIN	:= bin_test
 TEST_SRC	:= $(filter-out $(SRC)/Main.cpp, $(wildcard $(SRC)/*.cpp))
 
 TEST_LIBRARIES 	:= -lgtest

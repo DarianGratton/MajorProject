@@ -11,3 +11,4 @@ include_directories(${INCLUDE_DIR})
 
 # Include sub-projects
 add_subdirectory("src")
+add_subdirectory("test")

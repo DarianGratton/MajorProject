@@ -1,7 +1,7 @@
 ### Game ###
 /out/*
 /bin/*
-/bin_tests/*
+/bin_test/*
 Game.exe.stackdump
 .vs/*
 

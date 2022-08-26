@@ -1,7 +1,10 @@
-#include "../src/Physics/PhysicsManager.h"
+#pragma once
 
 #include <gtest/gtest.h>
+
 #include <box2d/box2d.h>
+
+#include "../src/Physics/PhysicsManager.h"
 
 using namespace std;
 

@@ -1,15 +1,11 @@
 #pragma once
+
 #include <gtest/gtest.h>
-#include <entityx/entityx.h>
-#include <vector>
 
-#include "../src/Components.h"
-#include "../src/Input.h"
-
+#include <glad/glad.h>
 #include <glfw/glfw3.h>
 
-using namespace std;
-using namespace entityx;
+#include "../src/Input.h"
 
 TEST (IsKeyPressed, NoKeyPressed) 
 {

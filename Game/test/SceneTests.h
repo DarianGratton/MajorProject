@@ -1,8 +1,10 @@
+#pragma once
+
+#include <gtest/gtest.h>
+
 #include "../src/Scene.h"
 #include "../src/SceneManager.h"
 #include "../src/Game.h"
-
-#include <gtest/gtest.h>
 
 using namespace std;
 
