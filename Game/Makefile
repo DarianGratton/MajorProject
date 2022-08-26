@@ -3,9 +3,9 @@ CXX_FLAGS 	:= -g --std=gnu++14 -pthread
 
 BIN			:= bin
 SRC			:= src
-INCLUDES	:= -Iincludes
+INCLUDES	:= -Iinclude
 
-LIB			:= libs
+LIB			:= lib
 LIBRARIES	:= -lglfw3dll -lentityx -lfreetype -lbass -lbox2d
 
 EXECUTABLE	:= Game

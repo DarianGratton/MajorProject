@@ -15,7 +15,7 @@ ShieldScript::ShieldScript(entityx::Entity* entity, float spriteHeight, float sp
     // Member variables
     shieldMaxCooldown = 3.0f;
     shieldCurrCooldown = 0.0f;
-    hitVelocity = b2Vec2_zero;
+    hitVelocity = b2Vec2(0, 0);
     shieldMaxHealth = 10;
     shieldCurrHealth = shieldMaxHealth;
     isPlayer = false;
