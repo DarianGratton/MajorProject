@@ -33,5 +33,5 @@ private:
     float reducedMovementVelocity;
     int health;
 
-    string GetScriptName(int i);
+    std::string GetScriptName(int i);
 };

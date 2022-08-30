@@ -26,20 +26,20 @@ void ShieldScript::Start()
 {
     // Get name of entity for later
     ComponentHandle<Name> weapon = GetEntity()->component<Name>();
-    string weaponName = weapon->name;
+    std::string weaponName = weapon->name;
 
     // Get reference to entity
     ComponentHandle<Name> entityName;
     for (Entity e : ECS::Instance().entities.entities_with_components(entityName)) 
     {
         entityName = e.component<Name>();
-        if (entityName.get()->name == "Player" && weaponName.find("Player") != string::npos)
+        if (entityName.get()->name == "Player" && weaponName.find("Player") != std::string::npos)
         {
             userEntity = e;
             isPlayer = true;
         }
 
-        if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != string::npos)
+        if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != std::string::npos)
             userEntity = e;
     }
 
@@ -194,7 +194,7 @@ void ShieldScript::CreateEntity()
 void ShieldScript::BeginContact(Entity* entityA, Entity* entityB) 
 {
     ComponentHandle<Name> nameComp = entityB->component<Name>();
-    if (nameComp.get()->name.find("Weapon") != string::npos) 
+    if (nameComp.get()->name.find("Weapon") != std::string::npos)
     {
         ComponentHandle<Script> weaponScript = entityB->component<Script>();
         if (!reinterpret_cast<WeaponScript*>(weaponScript.get()->script)->CanDamageShield())

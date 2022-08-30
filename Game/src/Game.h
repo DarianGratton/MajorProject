@@ -6,7 +6,6 @@
 
 #include <chrono>
 
-using namespace std;
 using namespace entityx;
 
 class Game 

@@ -28,9 +28,9 @@ private:
     bool isPlayer;
 
     // Projectile data structures
-    vector<pair<Entity, Direction>> projectiles;
-    vector<float> projectilesTimeElapsed;
-    vector<string> projectilesFlaggedForDeletion; 
+    std::vector<std::pair<Entity, Direction>> projectiles;
+    std::vector<float> projectilesTimeElapsed;
+    std::vector<std::string> projectilesFlaggedForDeletion;
 
     void SpawnArrow();
 };

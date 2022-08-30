@@ -27,20 +27,20 @@ void GunScript::Start()
 {
     // Get name of entity for later
     ComponentHandle<Name> weapon = GetEntity()->component<Name>();
-    string weaponName = weapon->name;
+    std::string weaponName = weapon->name;
 
     // Get reference to entity
     ComponentHandle<Name> entityName;
     for (Entity e : ECS::Instance().entities.entities_with_components(entityName)) 
     {
         entityName = e.component<Name>();
-        if (entityName.get()->name == "Player" && weaponName.find("Player") != string::npos)
+        if (entityName.get()->name == "Player" && weaponName.find("Player") != std::string::npos)
         {
             userEntity = e;
             isPlayer = true;
         }
 
-        if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != string::npos)
+        if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != std::string::npos)
             userEntity = e;
     }
 }
@@ -195,11 +195,11 @@ void GunScript::BeginContact(Entity* entityA, Entity* entityB)
 { 
     ComponentHandle<Name> entityNameA = entityA->component<Name>();
     ComponentHandle<Name> entityNameB = entityB->component<Name>();
-    if (entityNameB.get()->name.find("Player") != string::npos ||
-        entityNameB.get()->name.find("Enemy") != string::npos ||
-        entityNameB.get()->name.find("Bullet") != string::npos ||
-        entityNameB.get()->name.find("Shield") != string::npos ||
-        entityNameB.get()->name.find("Wall") != string::npos )  
+    if (entityNameB.get()->name.find("Player") != std::string::npos ||
+        entityNameB.get()->name.find("Enemy") != std::string::npos ||
+        entityNameB.get()->name.find("Bullet") != std::string::npos ||
+        entityNameB.get()->name.find("Shield") != std::string::npos ||
+        entityNameB.get()->name.find("Wall") != std::string::npos )
     {
         flagForDeletion = true;
         timeElapsed = 0.0f;

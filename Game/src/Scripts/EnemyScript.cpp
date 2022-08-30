@@ -41,14 +41,14 @@ void EnemyScript::Start()
     if (weapon1.valid() && !weapon1.has_component<Script>()) 
     {
         ComponentHandle<TempEnemyWeapons> weapons = weapon1.component<TempEnemyWeapons>();
-        string scriptName = GetScriptName(weapons.get()->weapon1);
+        std::string scriptName = GetScriptName(weapons.get()->weapon1);
         weapon1.assign<Script>(scriptName, &weapon1);
     }
 
     if (weapon2.valid() && !weapon2.has_component<Script>()) 
     {
         ComponentHandle<TempEnemyWeapons> weapons = weapon1.component<TempEnemyWeapons>();
-        string scriptName = GetScriptName(weapons.get()->weapon2);
+        std::string scriptName = GetScriptName(weapons.get()->weapon2);
         weapon2.assign<Script>(scriptName, &weapon2);
     }
 }
@@ -170,10 +170,10 @@ void EnemyScript::DamageCharacter(int damage)
 
     // Display updated Player HP
     ComponentHandle<TextSprite> textComp = enemyHpText.component<TextSprite>();
-    textComp.get()->text = "Enemy HP: " + to_string(health); 
+    textComp.get()->text = "Enemy HP: " + std::to_string(health);
 }
 
-string EnemyScript::GetScriptName(int i) 
+std::string EnemyScript::GetScriptName(int i)
 {
     switch(i) 
     {

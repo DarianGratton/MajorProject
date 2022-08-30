@@ -5,7 +5,6 @@
 #include <vector>
 #include <string>
 
-using namespace std;
 using namespace entityx;
 
 class EntityHelper 
@@ -20,19 +19,19 @@ public:
     EntityHelper(EntityHelper const&) = delete;
     void operator=(EntityHelper const&) = delete;
 
-    void AddComponent(Entity* entity, string component, string parameters);
+    void AddComponent(Entity* entity, std::string component, std::string parameters);
 
 private:
     EntityHelper() {}
 
     // Different components;
-    void AddCameraComponent(Entity* entity, const vector<string>& parameters);
-    void AddShaderComponent(Entity* entity, const string& filepath);
-    void AddTextureComponent(Entity* entity, const string& filepath);
-    void AddTransformComponent(Entity* entity, const vector<string>& parameters);
-    void AddAudioComponent(Entity* entity, const vector<string>& parameters);
-    void AddTextComponent(Entity* entity, const vector<string>& parameters);
-    void AddScriptComponent(Entity* entity, const string& scriptName);
-    void AddRigidBodyComponent(Entity* entity, const vector<string>& parameters);
-    void AddTempEnemyWeaponsComponent(Entity* entity, const vector<string>& parameters);
+    void AddCameraComponent(Entity* entity, const std::vector<std::string>& parameters);
+    void AddShaderComponent(Entity* entity, const std::string& filepath);
+    void AddTextureComponent(Entity* entity, const std::string& filepath);
+    void AddTransformComponent(Entity* entity, const std::vector<std::string>& parameters);
+    void AddAudioComponent(Entity* entity, const std::vector<std::string>& parameters);
+    void AddTextComponent(Entity* entity, const std::vector<std::string>& parameters);
+    void AddScriptComponent(Entity* entity, const std::string& scriptName);
+    void AddRigidBodyComponent(Entity* entity, const std::vector<std::string>& parameters);
+    void AddTempEnemyWeaponsComponent(Entity* entity, const std::vector<std::string>& parameters);
 };

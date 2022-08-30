@@ -48,16 +48,16 @@ protected:
             return NONE;
 
         ComponentHandle<TextureComp> playerTexture = e->component<TextureComp>();
-        if (playerTexture.get()->filename.find("Up") != string::npos) 
+        if (playerTexture.get()->filename.find("Up") != std::string::npos)
             return NORTH;
 
-        if (playerTexture.get()->filename.find("Down") != string::npos)
+        if (playerTexture.get()->filename.find("Down") != std::string::npos)
             return SOUTH;
 
-        if (playerTexture.get()->filename.find("Right") != string::npos)
+        if (playerTexture.get()->filename.find("Right") != std::string::npos)
             return EAST;
 
-        if (playerTexture.get()->filename.find("Left") != string::npos)
+        if (playerTexture.get()->filename.find("Left") != std::string::npos)
             return WEST;
 
         // No direction found

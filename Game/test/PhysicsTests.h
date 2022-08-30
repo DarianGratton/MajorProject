@@ -6,8 +6,6 @@
 
 #include "../src/Physics/PhysicsManager.h"
 
-using namespace std;
-
 TEST (CreateWorld, ValidXYValues)
 {
     PhysicsManager::Instance().CreateWorld(0.0f, 0.0f);

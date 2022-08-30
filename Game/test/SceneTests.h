@@ -6,8 +6,6 @@
 #include "../src/SceneManager.h"
 #include "../src/Game.h"
 
-using namespace std;
-
 TEST (LoadScene, ValidScene)
 {
     // Init Game

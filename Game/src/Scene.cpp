@@ -44,26 +44,26 @@ bool Scene::Load()
         const XMLAttribute* attr = entity->ToElement()->FirstAttribute();
         while (attr != NULL) 
         {
-            string attrName = attr->Name();
+            std::string attrName = attr->Name();
             if (attrName == "name") 
             {   // Name of the sprite
                 e.assign<Name>(attr->Value());
             }
             if (attrName == "width") 
             {   // Width of the sprite
-                stringstream str(attr->Value());
+                std::stringstream str(attr->Value());
                 str >> width;
             }
             if (attrName == "height") 
             {   // Height of the sprite
-                stringstream str(attr->Value());
+                std::stringstream str(attr->Value());
                 str >> height;
             }
             attr = attr->Next();
         }
 
         // Add spritevertices
-        vector<float> spriteVertices =  {
+        std::vector<float> spriteVertices =  {
                 -width/2, -height/2, 0.0f, 0.0f,
                  width/2, -height/2, 1.0f, 0.0f,
                  width/2,  height/2, 1.0f, 1.0f,
@@ -78,7 +78,7 @@ bool Scene::Load()
         {
             // Error check
             
-            if (string(component->Value()) != "Component")  
+            if (std::string(component->Value()) != "Component")  
             {
                 component = component->NextSibling();
                 continue;
@@ -86,7 +86,7 @@ bool Scene::Load()
 
             // Setup
             const XMLAttribute* attr = component->ToElement()->FirstAttribute();
-            unordered_map<std::string, std::string> attributes;
+            std::unordered_map<std::string, std::string> attributes;
             
             // Get Attributes
             while (attr != NULL) 

@@ -77,7 +77,7 @@ TextRenderer::TextRenderer(const char * fontpath, unsigned int fontsize)
             glm::ivec3(face->glyph->bitmap_left, face->glyph->bitmap_top, 0),
             (unsigned int)face->glyph->advance.x
         };
-        characters.insert(pair<char, Character>(c, character));
+        characters.insert(std::pair<char, Character>(c, character));
     }
 }
 
@@ -99,7 +99,7 @@ void TextRenderer::SetFontSize(unsigned int pixelwidth, unsigned int pixelheight
     }
 }
 
-void TextRenderer::RenderText(string text, glm::vec2 position, glm::vec2 scale, glm::vec3 color, glm::mat4 proj, glm::mat4 view) 
+void TextRenderer::RenderText(std::string text, glm::vec2 position, glm::vec2 scale, glm::vec3 color, glm::mat4 proj, glm::mat4 view)
 {
     VertexArray va;
     VertexBuffer vb(NULL, sizeof(float) * 6 * 4);
@@ -125,7 +125,7 @@ void TextRenderer::RenderText(string text, glm::vec2 position, glm::vec2 scale, 
     va.Bind();
 
     // iterate through all characters
-    string::const_iterator c;
+    std::string::const_iterator c;
     for (c = text.begin(); c != text.end(); c++) 
     {
         Character ch = characters[*c];

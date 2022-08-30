@@ -10,12 +10,12 @@
 #include "Components.h"
 #include "Logger.h"
 
-void EntityHelper::AddComponent(Entity* entity, string component, string parameters) 
+void EntityHelper::AddComponent(Entity* entity, std::string component, std::string parameters)
 {
     // Parse parameters
-    vector<string> values;
+    std::vector<std::string> values;
     size_t i = 0;
-    while ((i = parameters.find(",")) != string::npos) 
+    while ((i = parameters.find(",")) != std::string::npos)
     {
         values.push_back(parameters.substr(0, i));
         parameters.erase(0, i + 1);
@@ -54,7 +54,7 @@ void EntityHelper::AddComponent(Entity* entity, string component, string paramet
 }
 
 // TODO: Possibly clean up this function it's probably effiecent but not very clean
-void EntityHelper::AddCameraComponent(Entity* entity, const vector<string>& parameters) 
+void EntityHelper::AddCameraComponent(Entity* entity, const std::vector<std::string>& parameters)
 {
     float leftf, rightf, bottomf, topf, znear, zfar;
 
@@ -65,7 +65,7 @@ void EntityHelper::AddCameraComponent(Entity* entity, const vector<string>& para
     }
 
     // 1 parameter
-    stringstream str(parameters.at(0));
+    std::stringstream str(parameters.at(0));
     if (!(str >> leftf)) 
     {
         LOG_ERROR("Scene parsing - addCamera Error: float 1 invalid value.");
@@ -78,7 +78,7 @@ void EntityHelper::AddCameraComponent(Entity* entity, const vector<string>& para
     }
 
     // 2 parameters
-	str = stringstream(parameters.at(1));
+	str = std::stringstream(parameters.at(1));
     if (!(str >> rightf)) 
     {
         LOG_ERROR("Scene parsing - addCamera Error: float 2 invalid value.");
@@ -91,7 +91,7 @@ void EntityHelper::AddCameraComponent(Entity* entity, const vector<string>& para
     }
 
     // 3 parameters
-	str = stringstream(parameters.at(2));
+	str = std::stringstream(parameters.at(2));
     if (!(str >> bottomf)) 
     {
         LOG_ERROR("Scene parsing - addCamera Error: float 3 invalid value.");
@@ -104,7 +104,7 @@ void EntityHelper::AddCameraComponent(Entity* entity, const vector<string>& para
     }
 
     // 4 parameters
-	str = stringstream(parameters.at(3));
+	str = std::stringstream(parameters.at(3));
     if (!(str >> topf)) 
     {
         LOG_ERROR("Scene parsing - addCamera Error: float 4 invalid value.");
@@ -117,7 +117,7 @@ void EntityHelper::AddCameraComponent(Entity* entity, const vector<string>& para
     }
 
     // 5 parameters
-	str = stringstream(parameters.at(4));
+	str = std::stringstream(parameters.at(4));
     if (!(str >> znear)) 
     {
         LOG_ERROR("Scene parsing - addCamera Error: float 5 invalid value.");
@@ -130,7 +130,7 @@ void EntityHelper::AddCameraComponent(Entity* entity, const vector<string>& para
     }
 
     // 6 parameters
-	str = stringstream(parameters.at(5));
+	str = std::stringstream(parameters.at(5));
     if (!(str >> zfar)) 
     {
         LOG_ERROR("Scene parsing - addCamera Error: float 6 invalid value.");
@@ -140,14 +140,14 @@ void EntityHelper::AddCameraComponent(Entity* entity, const vector<string>& para
     entity->assign<Camera>(leftf, rightf, bottomf, topf, znear, zfar);
 }
 
-void EntityHelper::AddScriptComponent(Entity* entity, const string& scriptName) 
+void EntityHelper::AddScriptComponent(Entity* entity, const std::string& scriptName)
 {
     entity->assign<Script>(scriptName, entity);
 }
 
-void EntityHelper::AddShaderComponent(Entity* entity, const string& filepath) 
+void EntityHelper::AddShaderComponent(Entity* entity, const std::string& filepath)
 {
-    string temp = filepath;
+    std::string temp = filepath;
     int n = temp.length();
     char *chararray = new char [n+1];
     strcpy(chararray,temp.c_str());
@@ -155,9 +155,9 @@ void EntityHelper::AddShaderComponent(Entity* entity, const string& filepath)
     entity->assign<ShaderComp>(chararray);
 }
 
-void EntityHelper::AddTextureComponent(Entity* entity, const string& filepath) 
+void EntityHelper::AddTextureComponent(Entity* entity, const std::string& filepath)
 {
-    string temp = filepath;
+    std::string temp = filepath;
     int n = temp.length();
     char* chararray = new char [n+1];
     char* chararray_copy = new char [n+1];
@@ -165,7 +165,7 @@ void EntityHelper::AddTextureComponent(Entity* entity, const string& filepath)
     strcpy(chararray_copy, temp.c_str());
 
     // Get filename
-    string filename;
+    std::string filename;
     char* token = strtok(chararray_copy, "/");
     while (token != NULL) 
     {
@@ -176,7 +176,7 @@ void EntityHelper::AddTextureComponent(Entity* entity, const string& filepath)
     entity->assign<TextureComp>(chararray, filename);
 }
 
-void EntityHelper::AddTransformComponent(Entity* entity, const vector<string>& parameters) 
+void EntityHelper::AddTransformComponent(Entity* entity, const std::vector<std::string>& parameters)
 {
     float xpos, ypos, zpos;        // Position
     float angle, xrot, yrot, zrot; // Rotation
@@ -189,7 +189,7 @@ void EntityHelper::AddTransformComponent(Entity* entity, const vector<string>& p
     }
 
     // 1 parameter
-    stringstream str(parameters.at(0));
+    std::stringstream str(parameters.at(0));
     if (!(str >> xpos))
     {
         LOG_ERROR("Scene parsing - addTransform Error: float 1 invalid value.");
@@ -202,7 +202,7 @@ void EntityHelper::AddTransformComponent(Entity* entity, const vector<string>& p
     }
 
     // 2 parameters
-	str = stringstream(parameters.at(1));
+	str = std::stringstream(parameters.at(1));
     if (!(str >> ypos)) 
     {
         LOG_ERROR("Scene parsing - addTransform Error: float 2 invalid value.");
@@ -215,7 +215,7 @@ void EntityHelper::AddTransformComponent(Entity* entity, const vector<string>& p
     }
 
     // 3 parameters
-	str = stringstream(parameters.at(2));
+	str = std::stringstream(parameters.at(2));
     if (!(str >> zpos)) 
     {
         LOG_ERROR("Scene parsing - addTransform Error: float 3 invalid value.");
@@ -228,7 +228,7 @@ void EntityHelper::AddTransformComponent(Entity* entity, const vector<string>& p
     }
 
     // 4 parameters
-	str = stringstream(parameters.at(3));
+	str = std::stringstream(parameters.at(3));
     if (!(str >> angle)) 
     {
         LOG_ERROR("Scene parsing - addTransform Error: float 4 invalid value.");
@@ -241,7 +241,7 @@ void EntityHelper::AddTransformComponent(Entity* entity, const vector<string>& p
     }
 
     // 5 parameters
-	str = stringstream(parameters.at(4));
+	str = std::stringstream(parameters.at(4));
     if (!(str >> xrot)) 
     {
         LOG_ERROR("Scene parsing - addTransform Error: float 5 invalid value.");
@@ -254,7 +254,7 @@ void EntityHelper::AddTransformComponent(Entity* entity, const vector<string>& p
     }
 
     // 6 parameters
-	str = stringstream(parameters.at(5));
+	str = std::stringstream(parameters.at(5));
     if (!(str >> yrot)) 
     {
         LOG_ERROR("Scene parsing - addTransform Error: float 6 invalid value.");
@@ -267,7 +267,7 @@ void EntityHelper::AddTransformComponent(Entity* entity, const vector<string>& p
     }
 
     // 7 parameters
-	str = stringstream(parameters.at(6));
+	str = std::stringstream(parameters.at(6));
     if (!(str >> zrot)) 
     {
         LOG_ERROR("Scene parsing - addTransform Error: float 7 invalid value.");
@@ -280,7 +280,7 @@ void EntityHelper::AddTransformComponent(Entity* entity, const vector<string>& p
     }
 
     // 8 parameters
-	str = stringstream(parameters.at(7));
+	str = std::stringstream(parameters.at(7));
     if (!(str >> xscl)) 
     {
         LOG_ERROR("Scene parsing - addTransform Error: float 8 invalid value.");
@@ -293,7 +293,7 @@ void EntityHelper::AddTransformComponent(Entity* entity, const vector<string>& p
     }
 
     // 9 parameters
-	str = stringstream(parameters.at(8));
+	str = std::stringstream(parameters.at(8));
     if (!(str >> yscl)) 
     {
         LOG_ERROR("Scene parsing - addTransform Error: float 9 invalid value.");
@@ -303,7 +303,7 @@ void EntityHelper::AddTransformComponent(Entity* entity, const vector<string>& p
     entity->assign<Transform>(xpos, ypos, zpos, angle, xrot, yrot, zrot, xscl, yscl);    
 }
 
-void EntityHelper::AddAudioComponent(Entity* entity, const vector<string>& parameters) 
+void EntityHelper::AddAudioComponent(Entity* entity, const std::vector<std::string>& parameters)
 {
     if (parameters.size() == 0) 
     {
@@ -318,7 +318,7 @@ void EntityHelper::AddAudioComponent(Entity* entity, const vector<string>& param
     }
 
     bool isPlayOnStart;
-    stringstream str(parameters.at(1));
+    std::stringstream str(parameters.at(1));
     if (str.str() == "true" || str.str() == "false") 
     {
         LOG_ERROR("Scene parsing - AddAudioSource Error: boolean 1 was found to be true/false - use 1 or 0 instead.");
@@ -338,7 +338,7 @@ void EntityHelper::AddAudioComponent(Entity* entity, const vector<string>& param
     }
 
     bool isLoop;
-    str = stringstream(parameters.at(2));
+    str = std::stringstream(parameters.at(2));
     if (str.str() == "true" || str.str() == "false") 
     {
         LOG_ERROR("Scene parsing - AddAudioSource Error: boolean 1 was found to be true/false - use 1/0 instead.");
@@ -354,7 +354,7 @@ void EntityHelper::AddAudioComponent(Entity* entity, const vector<string>& param
     entity->assign<Audio>(parameters.at(0).c_str(), isPlayOnStart, isLoop);
 }
 
-void EntityHelper::AddTextComponent(Entity* entity, const vector<string>& parameters) 
+void EntityHelper::AddTextComponent(Entity* entity, const std::vector<std::string>& parameters)
 {
     float r, g, b;
     unsigned int pixelwidth, pixelheight;
@@ -367,19 +367,19 @@ void EntityHelper::AddTextComponent(Entity* entity, const vector<string>& parame
     }
 
     // 4 parameters
-    stringstream str(parameters.at(1));
+    std::stringstream str(parameters.at(1));
     if (!(str >> r)) 
     {
         LOG_ERROR("Scene parsing - addText Error: float 1 invalid value.");
         return;
     }
-    str = stringstream(parameters.at(2));
+    str = std::stringstream(parameters.at(2));
     if (!(str >> g)) 
     {
         LOG_ERROR("Scene parsing - addText Error: float 2 invalid value.");
         return;
     }
-    str = stringstream(parameters.at(3));
+    str = std::stringstream(parameters.at(3));
     if (!(str >> b)) 
     {
         LOG_ERROR("Scene parsing - addText Error: float 3 invalid value.");
@@ -392,7 +392,7 @@ void EntityHelper::AddTextComponent(Entity* entity, const vector<string>& parame
     }
 
     // 5 parameters
-    str = stringstream(parameters.at(4));
+    str = std::stringstream(parameters.at(4));
     if (!(str >> pixelwidth)) 
     {
         LOG_ERROR("Scene parsing - addText Error: unsigned int 1 invalid value.");
@@ -405,7 +405,7 @@ void EntityHelper::AddTextComponent(Entity* entity, const vector<string>& parame
     }
 
     // 5 parameters
-    str = stringstream(parameters.at(5));
+    str = std::stringstream(parameters.at(5));
     if (!(str >> pixelheight)) 
     {
         LOG_ERROR("Scene parsing - addText Error: unsigned int 2 invalid value.");
@@ -415,7 +415,7 @@ void EntityHelper::AddTextComponent(Entity* entity, const vector<string>& parame
     entity->assign<TextSprite>(parameters.at(0), glm::vec3(r, g, b), pixelwidth, pixelheight);
 }
 
-void EntityHelper::AddRigidBodyComponent(Entity* entity, const vector<string>& parameters) 
+void EntityHelper::AddRigidBodyComponent(Entity* entity, const std::vector<std::string>& parameters)
 {
     float xpos, ypos, hx, hy;
     float density, friction;
@@ -423,25 +423,25 @@ void EntityHelper::AddRigidBodyComponent(Entity* entity, const vector<string>& p
     int categoryBit, maskBit;
 
     // 4 parameters
-    stringstream str(parameters.at(0));
+    std::stringstream str(parameters.at(0));
     if (!(str >> xpos)) 
     {
         LOG_ERROR("Scene parsing - addRigidBody Error: float 1 invalid value.");
         return;
     }
-    str = stringstream(parameters.at(1));
+    str = std::stringstream(parameters.at(1));
     if (!(str >> ypos)) 
     {
         LOG_ERROR("Scene parsing - addRigidBody Error: float 2 invalid value.");
         return;
     }
-    str = stringstream(parameters.at(2));
+    str = std::stringstream(parameters.at(2));
     if (!(str >> hx)) 
     {
         LOG_ERROR("Scene parsing - addRigidBody Error: float 3 invalid value.");
         return;
     }
-    str = stringstream(parameters.at(3));
+    str = std::stringstream(parameters.at(3));
     if (!(str >> hy)) 
     {
         LOG_ERROR("Scene parsing - addRigidBody Error: float 4 invalid value.");
@@ -454,7 +454,7 @@ void EntityHelper::AddRigidBodyComponent(Entity* entity, const vector<string>& p
     }
 
     // 5 parameters
-    str = stringstream(parameters.at(4));
+    str = std::stringstream(parameters.at(4));
     if (!(str >> density)) 
     {
         LOG_ERROR("Scene parsing - addRigidBody Error: float 5 invalid value.");
@@ -467,7 +467,7 @@ void EntityHelper::AddRigidBodyComponent(Entity* entity, const vector<string>& p
     }
 
     // 6 parameters
-    str = stringstream(parameters.at(5));
+    str = std::stringstream(parameters.at(5));
     if (!(str >> friction)) 
     {
         LOG_ERROR("Scene parsing - addRigidBody Error: float 6 invalid value.");
@@ -480,7 +480,7 @@ void EntityHelper::AddRigidBodyComponent(Entity* entity, const vector<string>& p
     }
 
     // 7 parameters
-    str = stringstream(parameters.at(6));
+    str = std::stringstream(parameters.at(6));
     if (!(str >> isDynamicBody)) 
     {
         LOG_ERROR("Scene parsing - addRigidBody Error: bool 1 invalid value.");
@@ -492,7 +492,7 @@ void EntityHelper::AddRigidBodyComponent(Entity* entity, const vector<string>& p
         return;
     }
 
-    str = stringstream(parameters.at(7));
+    str = std::stringstream(parameters.at(7));
     if (!(str >> categoryBit)) 
     {
         LOG_ERROR("Scene parsing - addRigidBody Error: int 1 invalid value.");
@@ -505,7 +505,7 @@ void EntityHelper::AddRigidBodyComponent(Entity* entity, const vector<string>& p
         return;
     }
 
-    str = stringstream(parameters.at(8));
+    str = std::stringstream(parameters.at(8));
     if (!(str >> maskBit)) 
     {
         LOG_ERROR("Scene parsing - addRigidBody Error: int 2 invalid value.");
@@ -518,7 +518,7 @@ void EntityHelper::AddRigidBodyComponent(Entity* entity, const vector<string>& p
         return;
     }
 
-    str = stringstream(parameters.at(9));
+    str = std::stringstream(parameters.at(9));
     if (!(str >> maskBit)) 
     {
         LOG_ERROR("Scene parsing - addRigidBody Error: int 3 invalid value.");
@@ -531,7 +531,7 @@ void EntityHelper::AddRigidBodyComponent(Entity* entity, const vector<string>& p
         return;
     }
 
-    str = stringstream(parameters.at(10));
+    str = std::stringstream(parameters.at(10));
     if (!(str >> maskBit)) 
     {
         LOG_ERROR("Scene parsing - addRigidBody Error: int 4 invalid value.");
@@ -542,13 +542,13 @@ void EntityHelper::AddRigidBodyComponent(Entity* entity, const vector<string>& p
     entity->assign<RigidBody>(xpos, ypos, hx, hy, density, friction, isDynamicBody, category, mask1 | mask2 | mask3);
 }
 
-void EntityHelper::AddTempEnemyWeaponsComponent(Entity* entity, const vector<string>& parameters)
+void EntityHelper::AddTempEnemyWeaponsComponent(Entity* entity, const std::vector<std::string>& parameters)
 {
     unsigned int weapon1, weapon2;
 
-    stringstream str(parameters.at(0));
+    std::stringstream str(parameters.at(0));
     str >> weapon1;
-	str = stringstream(parameters.at(1));
+	str = std::stringstream(parameters.at(1));
     str >> weapon2;
     entity->assign<TempEnemyWeapons>(weapon1, weapon2);
 

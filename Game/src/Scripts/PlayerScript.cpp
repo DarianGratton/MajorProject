@@ -36,13 +36,13 @@ void PlayerScript::Start()
     // Note: should be calling start but for some reason it does it for me, something weird with how entityx does for loops.
     if (weapon1.valid() && !weapon1.has_component<Script>()) 
     {
-        string scriptName = GetScriptName(PlayerPrefs::Instance().GetWeapon1());
+        std::string scriptName = GetScriptName(PlayerPrefs::Instance().GetWeapon1());
         weapon1.assign<Script>(scriptName, &weapon1);
     }
 
     if (weapon2.valid() && !weapon2.has_component<Script>()) 
     {
-        string scriptName = GetScriptName(PlayerPrefs::Instance().GetWeapon2());
+        std::string scriptName = GetScriptName(PlayerPrefs::Instance().GetWeapon2());
         weapon2.assign<Script>(scriptName, &weapon2);
     }
 
@@ -50,7 +50,7 @@ void PlayerScript::Start()
     if (playerHpText.valid()) 
     {
         ComponentHandle<TextSprite> textComp = playerHpText.component<TextSprite>();
-        textComp.get()->text = "Player HP: " + to_string(health); 
+        textComp.get()->text = "Player HP: " + std::to_string(health);
     }
 }
 
@@ -172,10 +172,10 @@ void PlayerScript::DamageCharacter(int damage)
 
     // Display updated Player HP
     ComponentHandle<TextSprite> textComp = playerHpText.component<TextSprite>();
-    textComp.get()->text = "Player HP: " + to_string(health); 
+    textComp.get()->text = "Player HP: " + std::to_string(health);
 }
 
-string PlayerScript::GetScriptName(int i) 
+std::string PlayerScript::GetScriptName(int i)
 {
     switch(i) 
     {
@@ -197,7 +197,7 @@ string PlayerScript::GetScriptName(int i)
 void PlayerScript::BeginContact(Entity* entityA, Entity* entityB) 
 {
     ComponentHandle<Name> entityName = entityB->component<Name>();
-    if (entityName.get()->name.find("Weapon") != string::npos) 
+    if (entityName.get()->name.find("Weapon") != std::string::npos)
     {
         // Update player hp
         ComponentHandle<Script> weaponScript = entityB->component<Script>();
