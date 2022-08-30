@@ -2,6 +2,7 @@
 /out/*
 /bin/*
 /bin_test/*
+/lib/libtorch/*
 Game.exe.stackdump
 .vs/*
 

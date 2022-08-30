@@ -1,5 +1,8 @@
 #include "Visualizer.h"
 
+namespace GameAgent
+{
+
 void Visualizer::PlotLine(std::vector<float> X, std::vector<float> Y, 
 						  std::string filename, std::string labelname)
 {
@@ -50,3 +53,5 @@ void Visualizer::PlotBar(std::vector<float> X, std::vector<float> Y, std::string
 	canvas.size(750, 750);
 	canvas.save(filename);
 }
+
+} /* namespace GameAgent */

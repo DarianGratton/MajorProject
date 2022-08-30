@@ -118,6 +118,8 @@ target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC "$<BUILD_INTERFACE:${CM
 target_link_libraries(${LIBRARY_TARGET_NAME} "${TORCH_LIBRARIES}")
 
 # Specify installation targets, typology and destination folders.
+message(${CMAKE_INSTALL_LIBDIR})
+message(${CMAKE_INSTALL_BINDIR})
 install(TARGETS ${LIBRARY_TARGET_NAME}
         EXPORT  ${PROJECT_NAME}
         LIBRARY       DESTINATION "${CMAKE_INSTALL_LIBDIR}"                            COMPONENT shlib

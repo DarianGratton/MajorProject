@@ -2,8 +2,10 @@
 # project specific logic here.
 cmake_minimum_required(VERSION 3.14)
 
+find_package(Torch REQUIRED)
+
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 
 # Add source to this project's executable.
 add_executable (
@@ -99,19 +101,27 @@ add_executable (
 )
 
 # Link libraries
+target_link_libraries(Game "${TORCH_LIBRARIES}")
 target_link_libraries(Game "${CMAKE_SOURCE_DIR}/lib/entityx.lib")
 target_link_libraries(Game "${CMAKE_SOURCE_DIR}/lib/box2d.lib")
 target_link_libraries(Game "${CMAKE_SOURCE_DIR}/lib/glfw3dll.lib")
 target_link_libraries(Game "${CMAKE_SOURCE_DIR}/lib/bass.lib")
 target_link_libraries(Game "${CMAKE_SOURCE_DIR}/lib/freetype.lib")
+target_link_libraries(Game "${CMAKE_SOURCE_DIR}/lib/GameAgent.lib")
 
 # Copy dlls to executable to avoid memory errors
 if (MSVC)
-  file(GLOB GAME_DLLS "${CMAKE_SOURCE_DIR}/lib/*.dll")
-  add_custom_command(TARGET Game
+	file(GLOB GAME_DLLS "${CMAKE_SOURCE_DIR}/lib/*.dll")
+	add_custom_command(TARGET Game
                      POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
                      ${GAME_DLLS}
+                     $<TARGET_FILE_DIR:Game>)
+	file(GLOB TORCH_DLLS "${TORCH_INSTALL_PREFIX}/lib/*.dll")
+	add_custom_command(TARGET Game
+                     POST_BUILD
+                     COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                     ${TORCH_DLLS}
                      $<TARGET_FILE_DIR:Game>)
 endif (MSVC)
 

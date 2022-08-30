@@ -12,7 +12,6 @@
 #include "Storage/UtilityStorage.h"
 #include "GameAgent.h"
 #include "Networks/TestEnvironment/AgentTest.h"
-#include "Visualizer/Visualizer.h"
 
 // Used for testing
 int main()
@@ -43,7 +42,7 @@ int main()
 
     std::vector<float> X = { 1, 2, 3, 4 };
     std::vector<float> Y = { 1, 2, 3, 4 };
-    Visualizer visualizer;
+    GameAgent::Visualizer visualizer;
     visualizer.PlotLine(X, Y, "LinePlotTest.png", "Stuff");
     visualizer.PlotBar(X, Y, "BarPlotTest.png");
 
