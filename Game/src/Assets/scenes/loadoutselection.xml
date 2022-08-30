@@ -65,6 +65,26 @@
         <Component name="Transform" value="275.0f, -100.0f, 0.0f, 0, 0, 0, 1, 2"/>
         <Component name="SpriteVertices" value=""/>
     </Entity>
+    <Entity name="Weapon1Name">
+      <Component name="TextSprite" value="Sword, 1.0f, 1.0f, 1.0f, 0, 24"/>
+      <Component name="Transform" value="12.5f, 25.0f, 0.0f, 0, 0, 0, 1"/>
+    </Entity>
+    <Entity name="Weapon2Name">
+      <Component name="TextSprite" value="Shield, 1.0f, 1.0f, 1.0f, 0, 24"/>
+      <Component name="Transform" value="167.5f, 25.0f, 0.0f, 0, 0, 0, 1"/>
+    </Entity>
+    <Entity name="Weapon3Name">
+      <Component name="TextSprite" value="Bow, 1.0f, 1.0f, 1.0f, 0, 24"/>
+      <Component name="Transform" value="330.0f, 25.0f, 0.0f, 0, 0, 0, 1"/>
+    </Entity>
+    <Entity name="Weapon4Name">
+      <Component name="TextSprite" value="Grenade, 1.0f, 1.0f, 1.0f, 0, 24"/>
+      <Component name="Transform" value="65.0f, -175.0f, 0.0f, 0, 0, 0, 1"/>
+    </Entity>
+    <Entity name="Weapon5Name">
+      <Component name="TextSprite" value="Gun, 1.0f, 1.0f, 1.0f, 0, 24"/>
+      <Component name="Transform" value="250.0f, -175.0f, 0.0f, 0, 0, 0, 1"/>
+    </Entity>
     <Entity name="Weapon1Check" height="60.0" width="60.0f">
         <Component name="Texture" value="src/Assets/textures/GreenCheckmark.png"/>
         <Component name="Shader" value="src/Assets/shaders/Basic.shader"/>
