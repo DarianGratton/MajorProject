@@ -14,12 +14,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}"
 # Used to build shared libraries.
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-# To add a trailing "d" to library built in debug mode.
-# NOTE: Unknown if needed as project can not be built in debug mode, it crashes.
-if(MSVC)
-	set(CMAKE_DEBUG_POSTFIX "d")
-endif()
-
 # Build position independent code (PIC).
 # Useful for memory management with multiple shared libraries.
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -28,22 +22,22 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Setup YCM
+# Setup YCM (Files in cmake folder)
+# Source: https://github.com/robotology/ycm/
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-# Shared/Dynamic Library or Static Library?
+# Create option for the user to select a Shared/Dynamic Library or a Static Library
 option(BUILD_SHARED_LIBS "Build libraries as shared" ON)
 
 # Build test related commands.
-# NOTE: Unknown what this is or if it's needed for the scope of project.
 option(BUILD_TESTING "Create tests using CMake" OFF)
 if(BUILD_TESTING)
     enable_testing()
 endif()
 
 # Enable RPATH support for installed binaries and libraries.
-# NOTE: Apparent useful for managing multiple shared libraries in Linux and MacOS,
-#       unknown if useful for Windows and MSVC.
+# TODO: Useful for managing multiple shared libraries in Linux and MacOS,
+#       however project currently only support's Windows and MSVC. (Out-of-Scope)
 include(AddInstallRPATHSupport)
 add_install_rpath_support(BIN_DIRS "${CMAKE_INSTALL_FULL_BINDIR}"
                           LIB_DIRS "${CMAKE_INSTALL_FULL_LIBDIR}"
@@ -51,7 +45,6 @@ add_install_rpath_support(BIN_DIRS "${CMAKE_INSTALL_FULL_BINDIR}"
                           USE_LINK_PATH)
 
 # Specify a build type, otherwise set it to release.
-# NOTE: Again unknown if needed for the scope of this project.
 if(NOT CMAKE_CONFIGURATION_TYPES)
     if(NOT CMAKE_BUILD_TYPE)
         message(STATUS "Setting build type to 'Release' as none was specified.")
@@ -61,16 +54,6 @@ endif()
 
 # Source code.
 add_subdirectory("src")
-
-# Create and install CMake configuration files (Needed for find_package()). 
-# TODO: Return to and change configuration options. 
-#       Requires DEPENDENCIES as library requires PyTorch.
-#include(InstallBasicPackageFiles)
-#install_basic_package_files(${PROJECT_NAME}
-#                            VERSION ${${PROJECT_NAME}_VERSION}
-#                            COMPATIBILITY AnyNewerVersion
-#                            VARS_PREFIX ${PROJECT_NAME}
-#                            NO_CHECK_REQUIRED_COMPONENTS_MACRO)
 
 # Add uninstall target
 include(AddUninstallTarget)

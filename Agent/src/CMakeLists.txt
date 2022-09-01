@@ -15,7 +15,7 @@ include_directories(${INCLUDE_DIR})
 
 # Add source to this project's executable.
 add_executable (
-    Agent 
+    GameAgentExec 
     "Main.cpp" 
     "Agent.cpp" 
     "Agent.h" 
@@ -52,18 +52,18 @@ add_executable (
 # the DLLs need to be copied to avoid memory errors.
 if (MSVC)
   file(GLOB TORCH_DLLS "${TORCH_INSTALL_PREFIX}/lib/*.dll")
-  add_custom_command(TARGET Agent
+  add_custom_command(TARGET GameAgentExec
                      POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
                      ${TORCH_DLLS}
-                     $<TARGET_FILE_DIR:Agent>)
+                     $<TARGET_FILE_DIR:GameAgentExec>)
 endif (MSVC)
 
 # Link libraries
-target_link_libraries(Agent "${TORCH_LIBRARIES}")
+target_link_libraries(GameAgentExec "${TORCH_LIBRARIES}")
 
 # Set properties
-set_property(TARGET Agent PROPERTY CXX_STANDARD 17)
+set_property(TARGET GameAgentExec PROPERTY CXX_STANDARD 17)
 
 ### Build Library
 set(LIBRARY_TARGET_NAME "${PROJECT_NAME}")
@@ -83,25 +83,28 @@ set(${LIBRARY_TARGET_NAME}_SRC
 
 # List of HPP (header) library files
 set(${LIBRARY_TARGET_NAME}_HDR
-    "Agent.h" 
+    "Agent.h"
+    "GameAgent.h"
     "Environment/Environment.h"
-    "Environment/State.h" 
+    "Environment/State.h"
+    "Storage/UtilityStorage.h" 
+    "Visualizer/Visualizer.h"
+    "Networks/NetworkAgent.h" 
+    "Networks/NetworkParameters.h"  
+    "Networks/AgentFactory.h" 
+    "Networks/Parameters.h" 
     "Networks/ACER/RandomIterator.h"  
     "Networks/ACER/ReplayMemory.h" 
     "Networks/ACER/ActorCriticNetwork.h" 
     "Networks/ACER/Trajectory.h" 
-    "Networks/NetworkAgent.h" 
-    "Networks/NetworkParameters.h" 
-    "Networks/ACER/ACERParameters.h" 
-    "Networks/AgentFactory.h" 
-    "Visualizer/Visualizer.h" 
-    "GameAgent.h" 
-    "Networks/Parameters.h" 
-    "Storage/UtilityStorage.h" 
+    "Networks/ACER/ACERParameters.h"
 )
 
 # Add a library to be built from the source and header files.
-add_library(${LIBRARY_TARGET_NAME} ${${LIBRARY_TARGET_NAME}_SRC} ${${LIBRARY_TARGET_NAME}_HDR})
+add_library(${LIBRARY_TARGET_NAME} 
+            ${${LIBRARY_TARGET_NAME}_SRC} 
+            ${${LIBRARY_TARGET_NAME}_HDR}
+)
 
 # Create alias
 add_library(${PROJECT_NAME}::${LIBRARY_TARGET_NAME} ALIAS ${LIBRARY_TARGET_NAME})
@@ -118,13 +121,22 @@ target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC "$<BUILD_INTERFACE:${CM
 target_link_libraries(${LIBRARY_TARGET_NAME} "${TORCH_LIBRARIES}")
 
 # Specify installation targets, typology and destination folders.
-message(${CMAKE_INSTALL_LIBDIR})
-message(${CMAKE_INSTALL_BINDIR})
 install(TARGETS ${LIBRARY_TARGET_NAME}
         EXPORT  ${PROJECT_NAME}
         LIBRARY       DESTINATION "${CMAKE_INSTALL_LIBDIR}"                            COMPONENT shlib
         ARCHIVE       DESTINATION "${CMAKE_INSTALL_LIBDIR}"                            COMPONENT lib
-        RUNTIME       DESTINATION "${CMAKE_INSTALL_BINDIR}"                            COMPONENT bin
-        PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_TARGET_NAME}" COMPONENT dev)
+        RUNTIME       DESTINATION "${CMAKE_INSTALL_LIBDIR}"                            COMPONENT bin)
+
+# Install include header files
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/"
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_TARGET_NAME}"
+        FILES_MATCHING 
+        PATTERN "*.h"
+        PATTERN "*.hpp"
+        PATTERN "Networks/TestEnvironment" EXCLUDE)
+
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/"
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+        PATTERN "Eigen" EXCLUDE)
 
 message(STATUS "Created target ${LIBRARY_TARGET_NAME} for export ${PROJECT_NAME}.")
