@@ -98,7 +98,8 @@ public:
         reinterpret_cast<EnemyScript*>(enemyScript->script)->SetCharacterAction(predictedAction.at(0));
 
         // Train Agent
-        agent->Train();
+        if (Game::Instance().IsAgentTraining())
+            agent->Train();
 
         // Terminal state reached or episode ended
         if (Game::Instance().IsAgentTraining() && 
@@ -125,12 +126,13 @@ public:
             std::cout << "Final Reward: " << env->GetTotalReward() << std::endl;
             std::cout << "Past 100 Episodes AvgReward: " << avgReward << std::endl;
             
-            // Save the agent
+            // Save and update the agent
             if (avgReward > bestAvgReward && rewardHistory.size() >= 100)
             {
                 bestAvgReward = avgReward;
                 agent->SaveAgent();
             }
+            agent->SaveUtility();
             std::cout << "Overall BestAvgReward: " << bestAvgReward << std::endl << std::endl;
 
             // Update variables
