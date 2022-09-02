@@ -1,5 +1,7 @@
 #include "Game.h"
 
+#include <bass/bass.h>
+
 #include "Logger.h"
 #include "ECS.h"
 #include "Input.h"

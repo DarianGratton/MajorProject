@@ -4,8 +4,6 @@
 
 #include <string>
 
-#include "Systems.h"
-
 using namespace entityx;
 
 class Scene 

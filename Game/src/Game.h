@@ -29,8 +29,11 @@ public:
     inline void EndGame() { isGameEnded = true; } 
     inline void PauseGame() { isGamePaused = true; }
     inline void UnpauseGame() { isGamePaused = false; } 
+    inline void SetTerminalState(bool terminal) { isTerminalState = terminal; }
     inline bool IsGamePaused() { return isGamePaused; }
     inline bool IsGameEnded() { return isGameEnded; }
+    inline bool IsAgentTraining() { return isAgentTraining; }
+    inline bool IsTerminalState() { return isTerminalState; }
 
 private:
     // Private default constructor
@@ -54,4 +57,8 @@ private:
     // Game
     bool isGamePaused = false;
     bool isGameEnded = false;
+
+    // Agent
+    bool isAgentTraining = false;
+    bool isTerminalState = false;
 };

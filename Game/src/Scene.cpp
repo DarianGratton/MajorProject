@@ -4,6 +4,7 @@
 #include <tinyxml2.h>
 #include <sstream>
 
+#include "Systems.h"
 #include "ECS.h"
 #include "EntityHelper.h"
 #include "Logger.h"

@@ -98,6 +98,7 @@ add_executable (
 	"WeaponScripts/SwordScript.h"
 	"WeaponScripts/SwordScript.cpp"
 	"WeaponScripts/WeaponScript.h"
+	"Systems/LearningAgentSystem.h"
 )
 
 # Link libraries

@@ -4,3 +4,4 @@
 #include "Systems/RenderingSystem.h"
 #include "Systems/ScriptSystem.h"
 #include "Systems/PhysicsSystem.h"
+#include "Systems/LearningAgentSystem.h"
