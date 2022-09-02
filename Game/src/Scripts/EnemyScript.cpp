@@ -53,7 +53,7 @@ void EnemyScript::Update(TimeDelta dt)
     // Use weapon 1
     if (weapon1.valid()) 
     {
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_O)) 
+        if (predictedAction == 4)
         {
             ComponentHandle<Script> scriptComp = weapon1.component<Script>();
             WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
@@ -73,7 +73,7 @@ void EnemyScript::Update(TimeDelta dt)
     // Use weapon 2
     if (weapon2.valid()) 
     {
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_P)) {
+        if (predictedAction == 5) {
             ComponentHandle<Script> scriptComp = weapon2.component<Script>();
             WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
             if (weaponScript)
@@ -99,7 +99,7 @@ void EnemyScript::MoveCharacter(b2Body* body)
     if (canMove)
     {
         // Movement UP
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_UP)) 
+        if (predictedAction == 0) 
         {
             desiredVelY = velcityChange;
 
@@ -108,7 +108,7 @@ void EnemyScript::MoveCharacter(b2Body* body)
         }
 
         // Movement DOWN
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_DOWN)) 
+        if (predictedAction == 1)
         {
             desiredVelY = -velcityChange;
 
@@ -117,7 +117,7 @@ void EnemyScript::MoveCharacter(b2Body* body)
         }
         
         // Movement RIGHT
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_RIGHT)) 
+        if (predictedAction == 2)
         {
             desiredVelX = velcityChange;
 
@@ -126,7 +126,7 @@ void EnemyScript::MoveCharacter(b2Body* body)
         }
         
         // Movement LEFT
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_LEFT)) 
+        if (predictedAction == 3)
         {
             desiredVelX = -velcityChange;
 

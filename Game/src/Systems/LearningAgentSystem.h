@@ -52,8 +52,8 @@ public:
         GameAgent::Networks::ACERParameters params;
         params.learningRate = 1e-3f;
         params.nActions = 1;
-        params.nPossibleActions = 4;
-        params.maxEpisodeLength = 500;
+        params.nPossibleActions = 6;
+        params.maxEpisodeLength = 1000;
         params.inputDims = currState.Size();
         params.hiddenLayerDims = 128;
         params.nHiddenLayers = 8;
@@ -78,7 +78,7 @@ public:
     void update(EntityManager& es, EventManager& events, TimeDelta dt) override
     {
         // Only want to run when on arena scene
-        if (!arenaLoaded)
+        if (!arenaLoaded || Game::Instance().IsGamePaused())
             return;
 
         // Update Current State
