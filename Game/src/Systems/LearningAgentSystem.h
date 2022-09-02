@@ -97,8 +97,11 @@ public:
         predictedAction = agent->PredictAction(currState);
         reinterpret_cast<EnemyScript*>(enemyScript->script)->SetCharacterAction(predictedAction.at(0));
 
+        // Train Agent
+        agent->Train();
+
         // Terminal state reached or episode ended
-        if (!Game::Instance().IsAgentTraining() && 
+        if (Game::Instance().IsAgentTraining() && 
             (terminal || env->GetSteps() >= maxEpisodeLength))
         {
             // Calculate average reward
