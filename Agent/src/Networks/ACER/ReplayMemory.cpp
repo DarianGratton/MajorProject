@@ -12,7 +12,7 @@ ACERReplayMemory::ACERReplayMemory(
 	unsigned int nActions, unsigned int nPossibleActions)
 	: memSize(memSize), 
 	maxEpisodeLength(maxEpisodeLength), stateSize(stateSize), 
-	nActions(nActions), nPossibleActions(nPossibleActions)
+	nActions(nActions), nPossibleActions(nPossibleActions)  
 {
 	if (memSize < maxEpisodeLength)
 	{
@@ -22,7 +22,8 @@ ACERReplayMemory::ACERReplayMemory(
 		return;
 	}
 
-	memSize = memSize / maxEpisodeLength;
+	// memSize = memSize / maxEpisodeLength;
+	currMemSize = 0;
 	currTrajectory = Trajectory(maxEpisodeLength, stateSize, nActions, nPossibleActions);
 }
 
@@ -48,8 +49,12 @@ void ACERReplayMemory::StoreStateTransition(
 	// Check if episode in environment has ended
 	if (terminal || currTrajectory.numOfTransitions >= maxEpisodeLength)
 	{
+		// Truncate trajectory to clear zeros and update Current Memmory Size
+		currTrajectory.Truncate();
+		currMemSize += currTrajectory.numOfTransitions;
+
 		// Insert elements
-		if (trajectories.size() >= memSize)
+		if (currMemSize >= memSize)
 		{
 			trajectories.pop_back(); 
 			trajectories.push_front(currTrajectory);
@@ -128,4 +133,12 @@ std::vector<Trajectory> ACERReplayMemory::SampleMemory(unsigned int batchSize, u
 
 	// Return object
 	return batchedTrajectories;
+}
+
+void ACERReplayMemory::Save()
+{
+}
+
+void ACERReplayMemory::Load()
+{
 }

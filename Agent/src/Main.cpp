@@ -66,8 +66,8 @@ int main()
     std::cout << states.at(0).first << std::endl;
     std::cout << states.at(0).second << std::endl; */
 
-	// AgentTest test(false, true);
-	// test.Train();
+	AgentTest test(false, true);
+	test.Train();
 	// test.Test();
 
 	return 0;
