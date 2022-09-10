@@ -64,8 +64,16 @@ public:
 	*/
 	std::vector<Trajectory> SampleMemory(unsigned int batchSize, unsigned int trajectoryLength);
 
+	/* 
+	  Saves memory to a batch of different files.
+	*/
 	void Save();
 
+	/*
+	  Loads memory from a batch of different files.
+	  NOTE: Memory size will not change meaning the memory 
+			loaded may be larger than memory size specified.
+	*/
 	void Load();
 
 	/* 
