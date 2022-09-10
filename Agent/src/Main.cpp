@@ -36,12 +36,17 @@ int main()
     std::shared_ptr<GameAgent::Environment> env = std::make_shared<GameAgent::Environment>(state);
     GameAgent::Agent agent(env, params);
 
-    agent.LoadAgent();
-
     std::cout << "Test" << std::endl;
 
     std::vector<float> X = { 1, 2, 3, 4 };
     std::vector<float> Y = { 1, 2, 3, 4 };
+
+    torch::Tensor tensor1 = torch::tensor({ {2, 4}, {2, 3} });
+    torch::Tensor tensor2 = torch::tensor({ {1, 5}, {5, 7} });
+    torch::Tensor betterTogether = torch::cat({ tensor1, tensor2 }, 0);
+    std::cout << betterTogether << std::endl;
+
+
     GameAgent::Visualizer visualizer;
     visualizer.PlotLine(X, Y, "LinePlotTest.png", "Stuff");
     visualizer.PlotBar(X, Y, "BarPlotTest.png");
@@ -66,9 +71,9 @@ int main()
     std::cout << states.at(0).first << std::endl;
     std::cout << states.at(0).second << std::endl; */
 
-	AgentTest test(false, true);
+    AgentTest test(false, true);
 	test.Train();
-	// test.Test();
+	test.Test();
 
 	return 0;
 }

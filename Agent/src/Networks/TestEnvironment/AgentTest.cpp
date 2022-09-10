@@ -198,6 +198,7 @@ void AgentTest::Test()
 
     // Load Agent
     gameAgent->LoadAgent();
+    exit(0);
 
     // Training loop.
     unsigned int nEpisodes = 1000;

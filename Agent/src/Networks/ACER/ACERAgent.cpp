@@ -85,6 +85,9 @@ void ACERAgent::SaveModel()
 	outFile.open("ACERAvgActorCritic.txt", std::ios::binary | std::ios::trunc);
 	outFile << averageActorCritic->GetCheckpoint().rdbuf();
 	outFile.close();
+
+	// Save Memory
+	memory->Save();
 }
 
 void ACERAgent::LoadModel()
@@ -113,6 +116,9 @@ void ACERAgent::LoadModel()
 	{
 		// File not found
 	}
+
+	// Load Memory
+	memory->Load();
 }
 
 void ACERAgent::Learn(std::vector<Trajectory> trajectories, bool onPolicy)

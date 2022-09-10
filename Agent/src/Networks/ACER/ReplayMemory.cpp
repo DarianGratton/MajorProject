@@ -56,6 +56,7 @@ void ACERReplayMemory::StoreStateTransition(
 		// Insert elements
 		if (currMemSize >= memSize)
 		{
+			currMemSize -= trajectories.at(0).numOfTransitions;
 			trajectories.pop_back(); 
 			trajectories.push_front(currTrajectory);
 		}
@@ -137,8 +138,91 @@ std::vector<Trajectory> ACERReplayMemory::SampleMemory(unsigned int batchSize, u
 
 void ACERReplayMemory::Save()
 {
+	// Initialize storage for Memory Data (CurrMemSize and Trajectory Sizes)
+	int memDataSize = trajectories.size() + 1;
+	torch::Tensor memData = torch::zeros({ memDataSize }, torch::kInt32);
+	memData[0].data() = static_cast<int>(currMemSize);
+
+	std::cout << std::endl;
+	std::cout << "Trajectories Stored in Memory: " << trajectories.size() << std::endl;
+	std::cout << "Memory Size: " << currMemSize << std::endl;
+	std::cout << "Trajectory Size: " << trajectories[0].states.size(0) << std::endl;
+
+	// Batch Trajectories
+	Trajectory batchedTrajectory = trajectories.at(0);
+	memData[1].data() = static_cast<int>(trajectories.at(0).numOfTransitions);
+	for (int i = 1; i < trajectories.size(); i++)
+	{
+		Trajectory storedTrajectory = trajectories.at(i);
+		batchedTrajectory.states = torch::cat({batchedTrajectory.states, storedTrajectory.states}, 0);
+		batchedTrajectory.newStates = torch::cat({batchedTrajectory.newStates, storedTrajectory.newStates}, 0);
+		batchedTrajectory.actions = torch::cat({batchedTrajectory.actions, storedTrajectory.actions}, 0);
+		batchedTrajectory.rewards = torch::cat({batchedTrajectory.rewards, storedTrajectory.rewards}, 0);
+		batchedTrajectory.terminals = torch::cat({batchedTrajectory.terminals, storedTrajectory.terminals}, 0);
+		batchedTrajectory.policy = torch::cat({batchedTrajectory.policy, storedTrajectory.policy}, 0);
+		
+		int index = i + 1;
+		memData[index].data() = static_cast<int>(storedTrajectory.numOfTransitions);
+	}
+
+	std::cout << "MemData: " << memData << std::endl;
+
+	// Save Tensors
+	torch::save(batchedTrajectory.states,	 "ACERMemoryStates.pt");
+	torch::save(batchedTrajectory.newStates, "ACERMemoryNewStates.pt");
+	torch::save(batchedTrajectory.actions,	 "ACERMemoryActions.pt");
+	torch::save(batchedTrajectory.rewards,	 "ACERMemoryRewards.pt");
+	torch::save(batchedTrajectory.terminals, "ACERMemoryTerminals.pt");
+	torch::save(batchedTrajectory.policy,	 "ACERMemoryPolicy.pt");
+	torch::save(memData,					 "ACERMemoryData.pt");
 }
 
 void ACERReplayMemory::Load()
 {
+	// Initialize Tensors
+	Trajectory savedTrajectory;
+	torch::Tensor memData;
+
+	// Load Saved Memory
+	try
+	{
+		torch::load(savedTrajectory.states,    "ACERMemoryStates.pt");
+		torch::load(savedTrajectory.newStates, "ACERMemoryNewStates.pt");
+		torch::load(savedTrajectory.actions,   "ACERMemoryActions.pt");
+		torch::load(savedTrajectory.rewards,   "ACERMemoryRewards.pt");
+		torch::load(savedTrajectory.terminals, "ACERMemoryTerminals.pt");
+		torch::load(savedTrajectory.policy,    "ACERMemoryPolicy.pt");
+		torch::load(memData,				   "ACERMemoryData.pt");
+	}
+	catch (const c10::Error& e)
+	{
+		// File not found
+		std::cout << "ReplayMemory::Load(): Save files not found to load." << std::endl;
+		return;
+	}
+
+	// Clear Current Memory
+	trajectories.clear();
+
+	// Parse saved data into Memory
+	currMemSize = memData[0].item<int>();
+	int64_t start = 0;
+	for (int i = 1; i < memData.size(0); i++)
+	{
+		Trajectory trajectory;
+		trajectory.numOfTransitions = memData[i].item<int>();
+
+		int64_t end = start + trajectory.numOfTransitions;
+		trajectory.states = savedTrajectory.states.index({ torch::indexing::Slice(start, end) , "..." });
+		trajectory.newStates = savedTrajectory.newStates.index({ torch::indexing::Slice(start, end) , "..." });
+		trajectory.actions = savedTrajectory.actions.index({ torch::indexing::Slice(start, end) , "..." });
+		trajectory.rewards = savedTrajectory.rewards.index({ torch::indexing::Slice(start, end) , "..." });
+		trajectory.terminals = savedTrajectory.terminals.index({ torch::indexing::Slice(start, end) , "..." });
+		trajectory.policy = savedTrajectory.policy.index({ torch::indexing::Slice(start, end) , "..." });
+		start += trajectory.numOfTransitions;
+
+		trajectories.push_back(trajectory);
+	}
+
+	std::cout << "Trajectories Size after Load: " << trajectories.size() << std::endl;
 }
