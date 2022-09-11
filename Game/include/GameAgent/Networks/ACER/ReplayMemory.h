@@ -17,13 +17,13 @@
   Note: State size and number of actions per state must remain the same as when initialized.
 
   TODO: Modify Memory Size to be based on number of transitions rather than Trajectories in memory.
+  TODO: Save/Load Memory
 
   Author: Darian G.
 */
 class ACERReplayMemory
 {
 public:
-
 
 	/*
 	  Constructor for initializing the memory and its size.
@@ -65,6 +65,18 @@ public:
 	std::vector<Trajectory> SampleMemory(unsigned int batchSize, unsigned int trajectoryLength);
 
 	/* 
+	  Saves memory to a batch of different files.
+	*/
+	void Save();
+
+	/*
+	  Loads memory from a batch of different files.
+	  NOTE: Memory size will not change meaning the memory 
+			loaded may be larger than memory size specified.
+	*/
+	void Load();
+
+	/* 
 	  Gets the current size of the memory (number of entries added). 
 	*/
 	inline unsigned int GetCurrentMemsize() { return trajectories.size(); };
@@ -90,11 +102,14 @@ private:
 	/* The previous trajectory built. */
 	Trajectory prevTrajectory;
 
-	/* Size of the memory. */
+	/* Max Size of the memory. */
 	unsigned int memSize;
 
 	/* Max length of episode. */
 	unsigned int maxEpisodeLength;
+
+	/* Current Size of Memory. */
+	unsigned int currMemSize;
 
 	/* Size of the state. */
 	unsigned int stateSize;

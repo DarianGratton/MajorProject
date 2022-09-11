@@ -54,6 +54,19 @@ void State::UpdateDelta(std::string deltaName, float newDelta)
 	}
 }
 
+float State::GetDelta(std::string deltaName)
+{
+	try
+	{
+		return deltas.at(deltaName);
+	}
+	catch (const std::out_of_range& e)
+	{
+		std::cerr << "State::GetDelta(): " << deltaName << " delta doesn't exists." << std::endl;
+		throw e;
+	}
+}
+
 void State::Reset()
 {
 	deltas.clear();

@@ -302,9 +302,32 @@ private:
         }
     }
 
+    /* 
+      Very basic reward calculation.
+      NOTE: In Final Report talk about the alternatives to calculate rewards.
+    */
     float CalculateReward()
     {
-        return 10.0f;
+        GameAgent::State prevState = env->GetCurrState();
+        float reward = 0.0f;
+
+        // Player Loses Health
+        if (prevState.GetDelta("PlayerHp") > currState.GetDelta("PlayerHp"))
+            reward += 1.0f;
+
+        // AI Loses Health
+        if (prevState.GetDelta("EnemyHp") > currState.GetDelta("EnemyHp"))
+            reward -= 1.0f;
+
+        // Player Wins Game
+        if (currState.GetDelta("EnemyHp") <= 0)
+            reward -= 10.0f;
+
+        // AI Wins Game
+        if (currState.GetDelta("PlayerHp") <= 0)
+            reward += 10.0f;
+
+        return reward;
     }
     
     /* */

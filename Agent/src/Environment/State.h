@@ -68,6 +68,13 @@ public:
 	void UpdateDelta(std::string deltaName, float newDelta);
 
 	/* 
+	  Gets the stored delta.
+	  params:
+			- deltaName: The name of the delta to get.
+	*/
+	float GetDelta(std::string deltaName);
+
+	/* 
 	  Resets the state by removing all the stored deltas. 
 	*/
 	void Reset();
