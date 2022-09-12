@@ -143,11 +143,6 @@ void ACERReplayMemory::Save()
 	torch::Tensor memData = torch::zeros({ memDataSize }, torch::kInt32);
 	memData[0].data() = static_cast<int>(currMemSize);
 
-	std::cout << std::endl;
-	std::cout << "Trajectories Stored in Memory: " << trajectories.size() << std::endl;
-	std::cout << "Memory Size: " << currMemSize << std::endl;
-	std::cout << "Trajectory Size: " << trajectories[0].states.size(0) << std::endl;
-
 	// Batch Trajectories
 	Trajectory batchedTrajectory = trajectories.at(0);
 	memData[1].data() = static_cast<int>(trajectories.at(0).numOfTransitions);
@@ -164,8 +159,6 @@ void ACERReplayMemory::Save()
 		int index = i + 1;
 		memData[index].data() = static_cast<int>(storedTrajectory.numOfTransitions);
 	}
-
-	std::cout << "MemData: " << memData << std::endl;
 
 	// Save Tensors
 	torch::save(batchedTrajectory.states,	 "ACERMemoryStates.pt");
@@ -223,6 +216,4 @@ void ACERReplayMemory::Load()
 
 		trajectories.push_back(trajectory);
 	}
-
-	std::cout << "Trajectories Size after Load: " << trajectories.size() << std::endl;
 }

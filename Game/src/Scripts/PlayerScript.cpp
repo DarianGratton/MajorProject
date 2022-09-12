@@ -33,17 +33,21 @@ void PlayerScript::Start()
             playerHpText = e;
     }
 
-    // Note: should be calling start but for some reason it does it for me, something weird with how entityx does for loops.
-    if (weapon1.valid() && !weapon1.has_component<Script>()) 
+    if (!Game::Instance().IsAutomaticallyTraining())
     {
-        std::string scriptName = GetScriptName(PlayerPrefs::Instance().GetWeapon1());
-        weapon1.assign<Script>(scriptName, &weapon1);
-    }
+        // Note: Should be calling start but for some reason it does it for me, 
+        //       something weird with how entityx does for loops.
+        if (weapon1.valid() && !weapon1.has_component<Script>())
+        {
+            std::string scriptName = GetScriptName(PlayerPrefs::Instance().GetWeapon1());
+            weapon1.assign<Script>(scriptName, &weapon1);
+        }
 
-    if (weapon2.valid() && !weapon2.has_component<Script>()) 
-    {
-        std::string scriptName = GetScriptName(PlayerPrefs::Instance().GetWeapon2());
-        weapon2.assign<Script>(scriptName, &weapon2);
+        if (weapon2.valid() && !weapon2.has_component<Script>())
+        {
+            std::string scriptName = GetScriptName(PlayerPrefs::Instance().GetWeapon2());
+            weapon2.assign<Script>(scriptName, &weapon2);
+        }
     }
 
     // Display Player HP
@@ -173,6 +177,28 @@ void PlayerScript::DamageCharacter(int damage)
     // Display updated Player HP
     ComponentHandle<TextSprite> textComp = playerHpText.component<TextSprite>();
     textComp.get()->text = "Player HP: " + std::to_string(health);
+}
+
+void PlayerScript::SetCharacterWeapons(int weapon1Num, int weapon2Num)
+{
+    // Note: Start only needs to be called when script is added after the script
+    //       system runs it recieve function. In this case it's being set by 
+    //       learning agent system so Start() needs to be called.
+    if (weapon1.valid() && !weapon1.has_component<Script>())
+    {
+        std::string scriptName = GetScriptName(weapon1Num);
+        weapon1.assign<Script>(scriptName, &weapon1);
+        ComponentHandle<Script> scriptComp = weapon1.component<Script>();
+        scriptComp.get()->script->Start();
+    }
+
+    if (weapon2.valid() && !weapon2.has_component<Script>())
+    {
+        std::string scriptName = GetScriptName(weapon2Num);
+        weapon2.assign<Script>(scriptName, &weapon2);
+        ComponentHandle<Script> scriptComp = weapon2.component<Script>();
+        scriptComp.get()->script->Start();
+    }
 }
 
 std::string PlayerScript::GetScriptName(int i)

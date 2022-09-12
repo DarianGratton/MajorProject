@@ -26,24 +26,24 @@ public:
     {
         // Initialize Initial State (18 Deltas)
         // TODO: Add alt. function that just adds the name and initializes it to zero
-        currState.AddDelta("PlayerPosX", 0.0f);
-        currState.AddDelta("PlayerPosY", 0.0f);
-        currState.AddDelta("PlayerHp", 0.0f);
-        currState.AddDelta("PlayerWeapon1", 0.0f);
-        currState.AddDelta("PlayerWeapon1PosX", 0.0f);
-        currState.AddDelta("PlayerWeapon1PosY", 0.0f);
-        currState.AddDelta("PlayerWeapon2", 0.0f);
-        currState.AddDelta("PlayerWeapon2PosX", 0.0f);
-        currState.AddDelta("PlayerWeapon2PosY", 0.0f);
-        currState.AddDelta("EnemyPosX", 0.0f);
-        currState.AddDelta("EnemyPosY", 0.0f);
-        currState.AddDelta("EnemyHp", 0.0f);
-        currState.AddDelta("EnemyWeapon1", 0.0f);
-        currState.AddDelta("EnemyWeapon1PosX", 0.0f);
-        currState.AddDelta("EnemyWeapon1PosY", 0.0f);
-        currState.AddDelta("EnemyWeapon2", 0.0f);
-        currState.AddDelta("EnemyWeapon2PosX", 0.0f);
-        currState.AddDelta("EnemyWeapon2PosY", 0.0f);
+        currState.AddDelta("PlayerPosX");
+        currState.AddDelta("PlayerPosY");
+        currState.AddDelta("PlayerHp");
+        currState.AddDelta("PlayerWeapon1");
+        currState.AddDelta("PlayerWeapon1PosX");
+        currState.AddDelta("PlayerWeapon1PosY");
+        currState.AddDelta("PlayerWeapon2");
+        currState.AddDelta("PlayerWeapon2PosX");
+        currState.AddDelta("PlayerWeapon2PosY");
+        currState.AddDelta("EnemyPosX");
+        currState.AddDelta("EnemyPosY");
+        currState.AddDelta("EnemyHp");
+        currState.AddDelta("EnemyWeapon1");
+        currState.AddDelta("EnemyWeapon1PosX");
+        currState.AddDelta("EnemyWeapon1PosY");
+        currState.AddDelta("EnemyWeapon2");
+        currState.AddDelta("EnemyWeapon2PosX");
+        currState.AddDelta("EnemyWeapon2PosY");
 
         // Initialize Environment 
         env = std::make_shared<GameAgent::Environment>(currState);
@@ -70,6 +70,7 @@ public:
 
         // Initialize Agent
         agent = std::make_shared<GameAgent::Agent>(env, params);
+        // agent->LoadAgent();
 
         // Subscribe to events
         events.subscribe<SceneLoad>(*this);
@@ -78,7 +79,7 @@ public:
     void update(EntityManager& es, EventManager& events, TimeDelta dt) override
     {
         // Only want to run when on arena scene
-        if (!arenaLoaded || Game::Instance().IsGamePaused())
+        if (!arenaLoaded || (Game::Instance().IsGamePaused() && gameEndedAndAgentSaved))
             return;
 
         // Update Current State
@@ -101,9 +102,9 @@ public:
         if (Game::Instance().IsAgentTraining())
             agent->Train();
 
-        // Terminal state reached or episode ended
-        if (Game::Instance().IsAgentTraining() && 
-            (terminal || env->GetSteps() >= maxEpisodeLength))
+        // Game Ended and Agent is being Automatically Trained
+        bool automaticTrainingEnded = Game::Instance().IsAutomaticallyTraining() && (terminal || env->GetSteps() >= maxEpisodeLength);
+        if (automaticTrainingEnded)
         {
             // Calculate average reward
             float avgReward = 0;
@@ -114,7 +115,7 @@ public:
                 avgReward = std::accumulate(rewardHistory.begin(), rewardHistory.end(), 0.0) / rewardHistory.size();
 
             // Check if agent won game
-            if (currState.GetDeltas().at("EnemyHp") <= 0)
+            if (currState.GetDelta("EnemyHp") <= 0)
             {
                 winCount++;
             }
@@ -125,21 +126,35 @@ public:
             std::cout << "Final Step Count: " << env->GetSteps() << std::endl;
             std::cout << "Final Reward: " << env->GetTotalReward() << std::endl;
             std::cout << "Past 100 Episodes AvgReward: " << avgReward << std::endl;
-            
-            // Save and update the agent
+
+            // Save the Agent
             if (avgReward > bestAvgReward && rewardHistory.size() >= 100)
             {
                 bestAvgReward = avgReward;
                 agent->SaveAgent();
             }
-            agent->SaveUtility();
             std::cout << "Overall BestAvgReward: " << bestAvgReward << std::endl << std::endl;
 
-            // Update variables
+            // Save Utility
+            agent->SaveUtility();
+
+            // Update Variables
             nEpisodeCount++;
 
             // Reload Scene
             SceneManager::Instance().LoadScene("Arena");
+        }
+
+        // Game Ended and Agent is being Manually Trained
+        bool manualTrainingEnded = Game::Instance().IsManuallyTraining() && terminal;
+        if (manualTrainingEnded)
+        {
+            // Save and Update the Agent
+            agent->SaveAgent();
+            agent->SaveUtility();
+
+            // Update Variables
+            gameEndedAndAgentSaved = true;
         }
     }
 
@@ -151,19 +166,50 @@ public:
             return;
         }
         else
+        {
             arenaLoaded = true;
+        }
 
         // Initialize Initial State
         UpdateCurrentState(sl.entities);
+
+        // Set up Player Weapons 
+        if (Game::Instance().IsAutomaticallyTraining())
+        {
+            // TODO: Set weapons to player and change weapons dynamically based on generated episodes.
+            PlayerPrefs::Instance().SetWeapon1(1);
+            PlayerPrefs::Instance().SetWeapon2(2);
+
+            // Find Player Script
+            ComponentHandle<Script> playerScript;
+            for (Entity entity : sl.entities->entities_with_components(playerScript))
+            {
+                ComponentHandle<Name> entityName = entity.component<Name>();
+                if (entityName.get()->name == "Player")
+                {
+                    playerScript = entity.component<Script>();
+                    break;
+                }
+            }
+
+            // Take weapons and send them to the player script
+            reinterpret_cast<PlayerScript*>(playerScript->script)->SetCharacterWeapons(
+                PlayerPrefs::Instance().GetWeapon1(), 
+                PlayerPrefs::Instance().GetWeapon2());
+        }
         currState.UpdateDelta("PlayerWeapon1", PlayerPrefs::Instance().GetWeapon1());
         currState.UpdateDelta("PlayerWeapon2", PlayerPrefs::Instance().GetWeapon2());
 
         // Set Delta Enemy Weapons
-        bool training = false;
-        int weapon1 = 0;
-        int weapon2 = 0;
-        if (!training)
-            // Not Training
+        int weapon1 = 1;
+        int weapon2 = 2;
+        if (Game::Instance().IsAutomaticallyTraining())
+        {
+            // TODO: Change weapons dynamically based on generated episodes.
+            weapon1 = 1;
+            weapon2 = 2;
+        }
+        else
         {
             GameAgent::State searchState;
             searchState.AddDelta("PlayerWeapon1", PlayerPrefs::Instance().GetWeapon1());
@@ -171,10 +217,9 @@ public:
 
             auto utilityStates = agent->SearchUtilityStorage(searchState);
             if (!utilityStates.empty())
-                // Storage returned states
             {
                 float highestUtility = std::numeric_limits<float>::min();
-                GameAgent::State highestUtilityState;
+                GameAgent::State highestUtilityState = utilityStates.at(0).first;
                 for (auto stateUtilityPair : utilityStates)
                 {
                     if (stateUtilityPair.second > highestUtility)
@@ -184,11 +229,10 @@ public:
                     }
                 }
 
-                weapon1 = highestUtilityState.GetDeltas().at("EnemyWeapon1");
-                weapon2 = highestUtilityState.GetDeltas().at("EnemyWeapon2");
+                weapon1 = highestUtilityState.GetDelta("EnemyWeapon1");
+                weapon2 = highestUtilityState.GetDelta("EnemyWeapon2");
             }
             else
-                // Storage had no states
             {
                 // TODO: Not random
                 std::set<int> weapons;
@@ -196,15 +240,9 @@ public:
                 {
                     weapons.insert(rand() % 5);
                 }
-
                 weapon1 = (*std::next(weapons.begin(), 0)) + 1;
                 weapon2 = (*std::next(weapons.begin(), 1)) + 1;
             }
-        }
-        else
-            // Training
-        {
-            // TODO: Figure out how to do this. (Milestone 7)
         }
 
         // Set enemy script
@@ -224,6 +262,7 @@ public:
         reinterpret_cast<EnemyScript*>(enemyScript->script)->SetCharacterWeapons(weapon1, weapon2);
 
         // Setup environment
+        gameEndedAndAgentSaved = false;
         env->Reset();
         env->SetInitState(currState);
         Game::Instance().SetTerminalState(false);
@@ -320,7 +359,7 @@ private:
             reward -= 1.0f;
 
         // Player Wins Game
-        if (currState.GetDelta("EnemyHp") <= 0)
+        if (currState.GetDelta("EnemyHp") <= 0) 
             reward -= 10.0f;
 
         // AI Wins Game
@@ -359,5 +398,8 @@ private:
 
     /* */
     bool arenaLoaded = false;
+
+    /* TODO: Band-aid solution to Game being paused after a game and the agent still needs to save. */
+    bool gameEndedAndAgentSaved = false;
 
 };

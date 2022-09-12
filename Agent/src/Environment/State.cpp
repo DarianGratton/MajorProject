@@ -18,7 +18,7 @@ State& State::operator=(const State& state1)
 	return *this;
 }
 
-void State::AddDelta(std::string deltaName, float delta)
+void State::AddDelta(std::string deltaName, float delta /* = 0.0f */)
 {
 	if (deltas.find(deltaName) == deltas.end())
 	{

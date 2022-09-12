@@ -58,7 +58,8 @@ void PauseMenuScript::Update(TimeDelta dt)
     }
 
     // Pause program
-    if (Input::Instance().IsKeyPressed(GLFW_KEY_ESCAPE)) 
+    if (Input::Instance().IsKeyPressed(GLFW_KEY_ESCAPE) &&
+        !Game::Instance().IsAutomaticallyTraining()) 
     {
         // Display pause screen
         isActive = !isActive;

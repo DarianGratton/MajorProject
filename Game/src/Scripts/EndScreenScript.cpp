@@ -64,7 +64,8 @@ void EndScreenScript::Update(TimeDelta dt)
                 {
                     Game::Instance().SetTerminalState(true);
                 }
-                else
+                
+                if (!Game::Instance().IsAutomaticallyTraining())
                 {
                     // Display end screen
                     isActive = !isActive;
@@ -90,7 +91,8 @@ void EndScreenScript::Update(TimeDelta dt)
                 {
                     Game::Instance().SetTerminalState(true);
                 }
-                else
+
+                if (!Game::Instance().IsAutomaticallyTraining())
                 {
                     // Display end screen
                     isActive = !isActive;

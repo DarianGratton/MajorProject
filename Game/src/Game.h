@@ -29,10 +29,16 @@ public:
     inline void EndGame() { isGameEnded = true; } 
     inline void PauseGame() { isGamePaused = true; }
     inline void UnpauseGame() { isGamePaused = false; } 
-    inline void SetTerminalState(bool terminal) { isTerminalState = terminal; }
     inline bool IsGamePaused() { return isGamePaused; }
     inline bool IsGameEnded() { return isGameEnded; }
-    inline bool IsAgentTraining() { return isAgentTraining; }
+    
+    // Agent Functions
+    inline void SetAutomaticTraining(bool training) { isAutomaticallyTraining = training; }
+    inline void SetManualTraining(bool training) { isManuallyTraining = training; }
+    inline void SetTerminalState(bool terminal) { isTerminalState = terminal; }
+    inline bool IsAutomaticallyTraining() { return isAutomaticallyTraining; }
+    inline bool IsManuallyTraining() { return isManuallyTraining; }
+    inline bool IsAgentTraining() { return isAutomaticallyTraining || isManuallyTraining; }
     inline bool IsTerminalState() { return isTerminalState; }
 
 private:
@@ -59,6 +65,9 @@ private:
     bool isGameEnded = false;
 
     // Agent
-    bool isAgentTraining = false;
+    // NOTE: Probably should be part of a Singleton class for modularity.
+    //       However it should be fine unless it gets overly complex.
+    bool isAutomaticallyTraining = false;
+    bool isManuallyTraining = false;
     bool isTerminalState = false;
 };

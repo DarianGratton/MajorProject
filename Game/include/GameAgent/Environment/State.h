@@ -48,9 +48,10 @@ public:
 	/*
 	  Adds a new delta to the list of existing list of deltas.
 	  params:
-			- delta: A new delta to add.
+			- deltaName: Name of the delta to add.
+			- delta: Value of the delta to add.
 	*/
-	void AddDelta(std::string deltaName, float delta);
+	void AddDelta(std::string deltaName, float delta = 0.0f);
 
 	/*
 	  Removes an existing delta.
