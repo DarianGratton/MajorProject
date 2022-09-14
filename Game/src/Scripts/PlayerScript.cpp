@@ -10,11 +10,12 @@
 PlayerScript::PlayerScript(Entity* entity) : CScript(entity) 
 {
     // Initialize variables
-    health = 100;
+    health = 5;
     canMove = true;
     isMovementReduced = false;
     normalMovementVelocity = 125.0f;
     reducedMovementVelocity = 50.0f;
+    predictedAction = 0;
 }
 
 void PlayerScript::Start() 

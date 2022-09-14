@@ -54,7 +54,7 @@ public:
         params.learningRate = 1e-3f;
         params.nActions = 1;
         params.nPossibleActions = 6;
-        params.maxEpisodeLength = 1000;
+        params.maxEpisodeLength = 1024;
         params.inputDims = currState.Size();
         params.hiddenLayerDims = 128;
         params.nHiddenLayers = 8;
@@ -67,12 +67,14 @@ public:
         params.traceMax = 10;
 
         // Initialize System
+        nEpisodes = 500;
         maxEpisodeLength = params.maxEpisodeLength;
         currMoveSetIndex = 0;
 
         // Initialize Agent
         agent = std::make_shared<GameAgent::Agent>(env, params);
         // agent->LoadAgent();
+        agent->ClearStorage();
 
         // Subscribe to events
         events.subscribe<SceneLoad>(*this);
@@ -120,27 +122,27 @@ public:
         {
             // Calculate average reward
             float avgReward = 0;
-            std::vector<float> rewardHistory = env->GetRewardHistory();
-            if (rewardHistory.size() >= 100)
-                avgReward = std::accumulate(rewardHistory.end() - 100, rewardHistory.end(), 0.0) / 100;
+            episodesRewardHistory.push_back(env->GetTotalReward());
+            if (episodesRewardHistory.size() >= 100)
+                avgReward = std::accumulate(episodesRewardHistory.end() - 100, episodesRewardHistory.end(), 0.0) / 100;
             else
-                avgReward = std::accumulate(rewardHistory.begin(), rewardHistory.end(), 0.0) / rewardHistory.size();
+                avgReward = std::accumulate(episodesRewardHistory.begin(), episodesRewardHistory.end(), 0.0) / episodesRewardHistory.size();
 
             // Check if agent won game
-            if (currState.GetDelta("EnemyHp") <= 0)
+            if (currState.GetDelta("PlayerHp") <= 0)
             {
                 winCount++;
             }
 
             // Print results
-            std::cout << "Game: " << nEpisodeCount << "/" << maxEpisodeLength << std::endl;
-            std::cout << "Game's Won: " << winCount << "/" << maxEpisodeLength << std::endl;
+            std::cout << "Game: " << nEpisodeCount << "/" << nEpisodes << std::endl;
+            std::cout << "Game's Won: " << winCount << "/" << nEpisodes << std::endl;
             std::cout << "Final Step Count: " << env->GetSteps() << std::endl;
             std::cout << "Final Reward: " << env->GetTotalReward() << std::endl;
             std::cout << "Past 100 Episodes AvgReward: " << avgReward << std::endl;
 
             // Save the Agent
-            if (avgReward > bestAvgReward && rewardHistory.size() >= 100)
+            if (avgReward > bestAvgReward && episodesRewardHistory.size() >= 100)
             {
                 bestAvgReward = avgReward;
                 agent->SaveAgent();
@@ -152,9 +154,19 @@ public:
 
             // Update Variables
             nEpisodeCount++;
+            gameEndedAndAgentSaved = true;
 
-            // Reload Scene
-            SceneManager::Instance().LoadScene("Arena");
+            if (nEpisodeCount <= nEpisodes)
+            {
+                // Reload Scene
+                SceneManager::Instance().LoadScene("Arena");
+            }
+            else
+            {
+                // Otherwise
+                Game::Instance().PauseGame();
+                LOG_INFO("Training of Agent Finished");
+            }
         }
 
         // Game Ended and Agent is being Manually Trained
@@ -192,9 +204,11 @@ public:
             auto pickedWeapons = TrainingData::GetWeaponCombination();
             PlayerPrefs::Instance().SetWeapon1(pickedWeapons.first);
             PlayerPrefs::Instance().SetWeapon2(pickedWeapons.second);
+            PlayerPrefs::Instance().SetWeapon1(1);
+            PlayerPrefs::Instance().SetWeapon2(2);
             
             // Get Player Moveset
-            currPlayerMoveSet = TrainingData::GetCommonMove(TrainingData::CommonMoves::MovingHorizontally, false);
+            currPlayerMoveSet = TrainingData::GetCommonMove(TrainingData::CommonMoves::NotMoving, false);
 
             // Find Player Script
             ComponentHandle<Script> entityScript;
@@ -232,6 +246,8 @@ public:
             auto pickedWeapons = TrainingData::GetWeaponCombination();
             weapon1 = pickedWeapons.first;
             weapon2 = pickedWeapons.second;
+            weapon1 = 1;
+            weapon2 = 2;
         }
         else
         {
@@ -285,6 +301,9 @@ public:
         env->Reset();
         env->SetInitState(currState);
         Game::Instance().SetTerminalState(false);
+
+        // Setup Training Variables
+        gameEndedAndAgentSaved = false;
 
         // Predict agent's first action
         predictedAction = agent->PredictAction(currState);
@@ -381,23 +400,23 @@ private:
     float CalculateReward()
     {
         GameAgent::State prevState = env->GetCurrState();
-        float reward = 0.0f;
+        float reward = -0.01f;
 
         // Player Loses Health
         if (prevState.GetDelta("PlayerHp") > currState.GetDelta("PlayerHp"))
-            reward += 1.0f;
+            reward += 5.0f;
 
         // AI Loses Health
         if (prevState.GetDelta("EnemyHp") > currState.GetDelta("EnemyHp"))
-            reward -= 1.0f;
+            reward -= 5.0f;
 
         // Player Wins Game
         if (currState.GetDelta("EnemyHp") <= 0) 
-            reward -= 10.0f;
+            reward -= 50.0f;
 
         // AI Wins Game
         if (currState.GetDelta("PlayerHp") <= 0)
-            reward += 10.0f;
+            reward += 50.0f;
 
         return reward;
     }
@@ -430,7 +449,13 @@ private:
     float bestAvgReward = 0;
 
     /* */
+    std::vector<float> episodesRewardHistory;
+
+    /* */
     unsigned int winCount = 0;
+
+    /* */
+    unsigned int nEpisodes = 0;
 
     /* */
     unsigned int maxEpisodeLength = 0;

@@ -47,7 +47,8 @@ struct TrainingData
 		MovingHorizontally,
 		MovingVertically,
 		MovingDiagonallyTopRightToBottomLeft,
-		MovingDiagonallyTopLeftToBottomRight
+		MovingDiagonallyTopLeftToBottomRight,
+		ChargingEnemy
 	};
 
 	/*
@@ -135,8 +136,6 @@ private:
 				}
 			}
 		}
-
-		std::cout << moveset.size() << std::endl;
 
 		// Direction 2
 		for (int i = 0; i < actionLength; i++)
