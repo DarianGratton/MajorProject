@@ -12,9 +12,15 @@ BowScript::BowScript(Entity* entity, float spriteHeight, float spriteWidth) : We
     spriteOffset = 10.0f;
     projectileVelocity = 250.0f;
     projectileLifespan = 3.0f;
+
+    // NOTE: Max number of projectiles was set to one in order to simplify
+    //       the state being used to train the agent. If higher, the state would 
+    //       need to take note of each indivdual projectile every frame even if 
+    //       one didn't exist. Explained further in the final report.
+    maxNumberOfProjectiles = 1; 
+
     fireRate = 0.0f;
     isActive = false;
-    arrowNumber = 0;
     isPlayer = false;
     canDamageShield = false;
 }
@@ -157,7 +163,7 @@ void BowScript::Update(TimeDelta dt)
 void BowScript::UseWeapon() 
 {
     isActive = true;
-    if (fireRate > 0 || projectiles.size() >= 3)
+    if (fireRate > 0 || projectiles.size() >= maxNumberOfProjectiles)
         return;
 
     fireRate = 1.5f;
@@ -180,7 +186,8 @@ void BowScript::SpawnArrow()
         };
     e.assign<SpriteVertices>(spriteVertices);
 
-    std::string name = "WeaponArrow" + std::to_string(arrowNumber);
+    ComponentHandle<Name> weapon = GetEntity()->component<Name>();
+    std::string name = weapon->name + "_Arrow" + std::to_string(projectiles.size());
     e.assign<Name>(name);
     e.assign<Script>(cscript);
 
@@ -237,16 +244,13 @@ void BowScript::SpawnArrow()
     // Add entity to list
     projectiles.push_back(std::make_pair(ECS::Instance().entities.get(e.id()), userDirection));
     projectilesTimeElapsed.push_back(0.0f);
-    arrowNumber++;
-    if (arrowNumber > 2) 
-        arrowNumber = 0;
 }
 
 // Collision detection
 void BowScript::BeginContact(Entity* entityA, Entity* entityB) 
 {
     ComponentHandle<Name> nameComp = entityA->component<Name>();
-    if (nameComp.get()->name.find("WeaponArrow") != std::string::npos)
+    if (nameComp.get()->name.find("_Arrow") != std::string::npos)
     {
         projectilesFlaggedForDeletion.push_back(nameComp.get()->name);
     }

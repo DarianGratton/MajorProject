@@ -12,7 +12,7 @@ int main(int argc, char** argv)
         return -1;
     
     // Setup Agent
-    Game::Instance().SetAutomaticTraining(true);
+    Game::Instance().SetAutomaticTraining(false);
     Game::Instance().SetManualTraining(false);
 
     // Setup Scenes 

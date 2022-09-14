@@ -296,13 +296,27 @@ private:
     /* */
     void UpdateCurrentState(EntityManager* entities)
     {
+        // Reset Specific Deltas
+        currState.UpdateDelta("PlayerWeapon1PosX", 0.0f);
+        currState.UpdateDelta("PlayerWeapon1PosY", 0.0f);
+        currState.UpdateDelta("PlayerWeapon2PosX", 0.0f);
+        currState.UpdateDelta("PlayerWeapon2PosY", 0.0f);
+        currState.UpdateDelta("EnemyWeapon1PosX", 0.0f);
+        currState.UpdateDelta("EnemyWeapon1PosY", 0.0f);
+        currState.UpdateDelta("EnemyWeapon2PosX", 0.0f);
+        currState.UpdateDelta("EnemyWeapon2PosY", 0.0f);
+
         // Update delta positions and hp
         ComponentHandle<Transform> entityTransform;
         ComponentHandle<Script> entityScript;
         for (Entity entity : entities->entities_with_components(entityTransform, entityScript))
         {
+            ComponentHandle<Active> entityActive = entity.component<Active>();
+            if (!entityActive->isActive)
+                continue;
+
             ComponentHandle<Name> entityName = entity.component<Name>();
-            if (entityName.get()->name.find("PlayerWeapon1") != std::string::npos)
+            if (entityName.get()->name.find("PlayerWeapon1_") != std::string::npos)
             {
                 entityTransform = entity.component<Transform>();
                 currState.UpdateDelta("PlayerWeapon1PosX", entityTransform->xpos);
@@ -310,7 +324,7 @@ private:
                 continue;
             }
 
-            if (entityName.get()->name.find("PlayerWeapon2") != std::string::npos)
+            if (entityName.get()->name.find("PlayerWeapon2_") != std::string::npos)
             {
                 entityTransform = entity.component<Transform>();
                 currState.UpdateDelta("PlayerWeapon2PosX", entityTransform->xpos);
@@ -330,7 +344,7 @@ private:
                 continue;
             }
 
-            if (entityName.get()->name.find("EnemyWeapon1") != std::string::npos)
+            if (entityName.get()->name.find("EnemyWeapon1_") != std::string::npos)
             {
                 entityTransform = entity.component<Transform>();
                 currState.UpdateDelta("EnemyWeapon1PosX", entityTransform->xpos);
@@ -338,7 +352,7 @@ private:
                 continue;
             }
 
-            if (entityName.get()->name.find("EnemyWeapon2") != std::string::npos)
+            if (entityName.get()->name.find("EnemyWeapon2_") != std::string::npos)
             {
                 entityTransform = entity.component<Transform>();
                 currState.UpdateDelta("EnemyWeapon2PosX", entityTransform->xpos);

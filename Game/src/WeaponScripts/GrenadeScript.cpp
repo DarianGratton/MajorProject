@@ -149,7 +149,8 @@ void GrenadeScript::SpawnGrenade()
         };
     grenadeEntity.assign<SpriteVertices>(spriteVertices);
 
-    grenadeEntity.assign<Name>("Grenade");
+    ComponentHandle<Name> weapon = GetEntity()->component<Name>();
+    grenadeEntity.assign<Name>(weapon->name + "_Grenade");
     
     // Rigidbody bits
     uint16 categoryBit;
@@ -221,7 +222,8 @@ void GrenadeScript::SpawnExplosion()
         };
     explosionEntity.assign<SpriteVertices>(spriteVertices);
 
-    explosionEntity.assign<Name>("WeaponExplosion");
+    ComponentHandle<Name> weapon = GetEntity()->component<Name>();
+    explosionEntity.assign<Name>(weapon->name + "_Explosion");
     
     // Rigidbody bits
     uint16 categoryBit;

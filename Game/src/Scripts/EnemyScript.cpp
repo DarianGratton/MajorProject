@@ -207,6 +207,7 @@ void EnemyScript::BeginContact(Entity* entityA, Entity* entityB)
     if (entityName.get()->name.find("Weapon") != std::string::npos) 
     {
         // Update enemy hp
+        LOG_TRACE(entityName.get()->name);
         ComponentHandle<Script> weaponScript = entityB->component<Script>();
         int damage = reinterpret_cast<WeaponScript*>(weaponScript.get()->script)->GetDamage();
         DamageCharacter(damage);

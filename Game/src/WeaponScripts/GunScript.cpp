@@ -137,7 +137,9 @@ void GunScript::SpawnBullet()
         };
     bulletEntity.assign<SpriteVertices>(spriteVertices);
 
-    bulletEntity.assign<Name>("WeaponBullet");
+    // Update name
+    ComponentHandle<Name> weapon = GetEntity()->component<Name>();
+    bulletEntity.assign<Name>(weapon->name + "_Bullet");
 
     // Rigidbody bits
     uint16 categoryBit;

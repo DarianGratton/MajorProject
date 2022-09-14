@@ -11,6 +11,7 @@ SwordScript::SwordScript(Entity* entity, float spriteHeight, float spriteWidth) 
     damage = 10;
     isActive = false;
     canDamageShield = true;
+    isPlayer = false;
 
     // Member variables
     spriteOffset = 10.5f;
@@ -129,7 +130,11 @@ void SwordScript::CreateEntity()
     // Set up entity components
     GetEntity()->assign<TextureComp>("src/Assets/textures/SwordSlash.png", "SwordSlash.png");
     GetEntity()->assign<ShaderComp>("src/Assets/shaders/Basic.shader");
-    
+
+    // Name
+    ComponentHandle<Name> weapon = GetEntity()->component<Name>();
+    weapon->name = weapon->name + "_Sword";
+
     // Transform
     ComponentHandle<Transform> entityTransform = userEntity.component<Transform>(); 
     GetEntity()->assign<Transform>(entityTransform.get()->xpos, entityTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2); 

@@ -150,6 +150,10 @@ void ShieldScript::CreateEntity()
     // Set up entity components
     GetEntity()->assign<TextureComp>("src/Assets/textures/Shield.png");
     GetEntity()->assign<ShaderComp>("src/Assets/shaders/Basic.shader");
+
+    // Name
+    ComponentHandle<Name> weapon = GetEntity()->component<Name>();
+    weapon->name = weapon->name + "_Shield";
     
     // Transform
     ComponentHandle<Transform> userTransform = userEntity.component<Transform>(); 

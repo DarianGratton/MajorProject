@@ -24,7 +24,7 @@ private:
     float projectileVelocity;
     float projectileLifespan;
     float fireRate;
-    int arrowNumber;
+    int maxNumberOfProjectiles;
     bool isPlayer;
 
     // Projectile data structures
