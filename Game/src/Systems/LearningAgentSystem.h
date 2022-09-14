@@ -67,7 +67,7 @@ public:
         params.traceMax = 10;
 
         // Initialize System
-        nEpisodes = 500;
+        nEpisodes = 5;
         maxEpisodeLength = params.maxEpisodeLength;
         currMoveSetIndex = 0;
 
@@ -123,6 +123,7 @@ public:
             // Calculate average reward
             float avgReward = 0;
             episodesRewardHistory.push_back(env->GetTotalReward());
+            weaponsRewardHistory.at(currWeaponKey).push_back(env->GetTotalReward());
             if (episodesRewardHistory.size() >= 100)
                 avgReward = std::accumulate(episodesRewardHistory.end() - 100, episodesRewardHistory.end(), 0.0) / 100;
             else
@@ -165,6 +166,7 @@ public:
             {
                 // Otherwise
                 Game::Instance().PauseGame();
+                VisualizeWeaponRewards();
                 LOG_INFO("Training of Agent Finished");
             }
         }
@@ -296,6 +298,13 @@ public:
         // Take weapons and send them to the enemy script
         reinterpret_cast<EnemyScript*>(enemyScript->script)->SetCharacterWeapons(weapon1, weapon2);
 
+        // Setup weapon's reward history for visualization
+        currWeaponKey = std::to_string(weapon1) + std::to_string(weapon2);
+        if (weaponsRewardHistory.find(currWeaponKey) == weaponsRewardHistory.end())
+        {
+            weaponsRewardHistory.insert(std::make_pair(currWeaponKey, std::vector<float>()));
+        }
+
         // Setup environment
         gameEndedAndAgentSaved = false;
         env->Reset();
@@ -420,6 +429,25 @@ private:
 
         return reward;
     }
+
+    /*
+    
+    */
+    void VisualizeWeaponRewards()
+    {
+        GameAgent::Visualizer visualizer;
+        for (auto weaponRewardHistory : weaponsRewardHistory)
+        {
+            std::vector<float> X = weaponRewardHistory.second;
+            std::vector<float> Y(X.size());
+            std::iota(Y.begin(), Y.end(), 0);
+            std::string filename = "Weapon" + weaponRewardHistory.first + "RewardHistory.png";
+            std::string labelname = "Weapon " + weaponRewardHistory.first.substr(0, 1) +
+                                    " and Weapon " + weaponRewardHistory.first.substr(1, 1);
+
+            visualizer.PlotLine(X, Y, filename, labelname);
+        }
+    }
     
     /* */
     std::shared_ptr<GameAgent::Agent> agent;
@@ -450,6 +478,12 @@ private:
 
     /* */
     std::vector<float> episodesRewardHistory;
+
+    /* */
+    std::unordered_map<std::string, std::vector<float>> weaponsRewardHistory;
+
+    /* */
+    std::string currWeaponKey;
 
     /* */
     unsigned int winCount = 0;
