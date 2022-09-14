@@ -61,7 +61,8 @@ void PlayerScript::Start()
 void PlayerScript::Update(TimeDelta dt) 
 {
     // Don't want to play if game is paused
-    if (Game::Instance().IsGamePaused())
+    if (Game::Instance().IsGamePaused() ||
+        (Game::Instance().IsAutomaticallyTraining() && predictedAction == 0))
         return;
 
     // Movement
@@ -72,7 +73,8 @@ void PlayerScript::Update(TimeDelta dt)
     // Use weapon 1
     if (weapon1.valid()) 
     {
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_K)) 
+        if ((Input::Instance().IsKeyPressed(GLFW_KEY_K) && !Game::Instance().IsAutomaticallyTraining()) ||
+            (predictedAction == 5 && Game::Instance().IsAutomaticallyTraining())) 
         {
             ComponentHandle<Script> scriptComp = weapon1.component<Script>();
             WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
@@ -92,7 +94,9 @@ void PlayerScript::Update(TimeDelta dt)
     // Use weapon 2
     if (weapon2.valid()) 
     {
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_L)) {
+        if ((Input::Instance().IsKeyPressed(GLFW_KEY_L) && !Game::Instance().IsAutomaticallyTraining()) ||
+            (predictedAction == 6 && Game::Instance().IsAutomaticallyTraining())) 
+        {
             ComponentHandle<Script> scriptComp = weapon2.component<Script>();
             WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
             if (weaponScript)
@@ -118,7 +122,8 @@ void PlayerScript::MoveCharacter(b2Body* body)
     if (canMove)
     {
         // Movement UP
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_W)) 
+        if ((Input::Instance().IsKeyPressed(GLFW_KEY_W) && !Game::Instance().IsAutomaticallyTraining()) ||
+            (predictedAction == 1 && Game::Instance().IsAutomaticallyTraining()))
         {
             desiredVelY = velcityChange;
 
@@ -127,7 +132,8 @@ void PlayerScript::MoveCharacter(b2Body* body)
         }
 
         // Movement DOWN
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_S)) 
+        if ((Input::Instance().IsKeyPressed(GLFW_KEY_S) && !Game::Instance().IsAutomaticallyTraining()) ||
+            (predictedAction == 2 && Game::Instance().IsAutomaticallyTraining()))
         {
             desiredVelY = -velcityChange;
 
@@ -136,7 +142,8 @@ void PlayerScript::MoveCharacter(b2Body* body)
         }
         
         // Movement RIGHT
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_D)) 
+        if ((Input::Instance().IsKeyPressed(GLFW_KEY_D) && !Game::Instance().IsAutomaticallyTraining()) ||
+            (predictedAction == 3 && Game::Instance().IsAutomaticallyTraining()))
         {
             desiredVelX = velcityChange;
 
@@ -145,7 +152,8 @@ void PlayerScript::MoveCharacter(b2Body* body)
         }
         
         // Movement LEFT
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_A)) 
+        if ((Input::Instance().IsKeyPressed(GLFW_KEY_A) && !Game::Instance().IsAutomaticallyTraining()) ||
+            (predictedAction == 4 && Game::Instance().IsAutomaticallyTraining()))
         {
             desiredVelX = -velcityChange;
 

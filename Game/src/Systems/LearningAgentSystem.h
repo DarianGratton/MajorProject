@@ -9,6 +9,7 @@
 #include <set>
 #include <map>
 
+#include "TrainingData.h"
 #include "../SceneManager.h"
 #include "../Game.h"
 #include "../ECS.h"
@@ -67,6 +68,7 @@ public:
 
         // Initialize System
         maxEpisodeLength = params.maxEpisodeLength;
+        currMoveSetIndex = 0;
 
         // Initialize Agent
         agent = std::make_shared<GameAgent::Agent>(env, params);
@@ -97,6 +99,16 @@ public:
         // Predict next action
         predictedAction = agent->PredictAction(currState);
         reinterpret_cast<EnemyScript*>(enemyScript->script)->SetCharacterAction(predictedAction.at(0));
+
+        // Set Player Action
+        if (Game::Instance().IsAutomaticallyTraining() && !currPlayerMoveSet.empty())
+        {
+            if (currMoveSetIndex >= currPlayerMoveSet.size())
+                currMoveSetIndex = 0;
+
+            reinterpret_cast<PlayerScript*>(playerScript->script)->SetCharacterAction(currPlayerMoveSet[currMoveSetIndex]);
+            currMoveSetIndex++;
+        }
 
         // Train Agent
         if (Game::Instance().IsAgentTraining())
@@ -173,16 +185,20 @@ public:
         // Initialize Initial State
         UpdateCurrentState(sl.entities);
 
-        // Set up Player Weapons 
+        // Set up Player
         if (Game::Instance().IsAutomaticallyTraining())
         {
-            // TODO: Set weapons to player and change weapons dynamically based on generated episodes.
-            PlayerPrefs::Instance().SetWeapon1(1);
-            PlayerPrefs::Instance().SetWeapon2(2);
+            // Set Player Weapons Randomly
+            auto pickedWeapons = TrainingData::GetWeaponCombination();
+            PlayerPrefs::Instance().SetWeapon1(pickedWeapons.first);
+            PlayerPrefs::Instance().SetWeapon2(pickedWeapons.second);
+            
+            // Get Player Moveset
+            currPlayerMoveSet = TrainingData::GetCommonMove(TrainingData::CommonMoves::MovingHorizontally, false);
 
             // Find Player Script
-            ComponentHandle<Script> playerScript;
-            for (Entity entity : sl.entities->entities_with_components(playerScript))
+            ComponentHandle<Script> entityScript;
+            for (Entity entity : sl.entities->entities_with_components(entityScript))
             {
                 ComponentHandle<Name> entityName = entity.component<Name>();
                 if (entityName.get()->name == "Player")
@@ -196,6 +212,13 @@ public:
             reinterpret_cast<PlayerScript*>(playerScript->script)->SetCharacterWeapons(
                 PlayerPrefs::Instance().GetWeapon1(), 
                 PlayerPrefs::Instance().GetWeapon2());
+
+            // Set Player's first action
+            if (!currPlayerMoveSet.empty())
+            {
+                reinterpret_cast<PlayerScript*>(playerScript->script)->SetCharacterAction(currPlayerMoveSet[currMoveSetIndex]);
+                currMoveSetIndex++;
+            }
         }
         currState.UpdateDelta("PlayerWeapon1", PlayerPrefs::Instance().GetWeapon1());
         currState.UpdateDelta("PlayerWeapon2", PlayerPrefs::Instance().GetWeapon2());
@@ -205,9 +228,10 @@ public:
         int weapon2 = 2;
         if (Game::Instance().IsAutomaticallyTraining())
         {
-            // TODO: Change weapons dynamically based on generated episodes.
-            weapon1 = 1;
-            weapon2 = 2;
+            // Randomly pick weapons
+            auto pickedWeapons = TrainingData::GetWeaponCombination();
+            weapon1 = pickedWeapons.first;
+            weapon2 = pickedWeapons.second;
         }
         else
         {
@@ -234,14 +258,9 @@ public:
             }
             else
             {
-                // TODO: Not random
-                std::set<int> weapons;
-                while (weapons.size() < 2)
-                {
-                    weapons.insert(rand() % 5);
-                }
-                weapon1 = (*std::next(weapons.begin(), 0)) + 1;
-                weapon2 = (*std::next(weapons.begin(), 1)) + 1;
+                auto pickedWeapons = TrainingData::GetWeaponCombination();
+                weapon1 = pickedWeapons.first;
+                weapon2 = pickedWeapons.second;
             }
         }
 
@@ -383,6 +402,15 @@ private:
 
     /* */
     std::vector<float> predictedAction;
+
+    /* */
+    ComponentHandle<Script> playerScript;
+
+    /* */
+    std::vector<unsigned int> currPlayerMoveSet;
+
+    /* */
+    int currMoveSetIndex;
 
     /* */
     float bestAvgReward = 0;

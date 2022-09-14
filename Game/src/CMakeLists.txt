@@ -99,7 +99,7 @@ add_executable (
 	"WeaponScripts/SwordScript.cpp"
 	"WeaponScripts/WeaponScript.h"
 	"Systems/LearningAgentSystem.h"
-)
+	"Systems/TrainingData.h" "Systems/TrainingData.cpp")
 
 # Link libraries
 target_link_libraries(Game "${TORCH_LIBRARIES}")
