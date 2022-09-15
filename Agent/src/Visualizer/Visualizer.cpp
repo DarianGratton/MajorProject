@@ -25,7 +25,7 @@ void Visualizer::PlotLine(std::vector<float> X, std::vector<float> Y,
 	canvas.save(filename);
 }
 
-void Visualizer::PlotBar(std::vector<float> X, std::vector<float> Y, std::string filename)
+void Visualizer::PlotBar(std::vector<std::string> X, std::vector<float> Y, std::string filename)
 {
 	// Setup Plot
 	sciplot::Plot2D plot;
@@ -33,10 +33,9 @@ void Visualizer::PlotBar(std::vector<float> X, std::vector<float> Y, std::string
 	plot.ylabel("Y");
 
 	// Plot the boxes using y values.
-	sciplot::Strings xStrings;
-	std::transform(X.begin(), X.end(), std::back_inserter(xStrings), [](auto d) { return std::to_string(d); });
-	std::vector<float> boxWidthes = { 0.5, 0.5, 0.5, 0.5 };
-	plot.drawBoxes(xStrings, Y, boxWidthes)
+	std::vector<float> boxWidthes(Y.size());
+	std::fill(boxWidthes.begin(), boxWidthes.end(), 0.5f);
+	plot.drawBoxes(X, Y, boxWidthes)
 		.fillSolid()
 		.fillColor("red")
 		.fillIntensity(1.0)
@@ -52,6 +51,17 @@ void Visualizer::PlotBar(std::vector<float> X, std::vector<float> Y, std::string
 	sciplot::Canvas canvas = { { fig } };
 	canvas.size(750, 750);
 	canvas.save(filename);
+}
+
+
+void Visualizer::PlotBar(std::vector<float> X, std::vector<float> Y, std::string filename)
+{
+	// Convert the X values to strings
+	sciplot::Strings xStrings;
+	std::transform(X.begin(), X.end(), std::back_inserter(xStrings), [](auto d) { return std::to_string(d); });
+	
+	// Create graph
+	PlotBar(xStrings, Y, filename);
 }
 
 } /* namespace GameAgent */

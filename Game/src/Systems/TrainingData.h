@@ -84,6 +84,13 @@ struct TrainingData
 		}
 	}
 
+	/* 
+	  Get all possible weapon combinations.
+	  returns:
+			- A vector containing all the weapon combinations.
+	*/
+	static const std::vector<std::vector<unsigned int>> GetWeaponComps() { return weaponComps; }
+
 private:
 
 	/*

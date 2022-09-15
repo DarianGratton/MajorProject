@@ -16,7 +16,7 @@
 // Used for testing
 int main()
 {
-    GameAgent::Networks::ACERParameters params;
+    /*GameAgent::Networks::ACERParameters params;
     params.learningRate = 1e-3f;
     params.nActions = 1;
     params.nPossibleActions = 4;
@@ -38,8 +38,8 @@ int main()
 
     std::cout << "Test" << std::endl;
 
-    std::vector<float> X = { 1, 2, 3, 4 };
-    std::vector<float> Y = { 1, 2, 3, 4 };
+    std::vector<float> X = { 1, 2, 3, 4, 5 };
+    std::vector<float> Y = { 1, 2, 3, 4, 5 };
 
     torch::Tensor tensor1 = torch::tensor({ {2, 4}, {2, 3} });
     torch::Tensor tensor2 = torch::tensor({ {1, 5}, {5, 7} });
@@ -49,31 +49,27 @@ int main()
 
     GameAgent::Visualizer visualizer;
     visualizer.PlotLine(X, Y, "LinePlotTest.png", "Stuff");
-    visualizer.PlotBar(X, Y, "BarPlotTest.png");
+    visualizer.PlotBar(X, Y, "BarPlotTest.png");*/
 
-   /* UtilityStorage storage;
-    storage.Clear();
-    storage.Save(state, 500.0f);
-    storage.Save(state, 1000.0f);
+    UtilityStorage storage("AgentStorage.txt");
+    GameAgent::State state;
+    state.AddDelta("PlayerWeapon1", 3);
+    state.AddDelta("PlayerWeapon2", 5);
+    //auto states = storage.Search(state);
 
-    GameAgent::State state2;
-    state2.AddDelta("X", 7);
-    state2.AddDelta("Y", 10);
-    state2.AddDelta("Z 1", 9);
-    storage.Save(state2, 250.0f);
+    state.UpdateDelta("PlayerWeapon2", 4);
 
-    GameAgent::State state3;
-    state3.AddDelta("X Y", 12);
-    state3.AddDelta("Y Z", 10);
-    auto states = storage.Search(state3);
+    std::cout << state << std::endl;
+
+    auto states = storage.Search(state);
 
     std::cout << states.size() << std::endl;
-    std::cout << states.at(0).first << std::endl;
-    std::cout << states.at(0).second << std::endl; */
+    // std::cout << states.at(0).first << std::endl;
+    //std::cout << states.at(0).second << std::endl;
 
-    AgentTest test(false, true);
-	test.Train();
-	test.Test();
+    //AgentTest test(false, true);
+	//test.Train();
+	//test.Test();
 
 	return 0;
 }

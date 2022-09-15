@@ -94,6 +94,7 @@ std::vector<std::pair<GameAgent::State, float>> UtilityStorage::Search(GameAgent
 	bool foundDifferingKeyValue = false;
 	for (int i = 0; i < storedStates.size(); i++)
 	{
+		foundDifferingKeyValue = false;
 		for (auto delta : state.GetDeltas())
 		{
 			if (!storedStates.at(i).first.Contains(delta.first, delta.second))

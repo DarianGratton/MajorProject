@@ -44,6 +44,15 @@ public:
 	/*
 		Creates a bar plot then stores it in a file.
 		params:
+			- X: Labels to be plotted on the X axis
+			- Y: Values to be plotted on the Y axis
+			- filename: Name of the file for the plot to be stored in.
+	*/
+	void PlotBar(std::vector<std::string> X, std::vector<float> Y, std::string filename);
+
+	/*
+		Creates a bar plot then stores it in a file.
+		params:
 			- X: Values to be plotted on the X axis
 			- Y: Values to be plotted on the Y axis
 			- filename: Name of the file for the plot to be stored in.

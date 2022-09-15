@@ -167,6 +167,7 @@ public:
                 // Otherwise
                 Game::Instance().PauseGame();
                 VisualizeWeaponRewards();
+                VisualizeWeaponUtilities();
                 LOG_INFO("Training of Agent Finished");
             }
         }
@@ -206,8 +207,6 @@ public:
             auto pickedWeapons = TrainingData::GetWeaponCombination();
             PlayerPrefs::Instance().SetWeapon1(pickedWeapons.first);
             PlayerPrefs::Instance().SetWeapon2(pickedWeapons.second);
-            PlayerPrefs::Instance().SetWeapon1(1);
-            PlayerPrefs::Instance().SetWeapon2(2);
             
             // Get Player Moveset
             currPlayerMoveSet = TrainingData::GetCommonMove(TrainingData::CommonMoves::NotMoving, false);
@@ -248,8 +247,6 @@ public:
             auto pickedWeapons = TrainingData::GetWeaponCombination();
             weapon1 = pickedWeapons.first;
             weapon2 = pickedWeapons.second;
-            weapon1 = 1;
-            weapon2 = 2;
         }
         else
         {
@@ -446,6 +443,53 @@ private:
                                     " and Weapon " + weaponRewardHistory.first.substr(1, 1);
 
             visualizer.PlotLine(X, Y, filename, labelname);
+        }
+    }
+
+    void VisualizeWeaponUtilities()
+    {
+        GameAgent::Visualizer visualizer; 
+        for (auto weaponComp : TrainingData::GetWeaponComps())
+        {
+            // Create filename
+            std::string filename = "Weapon" + std::to_string(weaponComp[0]) + 
+                                   "and" + std::to_string(weaponComp[1]) + "Utilities.png";
+
+            // Build search state
+            GameAgent::State searchState;
+            searchState.AddDelta("PlayerWeapon1", weaponComp[0]);
+            searchState.AddDelta("PlayerWeapon2", weaponComp[1]);
+            searchState.AddDelta("EnemyWeapon1");
+            searchState.AddDelta("EnemyWeapon2");
+
+            // Build data
+            std::vector<std::string> xlabels;
+            std::vector<float> ydata;
+            for (auto weapons : TrainingData::GetWeaponComps())
+            {
+                // Search utility storage for weapon combination
+                searchState.UpdateDelta("EnemyWeapon1", weapons[0]);
+                searchState.UpdateDelta("EnemyWeapon2", weapons[1]);
+                auto utilitiesStates = agent->SearchUtilityStorage(searchState);
+
+                // If empty search for the next one
+                if (utilitiesStates.empty())
+                    continue;
+
+                // Push back data
+                ydata.push_back(agent->SearchUtilityStorage(searchState)[0].second);
+
+                // Create label for that data
+                std::string xlabel = std::to_string(weapons[0]) + " and " + std::to_string(weapons[1]);
+                xlabels.push_back(xlabel);
+            }
+
+            // If no data found
+            if (ydata.empty())
+                continue;
+
+            // Graph
+            visualizer.PlotBar(xlabels, ydata, filename);
         }
     }
     
