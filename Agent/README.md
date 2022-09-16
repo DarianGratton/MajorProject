@@ -43,7 +43,7 @@ Open Agent folder with Visual Studio 2019.
 Right click CMakeList.txt under Agent/ and select Generate Cache
 
 <p align="center">
-    <img src="art/readme_step2.png" width=100%;" title="step2">
+    <img src="art/readme_step2.png" title="step2">
 </p>
 
 #### Step 3:
@@ -57,7 +57,7 @@ This will build the project and provide a executable for testing and a dll for i
 Select GameAgent.dll from the Select Startup Item dropdown and run it.
 
 <p align="center">
-    <img src="art/readme_step4.png" width=100%;" title="step4">
+    <img src="art/readme_step4.png" title="step4">
 </p>
 
 #### Step 5: 
