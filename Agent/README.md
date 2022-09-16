@@ -22,9 +22,13 @@ Once downloaded just add an absolute to libtorch in the CMake command arguments.
 -DCMAKE_PREFIX_PATH="C:\\PathToLibTorch\\libtorch"
 ```
 
-***NOTE: Given the current implementation it would be easier to just add this into the CMakeSettings.json file using VS2019.***
+***NOTE: Given the current implementation it would be easier to add this into the CMakeSettings.json file using VS2019.***
 
 #### Gnuplot (Visualizer Only)
+
+If using the Visualizer System, the GameAgent library requires Gnuplot.
+
+Download for Gnuplot can be found here: http://www.gnuplot.info/download.html
 
 ### CMake
 
