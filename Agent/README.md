@@ -40,7 +40,7 @@ Open Agent folder with Visual Studio 2019.
 
 #### Step 2:
 
-Right click CMakeList.txt under Agent/ and select Generate Cache
+Right click CMakeList.txt under Agent/ and select Generate Cache.
 
 <p>
     <img src="art/readme_step2.png" title="step2">
