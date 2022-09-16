@@ -64,7 +64,7 @@ GameAgent::Environment environment(initialState);
 
 Defines the parameters needed to initialize a new NetworkAgent.
 
-Note that each NetworkAgent requires different parameters, example shown is for the ACERAgent NetworkAgent.
+Note: Each NetworkAgent requires different parameters, example shown is for the ACERAgent NetworkAgent.
 
 ```
 #include <GameAgent/GameAgent.h>
@@ -83,7 +83,7 @@ The frontend of the GameAgent library.
 
 Provides the interface needed to run the agent on an environment.
 
-Note: any changes made on the environment variable will affect the environment in the Agent object.
+Note: Any changes made on the environment variable will affect the environment in the Agent object.
 
 ***NOTE: Currently Agent construction requires environment to be a shared_ptr. In the future this will be abstracted away.***
 
@@ -109,7 +109,7 @@ GameAgent::Agent agent(env, params);
 
 Defines various functions for creating visual graphs and charts.
 
-Note: the example uses hardcoded vectors, however in a game environment it can be used to graph environment varibles such as reward history.
+Note: The example uses hardcoded vectors, however in a game environment it can be used to graph environment varibles such as reward history.
 
 Requires Gnuplot 5.2.8.
 
