@@ -32,6 +32,40 @@ Download for Gnuplot can be found here: http://www.gnuplot.info/download.html
 
 ### VS2019 (CMake)
 
+***NOTE: CMake currently not formatted to build properly with the command line or CMake Gui. Therefore instructions will be explaining how to install through VS2019.***
+
+#### Step 1:
+
+Open Agent folder with Visual Studio 2019.
+
+#### Step 2:
+
+Right click CMakeList.txt under Agent/ and select Generate Cache
+
+<p align="center">
+    <img src="art/readme_step2.png" width=100%;" title="step2">
+</p>
+
+#### Step 3:
+
+Build Project by pressing Ctrl + Shift + B.
+
+This will build the project and provide a executable for testing and a dll for installing.
+
+#### Step 4:
+
+Select GameAgent.dll from the Select Startup Item dropdown and run it.
+
+<p align="center">
+    <img src="art/readme_step4.png" width=100%;" title="step4">
+</p>
+
+#### Step 5: 
+
+Install folder can now be found in the out folder containing the built library and include files.
+
+Note: Given the library's reliance on PyTorch C++, PyTorch will be required to be added to any project the library is added to. See the example Game for reference.
+
 ## Classes
 
 ### State
