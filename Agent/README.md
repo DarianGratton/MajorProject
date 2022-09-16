@@ -157,4 +157,4 @@ Note: Currently only supports discrete action spaces.
 
 Paper: https://arxiv.org/abs/1611.01224v2
 
-***NOTE: Current implementation omits the running of multiple agents training in paraell due to time restraints. Current implementation also doesn't support environments that run multiple actions each frame.***
+***NOTE: Current implementation omits the running of multiple agents training in parallel due to time restraints. Current implementation also doesn't support environments that run multiple actions each frame.***
