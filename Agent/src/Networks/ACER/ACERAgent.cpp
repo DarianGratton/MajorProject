@@ -28,13 +28,13 @@ std::vector<float> ACERAgent::PredictAction(torch::Tensor state)
 	return { action };
 }
 
-void ACERAgent::Train(const GameAgent::Environment& environment)
+void ACERAgent::Train(const GameAgent::Environment::Transition& transition)
 {
-	UpdateMemory(environment.GetPrevState(), environment.GetAction(), 
-				 environment.GetReward(), environment.GetCurrState(), environment.IsTerminal());
+	UpdateMemory(transition.prevState, transition.action, 
+				 transition.reward, transition.currState, transition.terminal);
 
 	// Check if the agent is finished an episode in the environment
-	if (environment.IsTerminal() || environment.GetSteps() >= maxEpisodeLength)
+	if (transition.terminal || transition.currStep >= maxEpisodeLength)
 	{
 		// On-Policy
 		Learn({ memory->GetPrevTrajectory() }, true);

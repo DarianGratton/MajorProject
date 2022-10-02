@@ -31,7 +31,34 @@ std::vector<float> Agent::PredictAction(State state)
 
 void Agent::Train()
 {
-	agent->Train(*environment);
+	Environment::Transition transition = environment->GetLastTransition();
+
+	if (dataManipulation.get() != nullptr)
+	{
+		auto prevStateTensor = dataManipulation->ModifyData(transition.prevState.ToTensor());
+		auto currStateTensor = dataManipulation->ModifyData(transition.currState.ToTensor());
+
+		// TODO: Limitation of current implementation, requires manually replacing the values. Need to change. 
+		int i = 0;
+		std::unordered_map<std::string, float> deltas = transition.prevState.GetDeltas();
+		for (auto& delta : deltas)
+		{
+			delta.second = prevStateTensor[0][i].item<float>();
+			i++;
+		}
+		transition.prevState = State(deltas);
+
+		i = 0;
+		deltas = transition.currState.GetDeltas();
+		for (auto& delta : deltas)
+		{
+			delta.second = currStateTensor[0][i].item<float>();
+			i++;
+		}
+		transition.currState = State(deltas);
+	}
+
+	agent->Train(transition);
 }
 
 void Agent::SaveAgent()

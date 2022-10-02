@@ -34,6 +34,24 @@ public:
 	void Update(std::vector<float> newAction, float newReward,
 				State newState, bool terminal = false);
 
+	/* 
+	  Represents a transition made in the environment.
+	*/
+	struct Transition
+	{
+		State prevState;
+		std::vector<float> action;
+		float reward;
+		State currState;
+		bool terminal;
+		unsigned int currStep;
+	};
+
+	/* 
+	  Gets the last transition made in the environment.
+	*/
+	Transition GetLastTransition();
+
 	/*
 	  Resets the environment's variables for a new episode.
 	*/
