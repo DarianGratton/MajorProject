@@ -45,7 +45,7 @@ add_executable (
     "Networks/Parameters.h" 
     "Storage/UtilityStorage.h" 
     "Storage/UtilityStorage.cpp"
-)
+ "DataManipulation/DataManipulation.h" "DataManipulation/Normalize.h" "DataManipulation/Normalize.cpp")
 
 # The following code block is suggested to be used on Windows.
 # According to https://github.com/pytorch/pytorch/issues/25457,
@@ -79,7 +79,7 @@ set(${LIBRARY_TARGET_NAME}_SRC
     "Networks/AgentFactory.cpp" 
     "Visualizer/Visualizer.cpp" 
     "Storage/UtilityStorage.cpp"
-)
+ "DataManipulation/Normalize.cpp")
 
 # List of HPP (header) library files
 set(${LIBRARY_TARGET_NAME}_HDR
@@ -98,7 +98,7 @@ set(${LIBRARY_TARGET_NAME}_HDR
     "Networks/ACER/ActorCriticNetwork.h" 
     "Networks/ACER/Trajectory.h" 
     "Networks/ACER/ACERParameters.h"
-)
+ "DataManipulation/DataManipulation.h" "DataManipulation/Normalize.h")
 
 # Add a library to be built from the source and header files.
 add_library(${LIBRARY_TARGET_NAME} 
