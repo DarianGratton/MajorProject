@@ -22,7 +22,11 @@ Agent::Agent(std::shared_ptr<Environment> env,
 
 std::vector<float> Agent::PredictAction(State state)
 {
-	return agent->PredictAction(state.ToTensor());
+	torch::Tensor stateTensor = state.ToTensor();
+	if (dataManipulation.get() != nullptr)
+		stateTensor = dataManipulation->ModifyData(stateTensor);
+
+	return agent->PredictAction(stateTensor);
 }
 
 void Agent::Train()

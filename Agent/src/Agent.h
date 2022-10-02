@@ -11,6 +11,7 @@
 #include "Networks/NetworkParameters.h"
 #include "Networks/AgentFactory.h"
 #include "Storage/UtilityStorage.h"
+#include "DataManipulation/DataManipulation.h"
 
 namespace GameAgent
 { 
@@ -34,7 +35,7 @@ public:
 			- params: Network parameters of the Agent to create.
 	*/
 	Agent(std::shared_ptr<Environment> env, 
-		  GameAgent::Networks::NetworkParameters& params,
+		  Networks::NetworkParameters& params,
 		  std::string storageFilename = "AgentStorage.txt");
 
 	/*
@@ -86,6 +87,14 @@ public:
 	*/
 	inline std::shared_ptr<Environment> GetEnvironment() { return environment; }
 
+	/* 
+	  
+	*/
+	inline void SetDataManipulation(std::shared_ptr<DataManip::DataManipulation> dataManip)
+	{ 
+		dataManipulation = dataManip; 
+	};
+
 private:
 
 	/* Environment that the agent acts in. */
@@ -96,6 +105,9 @@ private:
 
 	/* Storage system to store the states and average utility. */
 	std::unique_ptr<UtilityStorage> storage;
+
+	/* */
+	std::shared_ptr<DataManip::DataManipulation> dataManipulation;
 
 };
 
