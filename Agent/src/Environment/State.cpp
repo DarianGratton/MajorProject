@@ -141,9 +141,8 @@ bool operator==(const State& lhs, const State& rhs)
 
 	for (auto delta : lhs.deltas)
 	{
-		std::cout << delta.first << std::endl;
 		if (rhs.deltas.find(delta.first) == rhs.deltas.end() ||
-			(rhs.deltas.at(delta.first) - lhs.deltas.at(delta.first)) > 0.000001f)
+			(std::abs(rhs.deltas.at(delta.first) - lhs.deltas.at(delta.first))) > 0.000001f)
 		{
 			return false;
 		}

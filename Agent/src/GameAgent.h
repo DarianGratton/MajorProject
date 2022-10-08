@@ -8,5 +8,8 @@
 #include "Environment/Environment.h"
 #include "Environment/State.h"
 
+/* Data Manipulation includes. */
+#include "DataManipulation/Normalize.h"
+
 /* Misc includes. */
 #include "Visualizer/Visualizer.h"

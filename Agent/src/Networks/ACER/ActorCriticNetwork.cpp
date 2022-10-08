@@ -53,12 +53,19 @@ std::pair<torch::Tensor, torch::Tensor> ActorCriticNetworkImpl::Forward(torch::T
 
 void ActorCriticNetworkImpl::CopyParametersFrom(const ActorCriticNetworkImpl& source, float decay /* = 0 */)
 {
-	unsigned int i = 0;
-	std::vector<torch::Tensor> sourceParameters = source.parameters();
-	for (torch::Tensor localParameter : this->parameters())
+	try
 	{
-		localParameter.data().copy_(decay * localParameter.data() + (1 - decay) * sourceParameters[i].data());
-		i++;
+		unsigned int i = 0;
+		std::vector<torch::Tensor> sourceParameters = source.parameters();
+		for (torch::Tensor localParameter : this->parameters())
+		{
+			localParameter.data().copy_(decay * localParameter.data() + (1 - decay) * sourceParameters[i].data());
+			i++;
+		}
+	}
+	catch (c10::Error & e)
+	{
+		std::cout << "ActorCriticNetwork::CopyParametersFrom: " << e.msg() << std::endl;
 	}
 }
 
