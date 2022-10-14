@@ -10,7 +10,7 @@
 PlayerScript::PlayerScript(Entity* entity) : CScript(entity) 
 {
     // Initialize variables
-    health = 5;
+    health = 100;
     canMove = true;
     isMovementReduced = false;
     normalMovementVelocity = 125.0f;
@@ -62,8 +62,7 @@ void PlayerScript::Start()
 void PlayerScript::Update(TimeDelta dt) 
 {
     // Don't want to play if game is paused
-    if (Game::Instance().IsGamePaused() ||
-        (Game::Instance().IsAutomaticallyTraining() && predictedAction == 0))
+    if (Game::Instance().IsGamePaused())
         return;
 
     // Movement

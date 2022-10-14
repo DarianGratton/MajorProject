@@ -33,7 +33,7 @@ public:
 	  params:
 			- The environment that the agent is being trained on.
 	*/
-	virtual void Train(const GameAgent::Environment& environment) = 0;
+	virtual void Train(const GameAgent::Environment::Transition& transition) = 0;
 
 	/*
 	  Saves the agent for later use.

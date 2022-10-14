@@ -36,7 +36,7 @@ public:
             physicsComp = e.component<RigidBody>();
             physicsComp.get()->body = PhysicsManager::Instance().GetWorld()->CreateBody(&physicsComp.get()->bodyDef);
             physicsComp.get()->CreateFixture();
-            physicsComp.get()->SetUserData(&e);
+            physicsComp.get()->SetUserData(&e); 
         }
     }
 };

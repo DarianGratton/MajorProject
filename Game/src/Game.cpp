@@ -16,7 +16,7 @@ void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 bool Game::Init() 
 {
     // Logger
-    Logger::Init();
+    Logger::Instance().Init();
 
     // GLFW
     if (!InitGLFW()) 

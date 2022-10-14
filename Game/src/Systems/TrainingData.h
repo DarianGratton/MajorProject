@@ -9,7 +9,13 @@
 #include "../Logger.h"
 
 /*
-  Player:
+  TrainingData
+
+  Defines the training data used by the agent (AI) during training.
+
+  List of Data: 
+
+  Player Actions:
   0 = Nothing
   1 = Up
   2 = Down
@@ -17,6 +23,24 @@
   4 = Left
   5 = Weapon 1
   6 = Weapon 2
+
+  Player Moves:
+  NotMoving
+  MovingHorizontally
+  MovingVertically
+  MovingDiagonallyTopRightToBottomLeft
+  MovingDiagonallyTopLeftToBottomRight
+  MovingDiagonallyTopLeft
+  MovingDiagonallyTopRight
+
+  Weapons:
+  1 = Sword
+  2 = Shield
+  3 = Bow
+  4 = Gun
+  5 = Grenade/Bomb
+
+  Author: Darian G.
 */
 struct TrainingData
 {
@@ -24,7 +48,7 @@ struct TrainingData
 	/*
 	  Gets a random weapon combination.
 	*/
-	static const std::pair<float, float> GetWeaponCombination()
+	static const std::pair<float, float> GetRandWeaponCombination()
 	{
 		std::vector<std::vector<unsigned int>> pickedWeapons;
 		std::sample(
@@ -48,7 +72,8 @@ struct TrainingData
 		MovingVertically,
 		MovingDiagonallyTopRightToBottomLeft,
 		MovingDiagonallyTopLeftToBottomRight,
-		ChargingEnemy
+		MovingDiagonallyTopLeft,
+		MovingDiagonallyTopRight
 	};
 
 	/*
@@ -77,6 +102,12 @@ struct TrainingData
 			break;
 		case CommonMoves::MovingDiagonallyTopLeftToBottomRight:
 			return GetCommonMoveMoving({ 1, 4 }, { 2, 3 }, isAttacking, 30);
+			break;
+		case CommonMoves::MovingDiagonallyTopLeft:
+			return GetCommonMoveMoving({ 1, 4 }, { 1, 4 }, isAttacking, 30);
+			break;
+		case CommonMoves::MovingDiagonallyTopRight:
+			return GetCommonMoveMoving({ 1, 3 }, { 1, 3 }, isAttacking, 30);
 			break;
 		default:
 			LOG_ERROR("Common move choosen not supported");

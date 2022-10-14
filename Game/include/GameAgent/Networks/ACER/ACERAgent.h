@@ -61,7 +61,7 @@ public:
 	  params:
 			- The environment that the agent is being trained on.
 	*/
-	void Train(const GameAgent::Environment& environment) override;
+	void Train(const GameAgent::Environment::Transition& transition) override;
 
 	/*
 	  Stores input as data in memory.
@@ -135,10 +135,10 @@ private:
 	float gamma;
 
 	/* Actor loss weight. */
-	float biasWeight;
+	float actorLossWeight;
 
 	/* The trucation parameter. */
-	int traceMax;
+	int truncationParameter;
 
 	/* Constraint of the Trust Region Optimization. */
 	float trustRegionConstraint;

@@ -65,13 +65,13 @@ public:
 	unsigned int batchTrajectoryLength = 100;
 	
 	/* Actor loss weight. */
-	float biasWeight = 0.1f;
+	float actorLossWeight = 0.1f;
 	
 	/* Reward discount factor. */
 	float gamma = 0.99f;
 	
 	/* The trucation parameter. */
-	int traceMax = 10;
+	int truncationParameter = 10;
 	
 	/* Constraint of the Trust Region Optimization. */
 	float trustRegionConstraint = 1.0f;
