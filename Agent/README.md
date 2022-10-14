@@ -171,12 +171,30 @@ Note: Gets initial state and utility from environment stored in the agent.
 // Define NetworkAgent and Environment
 ...
 
-GameAgent agent(env, params);
+GameAgent::Agent agent(env, params);
 
 // Run Agent on Environment
 ...
 
 agent.SaveUtility();
+```
+
+### Data Manipulation
+
+A system responsible for handling the data manipulation of the environment's variables before they get passed to the Network Agent.
+
+Note: Currently only contains one method for manipulating data, more are expected to be added later.
+
+```
+#include <GameAgent/GameAgent.h>
+
+// Define NetworkAgent and Environment
+...
+
+GameAgent::Agent agent(env, params);
+
+GameAgent::DataManip::Normalize normalize;
+agent.SetDataManipulation(std::make_shared<GameAgent::DataManip::Normalize>(normalize));
 ```
 
 ## NetworkAgents
@@ -187,8 +205,10 @@ A NetworkAgent which utilizes the deep reinforcement learning algorithm Actor Cr
 
 ACER is an off-policy extension of the Asynchronus Advantage Actor Critic (A3C) which greatly increases the sample efficiency and decreases the data correlation.
 
+The implementation requires that the Train function of the agent be called each frame when training the agent. This is to ensure replay memory is filled with the state transitions of the agent's training episode.
+
 Note: Currently only supports discrete action spaces.
 
-Paper: https://arxiv.org/abs/1611.01224v2
+Original Paper: https://arxiv.org/abs/1611.01224v2
 
 ***NOTE: Current implementation omits the running of multiple agents training in parallel due to time restraints. Current implementation also doesn't support environments that run multiple actions each frame.***
