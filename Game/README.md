@@ -2,6 +2,23 @@
 
 The Charlatan's Arena is a 2D game where the player is a gladiator tasked with taking down the champion of the coliseum.
 
+## Screenshots
+
+Title Screen
+<p>
+    <img src="art/readme_titlescreen.png" title="Title Screen">
+</p>
+
+Weapon Selection Screen
+<p>
+    <img src="art/readme_weaponselectionscreen.png" title="Weapon Selection Screen">
+</p>
+
+Arena Screen
+<p>
+    <img src="art/readme_arenascreen.png" title="Arena Screen">
+</p>
+
 ## How to Run
 
 ### Requirements
@@ -33,7 +50,7 @@ Open Game folder with Visual Studio 2019.
 Right click CMakeList.txt under Game/ and select Generate Cache.
 
 <p>
-    <img src="art/readme_step2.png" title="step2">
+    <img src="art/readme_step2.png" title="Step 2">
 </p>
 
 #### Step 3:
