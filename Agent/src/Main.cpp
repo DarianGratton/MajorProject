@@ -25,9 +25,9 @@ int main()
     params.actionLayerDims = 256;
     params.memSize = 1000000;
     params.batchSize = 16;
-    params.biasWeight = 0.1f;
+    params.actorLossWeight = 0.1f;
     params.gamma = 0.99f;
-    params.traceMax = 10;
+    params.truncationParameter = 10;
 
     GameAgent::State state;
     state.AddDelta("X Y", 12);
@@ -67,9 +67,9 @@ int main()
     // std::cout << states.at(0).first << std::endl;
     //std::cout << states.at(0).second << std::endl;
 
-    //AgentTest test(false, true);
-	//test.Train();
-	//test.Test();
+    AgentTest test(false, true);
+	test.Train();
+	test.Test();
 
 	return 0;
 }

@@ -33,9 +33,9 @@ AgentTest::AgentTest(bool isContinous, bool recordOutput) :
     batchSize = 16;
     params.batchSize = batchSize;
     params.batchTrajectoryLength = 100;
-    params.biasWeight = 0.1f;
+    params.actorLossWeight = 0.1f;
     params.gamma = 0.99f;
-    params.traceMax = 10;
+    params.truncationParameter = 10;
 
     GameAgent::State state;
     environment = std::make_shared<GameAgent::Environment>(state);

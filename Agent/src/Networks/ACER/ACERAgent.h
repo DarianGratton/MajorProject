@@ -135,10 +135,10 @@ private:
 	float gamma;
 
 	/* Actor loss weight. */
-	float biasWeight;
+	float actorLossWeight;
 
 	/* The trucation parameter. */
-	int traceMax;
+	int truncationParameter;
 
 	/* Constraint of the Trust Region Optimization. */
 	float trustRegionConstraint;
