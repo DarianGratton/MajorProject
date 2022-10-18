@@ -60,10 +60,7 @@ void EndScreenScript::Update(TimeDelta dt)
             int currHp = reinterpret_cast<PlayerScript*>(playerScript.get()->script)->GetHealth();
             if (currHp <= 0) 
             {
-                if (Game::Instance().IsAgentTraining())
-                {
-                    Game::Instance().SetTerminalState(true);
-                }
+                Game::Instance().SetTerminalState(true);
                 
                 if (!Game::Instance().IsAutomaticallyTraining())
                 {
@@ -87,10 +84,7 @@ void EndScreenScript::Update(TimeDelta dt)
             int currHp = reinterpret_cast<EnemyScript*>(enemyScript.get()->script)->GetHealth();
             if (currHp <= 0) 
             {
-                if (Game::Instance().IsAgentTraining())
-                {
-                    Game::Instance().SetTerminalState(true);
-                }
+                Game::Instance().SetTerminalState(true);
 
                 if (!Game::Instance().IsAutomaticallyTraining())
                 {

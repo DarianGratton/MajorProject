@@ -75,7 +75,7 @@ public:
         params.learningRate = 1e-4f;
         params.nActions = 1;
         params.nPossibleActions = 6;
-        params.maxEpisodeLength = 3072;
+        params.maxEpisodeLength = 2048;
         params.inputDims = currState.Size();
         params.hiddenLayerDims = 14;
         params.nHiddenLayers = 5;
@@ -85,17 +85,17 @@ public:
         params.batchTrajectoryLength = 512;
         params.actorLossWeight = 0.1f;
         params.gamma = 0.99f;
-        params.truncationParameter = 32;
+        params.truncationParameter = 24;
 
         // Initialize System
-        nEpisodes = 1500;
+        nEpisodes = 50;
         maxEpisodeLength = params.maxEpisodeLength;
         currMoveSetIndex = 0;
 
         // Initialize Agent
         agent = std::make_shared<GameAgent::Agent>(env, params); 
-        // agent->LoadAgent();
-        agent->ClearStorage();
+        agent->LoadAgent();
+        //agent->ClearStorage();
 
         // Setup Data Manipulator
         GameAgent::DataManip::Normalize normalize;
@@ -107,8 +107,10 @@ public:
 
     void update(EntityManager& es, EventManager& events, TimeDelta dt) override
     {
-        // Only want to run when on arena scene
-        if (!arenaLoaded || (Game::Instance().IsGamePaused() && gameEndedAndAgentSaved))
+        // Only want to run when on arena scene or when the game isn't paused
+        if (!arenaLoaded ||
+            pauseMenuActive->isActive ||
+            (Game::Instance().IsGamePaused() && gameEndedAndAgentSaved))
             return;
 
         // Update Current State
@@ -216,6 +218,18 @@ public:
             // Save and Update the Agent
             agent->SaveAgent();
             agent->SaveUtility();
+
+            // Update Variables
+            gameEndedAndAgentSaved = true;
+        }
+
+        // Game Ended and Agent isn't being Trained
+        bool noTrainingEnded = !Game::Instance().IsAgentTraining() && terminal;
+        if (noTrainingEnded)
+        {
+            // Save Utility and Visualize Utilities
+            agent->SaveUtility();
+            VisualizeWeaponUtilities();
 
             // Update Variables
             gameEndedAndAgentSaved = true;
@@ -350,7 +364,7 @@ public:
             auto utilityStates = agent->SearchUtilityStorage(searchState);
             if (!utilityStates.empty())
             {
-                float highestUtility = std::numeric_limits<float>::min();
+                float highestUtility = -std::numeric_limits<float>::max();
                 GameAgent::State highestUtilityState = utilityStates.at(0).first;
                 for (auto stateUtilityPair : utilityStates)
                 {
@@ -373,13 +387,21 @@ public:
             }
         }
 
-        // Set enemy script
+        // Set enemy script and pause menu active
         ComponentHandle<Script> entityScript;
         for (Entity entity : sl.entities->entities_with_components(entityScript))
         {
             ComponentHandle<Name> entityName = entity.component<Name>();
             if (entityName.get()->name == "Enemy")
                 enemyScript = entity.component<Script>();
+        }
+
+        ComponentHandle<TextSprite> entityText;
+        for (Entity entity : sl.entities->entities_with_components(entityText))
+        {
+            ComponentHandle<Name> entityName = entity.component<Name>();
+            if (entityName.get()->name == "PauseText")
+                pauseMenuActive = entity.component<Active>();
         }
 
         // Set deltas
@@ -804,6 +826,9 @@ private:
 
     /* Reference to the player script. */
     ComponentHandle<Script> playerScript;
+
+    /* Reference to the pause's active. */
+    ComponentHandle<Active> pauseMenuActive;
 
     /* Current moveset of the player (used for automatic training). */
     std::vector<unsigned int> currPlayerMoveSet;
