@@ -5,6 +5,11 @@ find_package(Torch REQUIRED)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 
+# Setup include directory
+set(INCLUDE_DIR "${${PROJECT_NAME}_SOURCE_DIR}/include")
+message(STATUS "Using include directory: ${INCLUDE_DIR}")
+include_directories(${INCLUDE_DIR})
+
 add_executable (
 	AgentTests
 	"Test.cpp"

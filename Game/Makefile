@@ -1,17 +1,17 @@
 CXX			:= g++
-CXX_FLAGS 	:= -g --std=gnu++14 -pthread
+CXX_FLAGS 	:= -g --std=gnu++17 -pthread
 
 BIN			:= bin
 SRC			:= src
-INCLUDES	:= -Iincludes
+INCLUDES	:= -Iinclude
 
-LIB			:= libs
+LIB			:= lib
 LIBRARIES	:= -lglfw3dll -lentityx -lfreetype -lbass -lbox2d
 
 EXECUTABLE	:= Game
 
-TESTS		:= tests
-TEST_BIN	:= bin_tests
+TESTS		:= test
+TEST_BIN	:= bin_test
 TEST_SRC	:= $(filter-out $(SRC)/Main.cpp, $(wildcard $(SRC)/*.cpp))
 
 TEST_LIBRARIES 	:= -lgtest

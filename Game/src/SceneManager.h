@@ -4,8 +4,6 @@
 
 #include "Scene.h"
 
-using namespace std;
-
 class SceneManager 
 {
 public:
@@ -18,8 +16,8 @@ public:
     SceneManager(SceneManager const&) = delete;
     void operator=(SceneManager const&) = delete;
 
-    void AddScene(string scenename, std::string filename);
-    bool LoadScene(string scenename);
+    void AddScene(std::string scenename, std::string filename);
+    bool LoadScene(std::string scenename);
 
 private:
     SceneManager() {}

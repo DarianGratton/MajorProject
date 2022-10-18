@@ -6,7 +6,6 @@
 
 #include <chrono>
 
-using namespace std;
 using namespace entityx;
 
 class Game 
@@ -32,6 +31,15 @@ public:
     inline void UnpauseGame() { isGamePaused = false; } 
     inline bool IsGamePaused() { return isGamePaused; }
     inline bool IsGameEnded() { return isGameEnded; }
+    
+    // Agent Functions
+    inline void SetAutomaticTraining(bool training) { isAutomaticallyTraining = training; }
+    inline void SetManualTraining(bool training) { isManuallyTraining = training; }
+    inline void SetTerminalState(bool terminal) { isTerminalState = terminal; }
+    inline bool IsAutomaticallyTraining() { return isAutomaticallyTraining; }
+    inline bool IsManuallyTraining() { return isManuallyTraining; }
+    inline bool IsAgentTraining() { return isAutomaticallyTraining || isManuallyTraining; }
+    inline bool IsTerminalState() { return isTerminalState; }
 
 private:
     // Private default constructor
@@ -55,4 +63,11 @@ private:
     // Game
     bool isGamePaused = false;
     bool isGameEnded = false;
+
+    // Agent
+    // NOTE: Probably should be part of a Singleton class for modularity.
+    //       However it should be fine unless it gets overly complex.
+    bool isAutomaticallyTraining = false;
+    bool isManuallyTraining = false;
+    bool isTerminalState = false;
 };

@@ -7,11 +7,9 @@
 #include "../ScriptFactory.h"
 #include "../Logger.h"
 
-using namespace std;
-
 struct Script 
 {
-    Script(string scriptName, entityx::Entity* entity) 
+    Script(std::string scriptName, entityx::Entity* entity)
     {
         ScriptFactory scriptFactory;
         script = scriptFactory.GetScript(scriptName, entity);

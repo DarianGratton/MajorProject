@@ -2,12 +2,10 @@
 
 #include <string>
 
-using namespace std;
-
 class Texture 
 {
 public:
-    Texture(const string& path);
+    Texture(const std::string& path);
     ~Texture();
 
     // Windows has 32 texture slots, default use 0
@@ -19,7 +17,7 @@ public:
 
 private:
     unsigned int m_RendererID;
-    string m_FilePath;
+    std::string m_FilePath;
     unsigned char* m_LocalBuffer;
     int m_Width, m_Height, m_BPP;
 };

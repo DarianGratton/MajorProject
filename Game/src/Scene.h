@@ -4,20 +4,17 @@
 
 #include <string>
 
-#include "Systems.h"
-
-using namespace std;
 using namespace entityx;
 
 class Scene 
 {
 public:
-    Scene(string name, std::string filename) : name(name), filename(filename) {}
+    Scene(std::string name, std::string filename) : name(name), filename(filename) {}
 
     bool Load();
-    inline string GetName() { return name; }
+    inline std::string GetName() { return name; }
 
 private:
-    string name;
-    string filename;
+    std::string name;
+    std::string filename;
 };

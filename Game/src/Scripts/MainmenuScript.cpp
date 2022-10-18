@@ -57,9 +57,9 @@ void MainMenuScript::Update(TimeDelta dt)
     if (Input::Instance().IsKeyPressed(GLFW_KEY_ESCAPE))
         Game::Instance().EndGame();
 
-    if (cooldownBetweenKeys != 0) 
+    if (cooldownBetweenKeys > 0) 
     {
-        cooldownBetweenKeys--;
+        cooldownBetweenKeys -= dt;
         return;
     }
 
@@ -77,7 +77,7 @@ void MainMenuScript::Update(TimeDelta dt)
             transform.get()->ypos += 50.0f;
             currOption--;
         }
-        cooldownBetweenKeys = 3;
+        cooldownBetweenKeys = 0.2f;
     }
 
     if (Input::Instance().IsKeyPressed(GLFW_KEY_S)) 
@@ -93,6 +93,6 @@ void MainMenuScript::Update(TimeDelta dt)
             transform.get()->ypos -= 50.0f;
             currOption++;
         }
-        cooldownBetweenKeys = 3;
+        cooldownBetweenKeys = 0.2f;
     }
 }

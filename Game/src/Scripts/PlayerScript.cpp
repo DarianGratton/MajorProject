@@ -15,6 +15,7 @@ PlayerScript::PlayerScript(Entity* entity) : CScript(entity)
     isMovementReduced = false;
     normalMovementVelocity = 125.0f;
     reducedMovementVelocity = 50.0f;
+    predictedAction = 0;
 }
 
 void PlayerScript::Start() 
@@ -33,24 +34,28 @@ void PlayerScript::Start()
             playerHpText = e;
     }
 
-    // Note: should be calling start but for some reason it does it for me, something weird with how entityx does for loops.
-    if (weapon1.valid() && !weapon1.has_component<Script>()) 
+    if (!Game::Instance().IsAutomaticallyTraining())
     {
-        string scriptName = GetScriptName(PlayerPrefs::Instance().GetWeapon1());
-        weapon1.assign<Script>(scriptName, &weapon1);
-    }
+        // Note: Should be calling start but for some reason it does it for me, 
+        //       something weird with how entityx does for loops.
+        if (weapon1.valid() && !weapon1.has_component<Script>())
+        {
+            std::string scriptName = GetScriptName(PlayerPrefs::Instance().GetWeapon1());
+            weapon1.assign<Script>(scriptName, &weapon1);
+        }
 
-    if (weapon2.valid() && !weapon2.has_component<Script>()) 
-    {
-        string scriptName = GetScriptName(PlayerPrefs::Instance().GetWeapon2());
-        weapon2.assign<Script>(scriptName, &weapon2);
+        if (weapon2.valid() && !weapon2.has_component<Script>())
+        {
+            std::string scriptName = GetScriptName(PlayerPrefs::Instance().GetWeapon2());
+            weapon2.assign<Script>(scriptName, &weapon2);
+        }
     }
 
     // Display Player HP
     if (playerHpText.valid()) 
     {
         ComponentHandle<TextSprite> textComp = playerHpText.component<TextSprite>();
-        textComp.get()->text = "Player HP: " + to_string(health); 
+        textComp.get()->text = "Player HP: " + std::to_string(health);
     }
 }
 
@@ -68,7 +73,8 @@ void PlayerScript::Update(TimeDelta dt)
     // Use weapon 1
     if (weapon1.valid()) 
     {
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_K)) 
+        if ((Input::Instance().IsKeyPressed(GLFW_KEY_K) && !Game::Instance().IsAutomaticallyTraining()) ||
+            (predictedAction == 5 && Game::Instance().IsAutomaticallyTraining())) 
         {
             ComponentHandle<Script> scriptComp = weapon1.component<Script>();
             WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
@@ -88,7 +94,9 @@ void PlayerScript::Update(TimeDelta dt)
     // Use weapon 2
     if (weapon2.valid()) 
     {
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_L)) {
+        if ((Input::Instance().IsKeyPressed(GLFW_KEY_L) && !Game::Instance().IsAutomaticallyTraining()) ||
+            (predictedAction == 6 && Game::Instance().IsAutomaticallyTraining())) 
+        {
             ComponentHandle<Script> scriptComp = weapon2.component<Script>();
             WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
             if (weaponScript)
@@ -114,7 +122,8 @@ void PlayerScript::MoveCharacter(b2Body* body)
     if (canMove)
     {
         // Movement UP
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_W)) 
+        if ((Input::Instance().IsKeyPressed(GLFW_KEY_W) && !Game::Instance().IsAutomaticallyTraining()) ||
+            (predictedAction == 1 && Game::Instance().IsAutomaticallyTraining()))
         {
             desiredVelY = velcityChange;
 
@@ -123,7 +132,8 @@ void PlayerScript::MoveCharacter(b2Body* body)
         }
 
         // Movement DOWN
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_S)) 
+        if ((Input::Instance().IsKeyPressed(GLFW_KEY_S) && !Game::Instance().IsAutomaticallyTraining()) ||
+            (predictedAction == 2 && Game::Instance().IsAutomaticallyTraining()))
         {
             desiredVelY = -velcityChange;
 
@@ -132,7 +142,8 @@ void PlayerScript::MoveCharacter(b2Body* body)
         }
         
         // Movement RIGHT
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_D)) 
+        if ((Input::Instance().IsKeyPressed(GLFW_KEY_D) && !Game::Instance().IsAutomaticallyTraining()) ||
+            (predictedAction == 3 && Game::Instance().IsAutomaticallyTraining()))
         {
             desiredVelX = velcityChange;
 
@@ -141,7 +152,8 @@ void PlayerScript::MoveCharacter(b2Body* body)
         }
         
         // Movement LEFT
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_A)) 
+        if ((Input::Instance().IsKeyPressed(GLFW_KEY_A) && !Game::Instance().IsAutomaticallyTraining()) ||
+            (predictedAction == 4 && Game::Instance().IsAutomaticallyTraining()))
         {
             desiredVelX = -velcityChange;
 
@@ -172,10 +184,32 @@ void PlayerScript::DamageCharacter(int damage)
 
     // Display updated Player HP
     ComponentHandle<TextSprite> textComp = playerHpText.component<TextSprite>();
-    textComp.get()->text = "Player HP: " + to_string(health); 
+    textComp.get()->text = "Player HP: " + std::to_string(health);
 }
 
-string PlayerScript::GetScriptName(int i) 
+void PlayerScript::SetCharacterWeapons(int weapon1Num, int weapon2Num)
+{
+    // Note: Start only needs to be called when script is added after the script
+    //       system runs it recieve function. In this case it's being set by 
+    //       learning agent system so Start() needs to be called.
+    if (weapon1.valid() && !weapon1.has_component<Script>())
+    {
+        std::string scriptName = GetScriptName(weapon1Num);
+        weapon1.assign<Script>(scriptName, &weapon1);
+        ComponentHandle<Script> scriptComp = weapon1.component<Script>();
+        scriptComp.get()->script->Start();
+    }
+
+    if (weapon2.valid() && !weapon2.has_component<Script>())
+    {
+        std::string scriptName = GetScriptName(weapon2Num);
+        weapon2.assign<Script>(scriptName, &weapon2);
+        ComponentHandle<Script> scriptComp = weapon2.component<Script>();
+        scriptComp.get()->script->Start();
+    }
+}
+
+std::string PlayerScript::GetScriptName(int i)
 {
     switch(i) 
     {
@@ -197,7 +231,7 @@ string PlayerScript::GetScriptName(int i)
 void PlayerScript::BeginContact(Entity* entityA, Entity* entityB) 
 {
     ComponentHandle<Name> entityName = entityB->component<Name>();
-    if (entityName.get()->name.find("Weapon") != string::npos) 
+    if (entityName.get()->name.find("Weapon") != std::string::npos)
     {
         // Update player hp
         ComponentHandle<Script> weaponScript = entityB->component<Script>();

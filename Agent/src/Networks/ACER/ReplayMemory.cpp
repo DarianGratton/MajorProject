@@ -12,7 +12,7 @@ ACERReplayMemory::ACERReplayMemory(
 	unsigned int nActions, unsigned int nPossibleActions)
 	: memSize(memSize), 
 	maxEpisodeLength(maxEpisodeLength), stateSize(stateSize), 
-	nActions(nActions), nPossibleActions(nPossibleActions)
+	nActions(nActions), nPossibleActions(nPossibleActions)  
 {
 	if (memSize < maxEpisodeLength)
 	{
@@ -22,7 +22,8 @@ ACERReplayMemory::ACERReplayMemory(
 		return;
 	}
 
-	memSize = memSize / maxEpisodeLength;
+	// memSize = memSize / maxEpisodeLength;
+	currMemSize = 0;
 	currTrajectory = Trajectory(maxEpisodeLength, stateSize, nActions, nPossibleActions);
 }
 
@@ -48,9 +49,14 @@ void ACERReplayMemory::StoreStateTransition(
 	// Check if episode in environment has ended
 	if (terminal || currTrajectory.numOfTransitions >= maxEpisodeLength)
 	{
+		// Truncate trajectory to clear zeros and update Current Memmory Size
+		currTrajectory.Truncate();
+		currMemSize += currTrajectory.numOfTransitions;
+
 		// Insert elements
-		if (trajectories.size() >= memSize)
+		if (currMemSize >= memSize)
 		{
+			currMemSize -= trajectories.at(0).numOfTransitions;
 			trajectories.pop_back(); 
 			trajectories.push_front(currTrajectory);
 		}
@@ -128,4 +134,86 @@ std::vector<Trajectory> ACERReplayMemory::SampleMemory(unsigned int batchSize, u
 
 	// Return object
 	return batchedTrajectories;
+}
+
+void ACERReplayMemory::Save()
+{
+	// Initialize storage for Memory Data (CurrMemSize and Trajectory Sizes)
+	int memDataSize = trajectories.size() + 1;
+	torch::Tensor memData = torch::zeros({ memDataSize }, torch::kInt32);
+	memData[0].data() = static_cast<int>(currMemSize);
+
+	// Batch Trajectories
+	Trajectory batchedTrajectory = trajectories.at(0);
+	memData[1].data() = static_cast<int>(trajectories.at(0).numOfTransitions);
+	for (int i = 1; i < trajectories.size(); i++)
+	{
+		Trajectory storedTrajectory = trajectories.at(i);
+		batchedTrajectory.states = torch::cat({batchedTrajectory.states, storedTrajectory.states}, 0);
+		batchedTrajectory.newStates = torch::cat({batchedTrajectory.newStates, storedTrajectory.newStates}, 0);
+		batchedTrajectory.actions = torch::cat({batchedTrajectory.actions, storedTrajectory.actions}, 0);
+		batchedTrajectory.rewards = torch::cat({batchedTrajectory.rewards, storedTrajectory.rewards}, 0);
+		batchedTrajectory.terminals = torch::cat({batchedTrajectory.terminals, storedTrajectory.terminals}, 0);
+		batchedTrajectory.policy = torch::cat({batchedTrajectory.policy, storedTrajectory.policy}, 0);
+		
+		int index = i + 1;
+		memData[index].data() = static_cast<int>(storedTrajectory.numOfTransitions);
+	}
+
+	// Save Tensors
+	torch::save(batchedTrajectory.states,	 "ACERMemoryStates.pt");
+	torch::save(batchedTrajectory.newStates, "ACERMemoryNewStates.pt");
+	torch::save(batchedTrajectory.actions,	 "ACERMemoryActions.pt");
+	torch::save(batchedTrajectory.rewards,	 "ACERMemoryRewards.pt");
+	torch::save(batchedTrajectory.terminals, "ACERMemoryTerminals.pt");
+	torch::save(batchedTrajectory.policy,	 "ACERMemoryPolicy.pt");
+	torch::save(memData,					 "ACERMemoryData.pt");
+}
+
+void ACERReplayMemory::Load()
+{
+	// Initialize Tensors
+	Trajectory savedTrajectory;
+	torch::Tensor memData;
+
+	// Load Saved Memory
+	try
+	{
+		torch::load(savedTrajectory.states,    "ACERMemoryStates.pt");
+		torch::load(savedTrajectory.newStates, "ACERMemoryNewStates.pt");
+		torch::load(savedTrajectory.actions,   "ACERMemoryActions.pt");
+		torch::load(savedTrajectory.rewards,   "ACERMemoryRewards.pt");
+		torch::load(savedTrajectory.terminals, "ACERMemoryTerminals.pt");
+		torch::load(savedTrajectory.policy,    "ACERMemoryPolicy.pt");
+		torch::load(memData,				   "ACERMemoryData.pt");
+	}
+	catch (const c10::Error& e)
+	{
+		// File not found
+		std::cout << "ReplayMemory::Load(): Save files not found to load." << std::endl;
+		return;
+	}
+
+	// Clear Current Memory
+	trajectories.clear();
+
+	// Parse saved data into Memory
+	currMemSize = memData[0].item<int>();
+	int64_t start = 0;
+	for (int i = 1; i < memData.size(0); i++)
+	{
+		Trajectory trajectory;
+		trajectory.numOfTransitions = memData[i].item<int>();
+
+		int64_t end = start + trajectory.numOfTransitions;
+		trajectory.states = savedTrajectory.states.index({ torch::indexing::Slice(start, end) , "..." });
+		trajectory.newStates = savedTrajectory.newStates.index({ torch::indexing::Slice(start, end) , "..." });
+		trajectory.actions = savedTrajectory.actions.index({ torch::indexing::Slice(start, end) , "..." });
+		trajectory.rewards = savedTrajectory.rewards.index({ torch::indexing::Slice(start, end) , "..." });
+		trajectory.terminals = savedTrajectory.terminals.index({ torch::indexing::Slice(start, end) , "..." });
+		trajectory.policy = savedTrajectory.policy.index({ torch::indexing::Slice(start, end) , "..." });
+		start += trajectory.numOfTransitions;
+
+		trajectories.push_back(trajectory);
+	}
 }

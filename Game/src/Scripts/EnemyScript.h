@@ -18,10 +18,12 @@ public:
     void EndContact(Entity* entityA, Entity* entityB) override;
     void MoveCharacter(b2Body* body);
     void DamageCharacter(int damage);
+    void SetCharacterWeapons(int weapon1Num, int weapon2Num);
 
     inline void SetCanMove(bool _canMove) { canMove = _canMove; }
     inline void SetIsMovementReduced(bool movementReduced) { isMovementReduced = movementReduced; }
     inline int GetHealth() { return health; }
+    inline void SetCharacterAction(int action) { predictedAction = action; }
 
 private:
     Entity enemyHpText;
@@ -32,6 +34,7 @@ private:
     float normalMovementVelocity;
     float reducedMovementVelocity;
     int health;
+    int predictedAction;
 
-    string GetScriptName(int i);
+    std::string GetScriptName(int i);
 };

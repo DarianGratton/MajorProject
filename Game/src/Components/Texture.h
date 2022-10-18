@@ -6,11 +6,9 @@
 
 #include "../Renderer/Texture.h"
 
-using namespace std;
-
 struct TextureComp 
 {
-    TextureComp(const char* filepath, string filename = "") : filename(filename) 
+    TextureComp(const char* filepath, std::string filename = "") : filename(filename)
     {
         texture = new Texture(filepath);
     }
@@ -45,6 +43,6 @@ struct TextureComp
     }
 
     Texture* texture;
-    string filename;
+    std::string filename;
     bool ready = false;
 };

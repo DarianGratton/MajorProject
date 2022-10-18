@@ -60,16 +60,21 @@ void EndScreenScript::Update(TimeDelta dt)
             int currHp = reinterpret_cast<PlayerScript*>(playerScript.get()->script)->GetHealth();
             if (currHp <= 0) 
             {
-                // Display end screen
-                isActive = !isActive;
-                HideEntities(isActive);
+                Game::Instance().SetTerminalState(true);
+                
+                if (!Game::Instance().IsAutomaticallyTraining())
+                {
+                    // Display end screen
+                    isActive = !isActive;
+                    HideEntities(isActive);
 
-                // Pause game
-                Game::Instance().PauseGame();
+                    // Pause game
+                    Game::Instance().PauseGame();
 
-                // Change text to proper text
-                ComponentHandle<TextSprite> endText = endingText.component<TextSprite>();
-                endText.get()->text = "You Lose!";
+                    // Change text to proper text
+                    ComponentHandle<TextSprite> endText = endingText.component<TextSprite>();
+                    endText.get()->text = "You Lose!";
+                }
             }
         }
 
@@ -77,17 +82,23 @@ void EndScreenScript::Update(TimeDelta dt)
         {
             ComponentHandle<Script> enemyScript = enemy.component<Script>();
             int currHp = reinterpret_cast<EnemyScript*>(enemyScript.get()->script)->GetHealth();
-            if (currHp <= 0) {
-                // Display end screen
-                isActive = !isActive;
-                HideEntities(isActive);
+            if (currHp <= 0) 
+            {
+                Game::Instance().SetTerminalState(true);
 
-                // Pause game
-                Game::Instance().PauseGame();
+                if (!Game::Instance().IsAutomaticallyTraining())
+                {
+                    // Display end screen
+                    isActive = !isActive;
+                    HideEntities(isActive);
 
-                // Change text to proper text
-                ComponentHandle<TextSprite> endText = endingText.component<TextSprite>();
-                endText.get()->text = "You Win!";
+                    // Pause game
+                    Game::Instance().PauseGame();
+
+                    // Change text to proper text
+                    ComponentHandle<TextSprite> endText = endingText.component<TextSprite>();
+                    endText.get()->text = "You Win!";
+                }
             }
         }
     } 

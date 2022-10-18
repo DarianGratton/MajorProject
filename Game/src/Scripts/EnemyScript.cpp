@@ -13,6 +13,7 @@ EnemyScript::EnemyScript(entityx::Entity* entity) : CScript(entity)
     isMovementReduced = false;
     normalMovementVelocity = 125.0f;
     reducedMovementVelocity = 50.0f;
+    predictedAction = 0;
 }
 
 void EnemyScript::Start() 
@@ -20,6 +21,7 @@ void EnemyScript::Start()
     ComponentHandle<Name> entityName;
     for (Entity e : ECS::Instance().entities.entities_with_components(entityName)) 
     {
+        entityName = e.component<Name>();
         if (entityName.get()->name == "EnemyHpText")
             enemyHpText = e;
 
@@ -36,21 +38,6 @@ void EnemyScript::Start()
         ComponentHandle<TextSprite> textComp = enemyHpText.component<TextSprite>();
         textComp.get()->text = "Enemy HP: " + std::to_string(health); 
     }
-
-    // Note: should be calling start but for some reason it does it for me, something weird with how entityx does for loops.
-    if (weapon1.valid() && !weapon1.has_component<Script>()) 
-    {
-        ComponentHandle<TempEnemyWeapons> weapons = weapon1.component<TempEnemyWeapons>();
-        string scriptName = GetScriptName(weapons.get()->weapon1);
-        weapon1.assign<Script>(scriptName, &weapon1);
-    }
-
-    if (weapon2.valid() && !weapon2.has_component<Script>()) 
-    {
-        ComponentHandle<TempEnemyWeapons> weapons = weapon1.component<TempEnemyWeapons>();
-        string scriptName = GetScriptName(weapons.get()->weapon2);
-        weapon2.assign<Script>(scriptName, &weapon2);
-    }
 }
 
 void EnemyScript::Update(TimeDelta dt) 
@@ -66,7 +53,7 @@ void EnemyScript::Update(TimeDelta dt)
     // Use weapon 1
     if (weapon1.valid()) 
     {
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_O)) 
+        if (predictedAction == 4)
         {
             ComponentHandle<Script> scriptComp = weapon1.component<Script>();
             WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
@@ -86,7 +73,7 @@ void EnemyScript::Update(TimeDelta dt)
     // Use weapon 2
     if (weapon2.valid()) 
     {
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_P)) {
+        if (predictedAction == 5) {
             ComponentHandle<Script> scriptComp = weapon2.component<Script>();
             WeaponScript* weaponScript = reinterpret_cast<WeaponScript*>(scriptComp.get()->script);
             if (weaponScript)
@@ -112,7 +99,7 @@ void EnemyScript::MoveCharacter(b2Body* body)
     if (canMove)
     {
         // Movement UP
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_UP)) 
+        if (predictedAction == 0) 
         {
             desiredVelY = velcityChange;
 
@@ -121,7 +108,7 @@ void EnemyScript::MoveCharacter(b2Body* body)
         }
 
         // Movement DOWN
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_DOWN)) 
+        if (predictedAction == 1)
         {
             desiredVelY = -velcityChange;
 
@@ -130,7 +117,7 @@ void EnemyScript::MoveCharacter(b2Body* body)
         }
         
         // Movement RIGHT
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_RIGHT)) 
+        if (predictedAction == 2)
         {
             desiredVelX = velcityChange;
 
@@ -139,7 +126,7 @@ void EnemyScript::MoveCharacter(b2Body* body)
         }
         
         // Movement LEFT
-        if (Input::Instance().IsKeyPressed(GLFW_KEY_LEFT)) 
+        if (predictedAction == 3)
         {
             desiredVelX = -velcityChange;
 
@@ -170,10 +157,32 @@ void EnemyScript::DamageCharacter(int damage)
 
     // Display updated Player HP
     ComponentHandle<TextSprite> textComp = enemyHpText.component<TextSprite>();
-    textComp.get()->text = "Enemy HP: " + to_string(health); 
+    textComp.get()->text = "Enemy HP: " + std::to_string(health);
 }
 
-string EnemyScript::GetScriptName(int i) 
+void EnemyScript::SetCharacterWeapons(int weapon1Num, int weapon2Num)
+{
+    // Note: Start only needs to be called when script is added after the script
+    //       system runs it recieve function. In this case it's being set by 
+    //       learning agent system so Start() needs to be called.
+    if (weapon1.valid() && !weapon1.has_component<Script>())
+    {
+        std::string scriptName = GetScriptName(weapon1Num);
+        weapon1.assign<Script>(scriptName, &weapon1);
+        ComponentHandle<Script> scriptComp = weapon1.component<Script>();
+        scriptComp.get()->script->Start();
+    }
+
+    if (weapon2.valid() && !weapon2.has_component<Script>())
+    {
+        std::string scriptName = GetScriptName(weapon2Num);
+        weapon2.assign<Script>(scriptName, &weapon2);
+        ComponentHandle<Script> scriptComp = weapon2.component<Script>();
+        scriptComp.get()->script->Start();
+    }
+}
+
+std::string EnemyScript::GetScriptName(int i)
 {
     switch(i) 
     {

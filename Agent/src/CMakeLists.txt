@@ -8,9 +8,14 @@ find_package(Torch REQUIRED)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 
+# Setup include directory
+set(INCLUDE_DIR "${${PROJECT_NAME}_SOURCE_DIR}/include")
+message(STATUS "Using include directory: ${INCLUDE_DIR}")
+include_directories(${INCLUDE_DIR})
+
 # Add source to this project's executable.
 add_executable (
-    Agent 
+    GameAgentExec 
     "Main.cpp" 
     "Agent.cpp" 
     "Agent.h" 
@@ -40,22 +45,98 @@ add_executable (
     "Networks/Parameters.h" 
     "Storage/UtilityStorage.h" 
     "Storage/UtilityStorage.cpp"
-)
+ "DataManipulation/DataManipulation.h" "DataManipulation/Normalize.h" "DataManipulation/Normalize.cpp")
 
 # The following code block is suggested to be used on Windows.
 # According to https://github.com/pytorch/pytorch/issues/25457,
 # the DLLs need to be copied to avoid memory errors.
 if (MSVC)
   file(GLOB TORCH_DLLS "${TORCH_INSTALL_PREFIX}/lib/*.dll")
-  add_custom_command(TARGET Agent
+  add_custom_command(TARGET GameAgentExec
                      POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
                      ${TORCH_DLLS}
-                     $<TARGET_FILE_DIR:Agent>)
+                     $<TARGET_FILE_DIR:GameAgentExec>)
 endif (MSVC)
 
 # Link libraries
-target_link_libraries(Agent "${TORCH_LIBRARIES}")
+target_link_libraries(GameAgentExec "${TORCH_LIBRARIES}")
 
 # Set properties
-set_property(TARGET Agent PROPERTY CXX_STANDARD 17)
+set_property(TARGET GameAgentExec PROPERTY CXX_STANDARD 17)
+
+### Build Library
+set(LIBRARY_TARGET_NAME "${PROJECT_NAME}")
+
+# List of CPP (source) library files.
+set(${LIBRARY_TARGET_NAME}_SRC
+    "Agent.cpp"
+    "Environment/Environment.cpp"
+    "Environment/State.cpp"
+    "Networks/ACER/ReplayMemory.cpp" 
+    "Networks/ACER/ActorCriticNetwork.cpp" 
+    "Networks/ACER/ACERAgent.cpp" 
+    "Networks/AgentFactory.cpp" 
+    "Visualizer/Visualizer.cpp" 
+    "Storage/UtilityStorage.cpp"
+ "DataManipulation/Normalize.cpp")
+
+# List of HPP (header) library files
+set(${LIBRARY_TARGET_NAME}_HDR
+    "Agent.h"
+    "GameAgent.h"
+    "Environment/Environment.h"
+    "Environment/State.h"
+    "Storage/UtilityStorage.h" 
+    "Visualizer/Visualizer.h"
+    "Networks/NetworkAgent.h" 
+    "Networks/NetworkParameters.h"  
+    "Networks/AgentFactory.h" 
+    "Networks/Parameters.h" 
+    "Networks/ACER/RandomIterator.h"  
+    "Networks/ACER/ReplayMemory.h" 
+    "Networks/ACER/ActorCriticNetwork.h" 
+    "Networks/ACER/Trajectory.h" 
+    "Networks/ACER/ACERParameters.h"
+ "DataManipulation/DataManipulation.h" "DataManipulation/Normalize.h")
+
+# Add a library to be built from the source and header files.
+add_library(${LIBRARY_TARGET_NAME} 
+            ${${LIBRARY_TARGET_NAME}_SRC} 
+            ${${LIBRARY_TARGET_NAME}_HDR}
+)
+
+# Create alias
+add_library(${PROJECT_NAME}::${LIBRARY_TARGET_NAME} ALIAS ${LIBRARY_TARGET_NAME})
+
+# Set two minumum target properties for the library.
+set_target_properties(${LIBRARY_TARGET_NAME} PROPERTIES VERSION       "${${PROJECT_NAME}_VERSION}"
+                                                        PUBLIC_HEADER "${${LIBRARY_TARGET_NAME}_HDR}")
+
+# Specify include directories for both comilation and installation process
+target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+                                                         "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>")
+
+# Link required libraries
+target_link_libraries(${LIBRARY_TARGET_NAME} "${TORCH_LIBRARIES}")
+
+# Specify installation targets, typology and destination folders.
+install(TARGETS ${LIBRARY_TARGET_NAME}
+        EXPORT  ${PROJECT_NAME}
+        LIBRARY       DESTINATION "${CMAKE_INSTALL_LIBDIR}"                            COMPONENT shlib
+        ARCHIVE       DESTINATION "${CMAKE_INSTALL_LIBDIR}"                            COMPONENT lib
+        RUNTIME       DESTINATION "${CMAKE_INSTALL_LIBDIR}"                            COMPONENT bin)
+
+# Install include header files
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/"
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_TARGET_NAME}"
+        FILES_MATCHING 
+        PATTERN "*.h"
+        PATTERN "*.hpp"
+        PATTERN "Networks/TestEnvironment" EXCLUDE)
+
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/"
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+        PATTERN "Eigen" EXCLUDE)
+
+message(STATUS "Created target ${LIBRARY_TARGET_NAME} for export ${PROJECT_NAME}.")

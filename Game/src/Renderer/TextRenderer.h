@@ -9,8 +9,6 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-using namespace std;
-
 class TextRenderer
 {
 public:
@@ -20,7 +18,7 @@ public:
     ~TextRenderer();
 
     void SetFontSize(unsigned int pixelwidth, unsigned int pixelheight);
-    void RenderText(string text, glm::vec2 position, glm::vec2 scale, glm::vec3 color, glm::mat4 proj, glm::mat4 view);
+    void RenderText(std::string text, glm::vec2 position, glm::vec2 scale, glm::vec3 color, glm::mat4 proj, glm::mat4 view);
 
 private:
     struct Character 
@@ -30,7 +28,7 @@ private:
         glm::ivec3 bearing;
         unsigned int advance;
     };
-    map<char, Character> characters;
+    std::map<char, Character> characters;
 
     FT_Library library;
     FT_Face face;

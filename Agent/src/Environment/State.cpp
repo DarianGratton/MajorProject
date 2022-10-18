@@ -18,7 +18,7 @@ State& State::operator=(const State& state1)
 	return *this;
 }
 
-void State::AddDelta(std::string deltaName, float delta)
+void State::AddDelta(std::string deltaName, float delta /* = 0.0f */)
 {
 	if (deltas.find(deltaName) == deltas.end())
 	{
@@ -51,6 +51,19 @@ void State::UpdateDelta(std::string deltaName, float newDelta)
 	catch (const std::out_of_range& e)
 	{
 		std::cerr << "State::UpdateDelta(): " << deltaName << " delta doesn't exists." << std::endl;
+	}
+}
+
+float State::GetDelta(std::string deltaName)
+{
+	try
+	{
+		return deltas.at(deltaName);
+	}
+	catch (const std::out_of_range& e)
+	{
+		std::cerr << "State::GetDelta(): " << deltaName << " delta doesn't exists." << std::endl;
+		throw e;
 	}
 }
 
@@ -128,18 +141,13 @@ bool operator==(const State& lhs, const State& rhs)
 
 	for (auto delta : lhs.deltas)
 	{
-		if (rhs.deltas.find(delta.first) != rhs.deltas.end())
-		{
-			if (rhs.deltas.at(delta.first) != lhs.deltas.at(delta.first))
-			{
-				return false;
-			}
-		}
-		else
+		if (rhs.deltas.find(delta.first) == rhs.deltas.end() ||
+			(std::abs(rhs.deltas.at(delta.first) - lhs.deltas.at(delta.first))) > 0.000001f)
 		{
 			return false;
 		}
 	}
+
 	return true;
 }
 

@@ -11,6 +11,7 @@ SwordScript::SwordScript(Entity* entity, float spriteHeight, float spriteWidth) 
     damage = 10;
     isActive = false;
     canDamageShield = true;
+    isPlayer = false;
 
     // Member variables
     spriteOffset = 10.5f;
@@ -22,20 +23,20 @@ void SwordScript::Start()
 {
     // Get name of entity for later
     ComponentHandle<Name> weapon = GetEntity()->component<Name>();
-    string weaponName = weapon->name;
+    std::string weaponName = weapon->name;
 
     // Get reference to entity
     ComponentHandle<Name> entityName;
     for (Entity e : ECS::Instance().entities.entities_with_components(entityName)) 
     {
         entityName = e.component<Name>();
-        if (entityName.get()->name == "Player" && weaponName.find("Player") != string::npos)
+        if (entityName.get()->name == "Player" && weaponName.find("Player") != std::string::npos)
         {
             userEntity = e;
             isPlayer = true;
         }
 
-        if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != string::npos)
+        if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != std::string::npos)
             userEntity = e;
     }
 
@@ -129,7 +130,11 @@ void SwordScript::CreateEntity()
     // Set up entity components
     GetEntity()->assign<TextureComp>("src/Assets/textures/SwordSlash.png", "SwordSlash.png");
     GetEntity()->assign<ShaderComp>("src/Assets/shaders/Basic.shader");
-    
+
+    // Name
+    ComponentHandle<Name> weapon = GetEntity()->component<Name>();
+    weapon->name = weapon->name + "_Sword";
+
     // Transform
     ComponentHandle<Transform> entityTransform = userEntity.component<Transform>(); 
     GetEntity()->assign<Transform>(entityTransform.get()->xpos, entityTransform.get()->ypos + spriteOffset, 0.0f, 0, 0, 0, 1, 2); 

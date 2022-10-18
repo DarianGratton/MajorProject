@@ -12,9 +12,15 @@ BowScript::BowScript(Entity* entity, float spriteHeight, float spriteWidth) : We
     spriteOffset = 10.0f;
     projectileVelocity = 250.0f;
     projectileLifespan = 3.0f;
+
+    // NOTE: Max number of projectiles was set to one in order to simplify
+    //       the state being used to train the agent. If higher, the state would 
+    //       need to take note of each indivdual projectile every frame even if 
+    //       one didn't exist. Explained further in the final report.
+    maxNumberOfProjectiles = 1; 
+
     fireRate = 0.0f;
     isActive = false;
-    arrowNumber = 0;
     isPlayer = false;
     canDamageShield = false;
 }
@@ -23,20 +29,20 @@ void BowScript::Start()
 {
     // Get name of entity for later
     ComponentHandle<Name> weapon = GetEntity()->component<Name>();
-    string weaponName = weapon->name;
+    std::string weaponName = weapon->name;
 
     // Get reference to entity
     ComponentHandle<Name> entityName;
     for (Entity e : ECS::Instance().entities.entities_with_components(entityName)) 
     {
         entityName = e.component<Name>();
-        if (entityName.get()->name == "Player" && weaponName.find("Player") != string::npos)
+        if (entityName.get()->name == "Player" && weaponName.find("Player") != std::string::npos)
         {
             userEntity = e;
             isPlayer = true;
         }
 
-        if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != string::npos)
+        if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != std::string::npos)
             userEntity = e;
     }
 }
@@ -44,7 +50,7 @@ void BowScript::Start()
 void BowScript::Update(TimeDelta dt) 
 {
     // Delete any projectiles flagged for deletion
-    for (string entityName : projectilesFlaggedForDeletion) 
+    for (std::string entityName : projectilesFlaggedForDeletion)
     {
         for (int i = 0; i < projectilesTimeElapsed.size(); i++) 
         {        
@@ -73,7 +79,7 @@ void BowScript::Update(TimeDelta dt)
         fireRate = cooldown;
 
     // Update position of arrows
-    for (pair<Entity, int> projectile : projectiles) 
+    for (std::pair<Entity, int> projectile : projectiles)
     { 
         float desiredVelX = 0;
         float desiredVelY = 0;
@@ -157,7 +163,7 @@ void BowScript::Update(TimeDelta dt)
 void BowScript::UseWeapon() 
 {
     isActive = true;
-    if (fireRate > 0 || projectiles.size() >= 3)
+    if (fireRate > 0 || projectiles.size() >= maxNumberOfProjectiles)
         return;
 
     fireRate = 1.5f;
@@ -172,7 +178,7 @@ void BowScript::SpawnArrow()
     e.assign<ShaderComp>("src/Assets/shaders/Basic.shader");
     e.assign<Active>(true);
 
-    vector<float> spriteVertices =  {
+    std::vector<float> spriteVertices =  {
             -spriteWidth/2, -spriteHeight/2, 0.0f, 0.0f,
              spriteWidth/2, -spriteHeight/2, 1.0f, 0.0f,
              spriteWidth/2,  spriteHeight/2, 1.0f, 1.0f,
@@ -180,7 +186,8 @@ void BowScript::SpawnArrow()
         };
     e.assign<SpriteVertices>(spriteVertices);
 
-    string name = "WeaponArrow" + to_string(arrowNumber);
+    ComponentHandle<Name> weapon = GetEntity()->component<Name>();
+    std::string name = weapon->name + "_Arrow" + std::to_string(projectiles.size());
     e.assign<Name>(name);
     e.assign<Script>(cscript);
 
@@ -235,18 +242,15 @@ void BowScript::SpawnArrow()
     physicsComp.get()->SetSensor(true);
 
     // Add entity to list
-    projectiles.push_back(make_pair(ECS::Instance().entities.get(e.id()), userDirection));
+    projectiles.push_back(std::make_pair(ECS::Instance().entities.get(e.id()), userDirection));
     projectilesTimeElapsed.push_back(0.0f);
-    arrowNumber++;
-    if (arrowNumber > 2) 
-        arrowNumber = 0;
 }
 
 // Collision detection
 void BowScript::BeginContact(Entity* entityA, Entity* entityB) 
 {
     ComponentHandle<Name> nameComp = entityA->component<Name>();
-    if (nameComp.get()->name.find("WeaponArrow") != string::npos) 
+    if (nameComp.get()->name.find("_Arrow") != std::string::npos)
     {
         projectilesFlaggedForDeletion.push_back(nameComp.get()->name);
     }

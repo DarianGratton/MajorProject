@@ -13,6 +13,7 @@
 #include "../ACER/ACERParameters.h"
 #include "TestEnvironment.h"
 #include "../../Environment/State.h"
+#include "../../DataManipulation/Normalize.h"
 
 AgentTest::AgentTest(bool isContinous, bool recordOutput) : 
     isContinous(isContinous), recordOutput(recordOutput)
@@ -25,19 +26,23 @@ AgentTest::AgentTest(bool isContinous, bool recordOutput) :
     params.nPossibleActions = 4;
     params.inputDims = 4;
     params.hiddenLayerDims = 128;
+    params.nHiddenLayers = 2;
     params.actionLayerDims = 256;
     params.maxEpisodeLength = 2048;
     params.memSize = 1000000;
     batchSize = 16;
     params.batchSize = batchSize;
     params.batchTrajectoryLength = 100;
-    params.biasWeight = 0.1f;
+    params.actorLossWeight = 0.1f;
     params.gamma = 0.99f;
-    params.traceMax = 10;
+    params.truncationParameter = 10;
 
     GameAgent::State state;
     environment = std::make_shared<GameAgent::Environment>(state);
     gameAgent = std::make_unique<GameAgent::Agent>(environment, params);
+
+    GameAgent::DataManip::Normalize normalize;
+    gameAgent->SetDataManipulation(std::make_shared<GameAgent::DataManip::Normalize>(normalize));
 }
 
 void AgentTest::Train()
@@ -198,6 +203,7 @@ void AgentTest::Test()
 
     // Load Agent
     gameAgent->LoadAgent();
+    exit(0);
 
     // Training loop.
     unsigned int nEpisodes = 1000;

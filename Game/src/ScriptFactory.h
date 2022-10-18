@@ -7,7 +7,6 @@
 #include "CScript.h"
 #include "Scripts.h"
 
-using namespace std;
 using namespace entityx;
 
 class ScriptFactory 
@@ -15,5 +14,5 @@ class ScriptFactory
 public:
     ScriptFactory() {}
 
-    CScript* GetScript(string scriptName, Entity* entity);
+    CScript* GetScript(std::string scriptName, Entity* entity);
 };

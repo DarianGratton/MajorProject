@@ -1,5 +1,7 @@
 #include "Game.h"
 
+#include <bass/bass.h>
+
 #include "Logger.h"
 #include "ECS.h"
 #include "Input.h"
@@ -14,7 +16,7 @@ void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 bool Game::Init() 
 {
     // Logger
-    Logger::Init();
+    Logger::Instance().Init();
 
     // GLFW
     if (!InitGLFW()) 

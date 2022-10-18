@@ -3,8 +3,8 @@
 ACERAgent::ACERAgent(const GameAgent::Networks::ACERParameters& params) :
 	maxEpisodeLength(params.maxEpisodeLength), batchSize(params.batchSize), 
 	batchTrajectoryLength(params.batchTrajectoryLength), 
-	biasWeight(params.biasWeight),
-	gamma(params.gamma), traceMax(params.traceMax),
+	actorLossWeight(params.actorLossWeight),
+	gamma(params.gamma), truncationParameter(params.truncationParameter),
 	trustRegionConstraint(params.trustRegionConstraint), 
 	trustRegionDecay(params.trustRegionDecay)
 {
@@ -28,13 +28,13 @@ std::vector<float> ACERAgent::PredictAction(torch::Tensor state)
 	return { action };
 }
 
-void ACERAgent::Train(const GameAgent::Environment& environment)
+void ACERAgent::Train(const GameAgent::Environment::Transition& transition)
 {
-	UpdateMemory(environment.GetPrevState(), environment.GetAction(), 
-				 environment.GetReward(), environment.GetCurrState(), environment.IsTerminal());
+	UpdateMemory(transition.prevState, transition.action, 
+				 transition.reward, transition.currState, transition.terminal);
 
 	// Check if the agent is finished an episode in the environment
-	if (environment.IsTerminal() || environment.GetSteps() >= maxEpisodeLength)
+	if (transition.terminal || transition.currStep >= maxEpisodeLength)
 	{
 		// On-Policy
 		Learn({ memory->GetPrevTrajectory() }, true);
@@ -85,6 +85,9 @@ void ACERAgent::SaveModel()
 	outFile.open("ACERAvgActorCritic.txt", std::ios::binary | std::ios::trunc);
 	outFile << averageActorCritic->GetCheckpoint().rdbuf();
 	outFile.close();
+
+	// Save Memory
+	memory->Save();
 }
 
 void ACERAgent::LoadModel()
@@ -113,6 +116,9 @@ void ACERAgent::LoadModel()
 	{
 		// File not found
 	}
+
+	// Load Memory
+	memory->Load();
 }
 
 void ACERAgent::Learn(std::vector<Trajectory> trajectories, bool onPolicy)
@@ -177,16 +183,16 @@ void ACERAgent::Learn(std::vector<Trajectory> trajectories, bool onPolicy)
 		// g ← min(c, ρ_a_i)∙∇θ∙log(π(a_i|s_i; θ))∙A
 		torch::Tensor actionIndices = trajectory.actions.toType(torch::kInt64);
 		torch::Tensor actorLoss =
-			importanceWeights.gather(-1, actionIndices.data()).clamp(0, traceMax)
-			* -biasWeight
+			importanceWeights.gather(-1, actionIndices.data()).clamp(0, truncationParameter)
+			* -actorLossWeight
 			* predictedActions.first.gather(-1, actionIndices).log()
 			* QretAdvantage;
 
 		// g = g + Σ_a [1 - c/ρ_a]_+∙π(a|s_i; θ)∙∇θ∙log(π(a|s_i; θ))∙(Q(s_i, a; θ) - V(s_i; θ)
 		actorLoss +=
-			((1 - traceMax / importanceWeights).clamp(0)
+			((1 - truncationParameter / importanceWeights).clamp(0)
 				* predictedActions.first.data()
-				* -biasWeight
+				* -actorLossWeight
 				* predictedActions.first.log()
 				* (predictedActions.second.gather(-1, actionIndices).data() - value)).sum(-1).unsqueeze(-1);
 

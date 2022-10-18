@@ -30,20 +30,20 @@ void GrenadeScript::Start()
 {
     // Get name of entity for later
     ComponentHandle<Name> weapon = GetEntity()->component<Name>();
-    string weaponName = weapon->name;
+    std::string weaponName = weapon->name;
 
     // Get reference to entity
     ComponentHandle<Name> entityName;
     for (Entity e : ECS::Instance().entities.entities_with_components(entityName)) 
     {
         entityName = e.component<Name>();
-        if (entityName.get()->name == "Player" && weaponName.find("Player") != string::npos)
+        if (entityName.get()->name == "Player" && weaponName.find("Player") != std::string::npos)
         {
             userEntity = e;
             isPlayer = true;
         }
 
-        if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != string::npos)
+        if (entityName.get()->name == "Enemy" && weaponName.find("Enemy") != std::string::npos)
             userEntity = e;
     }
 }
@@ -149,7 +149,8 @@ void GrenadeScript::SpawnGrenade()
         };
     grenadeEntity.assign<SpriteVertices>(spriteVertices);
 
-    grenadeEntity.assign<Name>("Grenade");
+    ComponentHandle<Name> weapon = GetEntity()->component<Name>();
+    grenadeEntity.assign<Name>(weapon->name + "_Grenade");
     
     // Rigidbody bits
     uint16 categoryBit;
@@ -221,7 +222,8 @@ void GrenadeScript::SpawnExplosion()
         };
     explosionEntity.assign<SpriteVertices>(spriteVertices);
 
-    explosionEntity.assign<Name>("WeaponExplosion");
+    ComponentHandle<Name> weapon = GetEntity()->component<Name>();
+    explosionEntity.assign<Name>(weapon->name + "_Explosion");
     
     // Rigidbody bits
     uint16 categoryBit;
@@ -249,8 +251,8 @@ void GrenadeScript::BeginContact(Entity* entityA, Entity* entityB)
     ComponentHandle<Name> entityNameB = entityB->component<Name>();
     bool shouldBounce = false;
     // Check if explode
-    if (entityNameA.get()->name.find("Grenade") != string::npos &&
-        entityNameB.get()->name.find("Weapon") != string::npos)
+    if (entityNameA.get()->name.find("Grenade") != std::string::npos &&
+        entityNameB.get()->name.find("Weapon") != std::string::npos)
     {
         ComponentHandle<Script> weaponScript = entityB->component<Script>();
         int damage = reinterpret_cast<WeaponScript*>(weaponScript.get()->script)->GetDamage();
@@ -270,8 +272,8 @@ void GrenadeScript::BeginContact(Entity* entityA, Entity* entityB)
 
     // Bounce
     if (shouldBounce ||
-        (entityNameA.get()->name.find("Explosion") == string::npos &&
-        entityNameB.get()->name.find("Wall") != string::npos)) 
+        (entityNameA.get()->name.find("Explosion") == std::string::npos &&
+        entityNameB.get()->name.find("Wall") != std::string::npos))
     {
         switch(directionThrown)
         {

@@ -2,7 +2,6 @@
 
 #include <entityx/entityx.h>
 
-using namespace std;
 using namespace entityx;
 
 class CScript 

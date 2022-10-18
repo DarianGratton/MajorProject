@@ -31,6 +31,20 @@ void Environment::Update(std::vector<float> newAction, float newReward, State ne
 	steps++;
 }
 
+Environment::Transition Environment::GetLastTransition()
+{
+	Transition transition;
+
+	transition.prevState = prevState;
+	transition.action = action;
+	transition.reward = reward;
+	transition.currState = currState;
+	transition.terminal = isTerminal;
+	transition.currStep = steps;
+
+	return transition;
+}
+
 void Environment::Reset()
 {
 	prevState = State();

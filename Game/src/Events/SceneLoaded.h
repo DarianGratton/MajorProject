@@ -6,13 +6,12 @@
 
 #include "../Components.h"
 
-using namespace std;
 using namespace entityx;
 
 struct SceneLoad 
 {
-    SceneLoad(string sceneName, EntityManager* entities) : sceneName(sceneName), entities(entities) {}
+    SceneLoad(std::string sceneName, EntityManager* entities) : sceneName(sceneName), entities(entities) {}
 
-    string sceneName;
+    std::string sceneName;
     EntityManager* entities;
 };

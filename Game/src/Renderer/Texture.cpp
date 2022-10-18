@@ -5,7 +5,7 @@
 #include <stb_image/stb_image.h>
 #include <glad/glad.h>
 
-Texture::Texture(const string& path)
+Texture::Texture(const std::string& path)
     : m_RendererID(0), m_FilePath(path), m_LocalBuffer(nullptr), m_Width(0), m_Height(0), m_BPP(0)
 {
     // Flip because pngs load top to bottom but OpenGL loads bottom left to top
